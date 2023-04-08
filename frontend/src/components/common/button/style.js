@@ -2,25 +2,29 @@ import styled, { css } from "styled-components";
 
 const sizeTable = {
   xs: css`
-    padding: 0.25rem 0.625rem;
+    padding: 0 0.625rem;
+    height: 24px;
     ${({ theme }) => css`
       font-size: ${theme.FONT_SIZE.CAPTION};
     `}
   `,
   sm: css`
-    padding: 0.5rem 1rem;
+    padding: 0 1rem;
+    height: 32px;
     ${({ theme }) => css`
       font-size: ${theme.FONT_SIZE.DESCRIPTION};
     `}
   `,
   md: css`
-    padding: 0.75rem 1.25rem;
+    padding: 0 1.25rem;
+    height: 40px;
     ${({ theme }) => css`
       font-size: ${theme.FONT_SIZE.BODY};
     `}
   `,
   lg: css`
-    padding: 1rem 1.75rem;
+    padding: 0 1.75rem;
+    height: 48px;
     ${({ theme }) => css`
       font-size: ${theme.FONT_SIZE.BODY};
     `}
