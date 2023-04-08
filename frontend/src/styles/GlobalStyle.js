@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
         "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
         "Segoe UI Symbol", sans-serif;
     `}
+  }
   
   body,
   h1,
@@ -28,19 +29,23 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+
   ul{
     list-style: none;
   }
+
   a {
     text-decoration: none;
     color: inherit;
   }
+
   input,
   button,
   textarea,
   select {
     font: inherit;
   }
+
   html, body {
   height: 100%;
   overflow: auto;
