@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import { LIGHT_THEME } from "./styles";
+import Header from "./components/layout/header";
+import Home from "./pages/home";
 
 const App = () => {
   // TODO: hooks
@@ -12,7 +14,8 @@ const App = () => {
   return (
     <ThemeProvider theme={theme === "light" ? LIGHT_THEME : "TODO"}>
       <GlobalStyle />
-      Hello World
+      <Header></Header>
+      <Home></Home>
     </ThemeProvider>
   );
 };
