@@ -1,0 +1,3 @@
+export { ReactComponent as Logo } from "./logo.svg";
+export { ReactComponent as LogoLabel } from "./logo-label.svg";
+export { ReactComponent as SearchIcon } from "./icon-search.svg";
