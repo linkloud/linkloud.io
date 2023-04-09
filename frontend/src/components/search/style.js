@@ -35,7 +35,6 @@ export const Container = styled.div`
   align-items: center;
   position: relative;
   width: 100%;
-  margin-bottom: 12px;
 
   & form {
     width: 100%;
@@ -64,6 +63,25 @@ export const Input = styled.input`
   border-radius: 8px;
   outline: none;
   transition: 0.3s ease;
+
+  /* clears the ‘X’ from Internet Explorer */
+  &::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  &::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* clears the ‘X’ from Chrome */
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
 
   ${({ size, styleType }) => css`
     ${styleTable[styleType]}
