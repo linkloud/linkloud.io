@@ -37,6 +37,10 @@ export const Container = styled.div`
   width: 100%;
   margin-bottom: 12px;
 
+  & form {
+    width: 100%;
+  }
+
   & label {
     display: none;
   }
