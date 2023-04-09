@@ -36,7 +36,7 @@ const styleTable = {
     ${({ theme }) => css`
       color: ${theme.COLOR.TEXT.MEDIUM};
       &: hover {
-        color: ${theme.COLOR.PRIMARY.HIHG};
+        color: ${theme.COLOR.PRIMARY.HIGH};
       } ;
     `};
   `,
@@ -46,8 +46,8 @@ const styleTable = {
       border: 1px solid ${theme.COLOR.BORDER.MEDIUM};
       background-color: ${theme.COLOR.WHITE};
       &: hover {
-        border: 1px solid ${theme.COLOR.PRIMARY.HIHG};
-        color: ${theme.COLOR.PRIMARY.HIHG};
+        border: 1px solid ${theme.COLOR.PRIMARY.HIGH};
+        color: ${theme.COLOR.PRIMARY.HIGH};
       } ;
     `};
   `,
@@ -55,7 +55,7 @@ const styleTable = {
   fill: css`
     ${({ theme }) => css`
       color: ${theme.COLOR.WHITE};
-      background-color: ${theme.COLOR.PRIMARY.HIHG};
+      background-color: ${theme.COLOR.PRIMARY.HIGH};
       &: hover {
         background-color: ${theme.COLOR.PRIMARY.MEDIUM};
       } ;
