@@ -11,7 +11,7 @@ const Header = () => {
       <HeaderContent>
         <HeaderTitle>
           linkloud
-          <a href="/">
+          <a href="/" aria-label="linkloud home">
             <LogoLabel />
           </a>
         </HeaderTitle>
