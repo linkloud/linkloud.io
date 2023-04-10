@@ -1,5 +1,5 @@
 import { ModalWrap, ModalContent } from "./style";
-import Portal from "../potal";
+import Portal from "../portal";
 import Dimmed from "../dimmed";
 
 const Modal = ({ isOpened, onCloseModal, children }) => {
