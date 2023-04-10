@@ -4,7 +4,7 @@ export const AnchorDefault = styled.a`
   cursor: pointer;
   ${({ theme }) => css`
     &:hover {
-      color: ${theme.COLOR.ACCENT.HIHG};
+      color: ${theme.COLOR.ACCENT.HIGH};
       text-decoration: underline;
     }
   `}
