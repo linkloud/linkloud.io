@@ -47,6 +47,7 @@ public class ErrorResponse {
         return new ErrorResponse(httpStatus.value(), message);
     }
 
+    // 요청 바디 필드 유효성 검증 예외
     @Getter
     public static class FieldError {
         private String field;
@@ -70,6 +71,7 @@ public class ErrorResponse {
         }
     }
 
+    // 경로 변수 유효성 검증 예외
     @Getter
     public static class ConstraintViolationError {
         private String propertyPath;
