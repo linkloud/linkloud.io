@@ -1,7 +1,23 @@
 import { GnbUl, Nav } from "./style";
 import Button from "@/components/common/button";
+import LoginModalContainer from "@/components/auth/loginModalContainer";
+
+import { useModalActions, useLoginModalState } from "@/stores/useModalStore";
 
 const HeaderNav = ({ role = "GUEST" }) => {
+  // 로그인 모달
+  const isLoginModalOpened = useLoginModalState();
+  const { setOpen, setClose } = useModalActions();
+
+  const handleOpenLoginModal = () => {
+    setOpen("login");
+  };
+
+  const handleCloseLoginModal = () => {
+    setClose("login");
+  };
+  // 로그인 모달 끝
+
   return (
     <Nav>
       <h1>네비게이션</h1>
@@ -44,10 +60,14 @@ const HeaderNav = ({ role = "GUEST" }) => {
               size="md"
               styleType="fill"
               aria-haspopup="dialog"
-              onClick={console.log("로그인")}
+              onClick={handleOpenLoginModal}
             >
               로그인
             </Button>
+            <LoginModalContainer
+              isOpened={isLoginModalOpened}
+              onCloseLoginModal={handleCloseLoginModal}
+            ></LoginModalContainer>
           </li>
         )}
       </GnbUl>
