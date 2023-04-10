@@ -5,5 +5,5 @@ export const DimmedDefault = styled.div`
   inset: 0;
   z-index: 999;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.38);
 `;
