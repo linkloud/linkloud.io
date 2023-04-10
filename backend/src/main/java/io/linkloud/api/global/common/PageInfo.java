@@ -1,6 +1,5 @@
 package io.linkloud.api.global.common;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

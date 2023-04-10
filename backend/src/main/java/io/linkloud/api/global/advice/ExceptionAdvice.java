@@ -22,9 +22,8 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e) {
-        final ErrorResponse response = ErrorResponse.of(e.getBindingResult());
 
-        return response;
+        return ErrorResponse.of(e.getBindingResult());
     }
 
     // 경로 변수 유효성 검증 예외 처리
@@ -32,9 +31,8 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleConstraintViolationException(
         ConstraintViolationException e) {
-        final ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
 
-        return response;
+        return ErrorResponse.of(e.getConstraintViolations());
     }
 
     // 서버 로직 내 예외 처리
@@ -51,9 +49,7 @@ public class ExceptionAdvice {
     public ErrorResponse handleHttpRequestMethodNotSupportedException(
         HttpRequestMethodNotSupportedException e) {
 
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED);
-
-        return response;
+        return ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler
@@ -61,10 +57,8 @@ public class ExceptionAdvice {
     public ErrorResponse handleHttpMessageNotReadableException(
         HttpMessageNotReadableException e) {
 
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST,
+        return ErrorResponse.of(HttpStatus.BAD_REQUEST,
             "Required request body is missing");
-
-        return response;
     }
 
     @ExceptionHandler
@@ -72,10 +66,8 @@ public class ExceptionAdvice {
     public ErrorResponse handleMissingServletRequestParameterException(
         MissingServletRequestParameterException e) {
 
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST,
+        return ErrorResponse.of(HttpStatus.BAD_REQUEST,
             e.getMessage());
-
-        return response;
     }
 
     @ExceptionHandler
@@ -84,8 +76,6 @@ public class ExceptionAdvice {
         log.error("# handle Exception", e);
         // TODO 로그를 기록하고, 관리자에게 알림을 줄 것.
 
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        return response;
+        return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
