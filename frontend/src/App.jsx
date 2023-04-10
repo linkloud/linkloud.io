@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import GlobalStyle from "./styles/GlobalStyle";
 import { LIGHT_THEME } from "./styles";
 import Header from "./components/layout/header";
@@ -11,11 +12,14 @@ const App = () => {
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
+
   return (
     <ThemeProvider theme={theme === "light" ? LIGHT_THEME : "TODO"}>
-      <GlobalStyle />
-      <Header></Header>
-      <Home></Home>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <GlobalStyle />
+        <Header></Header>
+        <Home></Home>
+      </GoogleOAuthProvider>
     </ThemeProvider>
   );
 };
