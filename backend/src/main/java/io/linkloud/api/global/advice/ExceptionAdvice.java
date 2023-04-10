@@ -44,6 +44,7 @@ public class ExceptionAdvice {
             .getStatus()));
     }
 
+    // url에 대해 지원하지 않는 http method 일 때 예외 처리
     @ExceptionHandler
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ErrorResponse handleHttpRequestMethodNotSupportedException(
@@ -52,6 +53,7 @@ public class ExceptionAdvice {
         return ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    // HTTP Body를 제대로 파싱하지 못했을 때 예외 처리
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableException(
@@ -61,6 +63,7 @@ public class ExceptionAdvice {
             "Required request body is missing");
     }
 
+    // 요청 시 쿼리 파라미터가 결여됐을 때 예외 처리
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMissingServletRequestParameterException(
@@ -70,11 +73,14 @@ public class ExceptionAdvice {
             e.getMessage());
     }
 
+    // 위에서 지정한 예외 외의 서버 로직 예외에 대한 예외 처리.
+    // 예상하지 못한 서버 예외
+    // 운영에 치명적일 수 있음.
+    // 반드시 로그를 기록하고, 관리자에게 알림을 줄 것.
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {
         log.error("# handle Exception", e);
-        // TODO 로그를 기록하고, 관리자에게 알림을 줄 것.
 
         return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
     }
