@@ -1,4 +1,4 @@
-import { Main, SearchContainer, ArticleSection } from "./style";
+import { SearchContainer, ArticleSection } from "./style";
 import Banner from "@/components/banner";
 import Search from "@/components/search";
 import ArticleCard from "@/components/article/articleCard";
@@ -48,7 +48,7 @@ const Home = () => {
   ];
 
   return (
-    <Main>
+    <>
       <Banner></Banner>
       <SearchContainer>
         <Search size="xl" styleType="default"></Search>
@@ -59,7 +59,7 @@ const Home = () => {
           <ArticleCard article={a} key={a.title}></ArticleCard>
         ))}
       </ArticleSection>
-    </Main>
+    </>
   );
 };
 

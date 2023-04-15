@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+
+// routes
+import { useRoutes } from "react-router-dom";
+import routes from "./routes";
+
+// style
 import GlobalStyle from "./styles/GlobalStyle";
 import { LIGHT_THEME } from "./styles";
-import Header from "./components/layout/header";
-import Home from "./pages/home";
 
 const App = () => {
+  const element = useRoutes(routes);
+
   // TODO: hooks
   const [theme, setTheme] = useState("light");
   const themeToggler = () => {
@@ -17,8 +23,7 @@ const App = () => {
     <ThemeProvider theme={theme === "light" ? LIGHT_THEME : "TODO"}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <GlobalStyle />
-        <Header></Header>
-        <Home></Home>
+        {element}
       </GoogleOAuthProvider>
     </ThemeProvider>
   );
