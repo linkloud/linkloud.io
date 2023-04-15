@@ -1,4 +1,4 @@
-package io.linkloud.api.global.security.auth.client.dto;
+package io.linkloud.api.global.security.auth.client.dto.google;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

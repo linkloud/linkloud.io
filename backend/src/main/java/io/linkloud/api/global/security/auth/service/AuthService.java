@@ -5,6 +5,7 @@ import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
+import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class AuthService {
         String accessToken = oAuthClient.getAccessToken(dto.getCode());
 
         // 2
+        OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
+
 
         // 3
 

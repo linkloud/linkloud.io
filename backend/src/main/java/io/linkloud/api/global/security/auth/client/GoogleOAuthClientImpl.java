@@ -5,11 +5,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.linkloud.api.global.exception.ExceptionCode;
 import io.linkloud.api.global.exception.LogicException;
-import io.linkloud.api.global.security.auth.client.dto.GoogleAccessToken;
+import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
+import io.linkloud.api.global.security.auth.client.dto.google.GoogleAccessToken;
+import io.linkloud.api.global.security.auth.client.dto.google.GoogleUserInfo;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -69,14 +72,44 @@ public class GoogleOAuthClientImpl implements OAuthClient {
         return convertGoogleAuthToken(responseBody).getAccessToken();
     }
 
-    /**
-     *  code,clientId,clientSecret 로 요청받은 구글 액세스토큰을 JSON -> 자바 객체로 변환
-     */
+    // code,clientId,clientSecret 로 요청받은 구글 액세스토큰을 JSON -> 자바 객체로 변환
     private GoogleAccessToken convertGoogleAuthToken(String responseBody) {
         try {
             return objectMapper.readValue(responseBody, GoogleAccessToken.class);
         } catch (JsonProcessingException e) {
             // TODO : 커스텀 예외 처리
+            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
+        }
+    }
+
+
+    @Override
+    public OAuthAttributes getUserInfo(String accessToken) {
+        String userInfoResponseBody = "";
+        try {
+            userInfoResponseBody = webClient.get()
+                .uri(GOOGLE_USERINFO_REQUEST_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(String.class)
+                .blockOptional()
+                .orElseThrow(() -> new IOException("구글 사용자 정보요청에 실패했습니다"));
+        } catch (IOException e) {
+            log.error("GoogleUserInfo 요청 중 예외 발생: " + e.getMessage());
+            // TODO : 커스텀 예외 처리
+            throw new RuntimeException("AccessToken 요청에 실패했습니다. 재시도해주세요.");
+        }
+        log.info("사용자 정보={}", userInfoResponseBody);
+        OAuthAttributes userInfo = new OAuthAttributes(
+            convertToGoogleUser(userInfoResponseBody));
+        return userInfo;
+    }
+
+    private GoogleUserInfo convertToGoogleUser(String body) {
+        try {
+            GoogleUserInfo googleUser = objectMapper.readValue(body, GoogleUserInfo.class);
+            return objectMapper.readValue(body, GoogleUserInfo.class);
+        } catch (JsonProcessingException e) {
             throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
         }
     }
