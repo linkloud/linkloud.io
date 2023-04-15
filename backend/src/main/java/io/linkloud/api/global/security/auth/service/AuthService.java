@@ -25,7 +25,7 @@ public class AuthService {
      * 사용자 인증하고 JWT 토큰 발급
      * 1. 인증 코드(code)를 이용해 access token 받기
      * 2. access token 을 이용해 사용자 정보 받기
-     * 3. DB에 사용자 정보 없으면 저장
+     * 3. DB에 사용자 정보 없으면 저장, 있으면 사용자 바로 리턴
      * 4. JWT 토큰 발급 후 반환
      */
     public AuthResponseDto authenticate(AuthRequestDto dto) {
@@ -36,10 +36,10 @@ public class AuthService {
         // 2
         OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
 
-
         // 3
+        Member member = memberService.registerIfNotExists(userInfo);
 
         // 4
-        return null;
+        return new AuthResponseDto(member);
     }
 }
