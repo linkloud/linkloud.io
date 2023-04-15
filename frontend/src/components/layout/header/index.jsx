@@ -1,5 +1,5 @@
 import { Wrap, HeaderContent, HeaderTitle } from "./style";
-import HeaderNav from "./nav";
+import HeaderNav from "./headerNav";
 import { LogoLabel } from "@/static/svg";
 
 const Header = () => {

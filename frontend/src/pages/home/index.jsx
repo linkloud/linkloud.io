@@ -1,7 +1,7 @@
 import { Main, SearchContainer, ArticleSection } from "./style";
 import Banner from "@/components/banner";
 import Search from "@/components/search";
-import ArticleCard from "@/components/article/card";
+import ArticleCard from "@/components/article/articleCard";
 
 const Home = () => {
   const fakeArticleList = [
