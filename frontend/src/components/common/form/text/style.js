@@ -6,8 +6,8 @@ const colorByStyleType = (styleType, theme) => {
       return theme.COLOR.ACCENT.HIGH;
     case "success":
       return theme.COLOR.SUCCESS.MEDIUM;
-    case "error":
-      return theme.COLOR.ERROR.MEDIUM;
+    case "warn":
+      return theme.COLOR.WARN.MEDIUM;
   }
 };
 

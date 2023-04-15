@@ -22,7 +22,7 @@ export const LIGHT_THEME = {
       MEDIUM: COLORS.SKY[300],
       LOW: COLORS.SKY[100],
     },
-    SUCCESS: {
+    SUC: {
       MEDIUM: COLORS.GREEN[600],
       LOW: COLORS.GREEN[100],
     },
@@ -30,11 +30,7 @@ export const LIGHT_THEME = {
       MEDIUM: COLORS.SKY[500],
       LOW: COLORS.SKY[100],
     },
-    WARNING: {
-      MEDIUM: COLORS.YELLOW[600],
-      LOW: COLORS.YELLOW[100],
-    },
-    ERROR: {
+    WARN: {
       MEDIUM: COLORS.RED[500],
       LOW: COLORS.RED[100],
     },
