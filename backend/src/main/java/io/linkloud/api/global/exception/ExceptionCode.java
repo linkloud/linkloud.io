@@ -9,7 +9,9 @@ public enum ExceptionCode {
     MEMBER_NOT_FOUND(404, "Member Not Found"),
     MEMBER_UNAUTHORIZED(401, "Member Unauthorized"),
     MEMBER_NOT_MATCH(403, "Member Not Matched"),
-    MEMBER_ALREADY_EXISTS(409, "Member Already Exist.");
+    MEMBER_ALREADY_EXISTS(409, "Member Already Exist."),
+    JSON_REQUEST_FAILED(400, "Json Request Failed.");
+
 
     @Getter
     private int status;
