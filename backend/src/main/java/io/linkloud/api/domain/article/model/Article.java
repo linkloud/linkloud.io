@@ -58,4 +58,9 @@ public class Article extends Auditable {
         this.bookmarks = bookmarks == null ? 0 : bookmarks;
     }
 
+    /** 조회수 변동 */
+    public void articleViewIncrease(Integer views) {
+        this.views = views;
+    }
+
 }
