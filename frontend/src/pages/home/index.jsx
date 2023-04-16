@@ -2,6 +2,7 @@ import { SearchContainer, ArticleSection } from "./style";
 import Banner from "@/components/banner";
 import Search from "@/components/search";
 import ArticleCard from "@/components/article/articleCard";
+import TagContainer from "@/components/tag/tagContainer";
 
 const HomePage = () => {
   const fakeArticleList = [
@@ -49,10 +50,11 @@ const HomePage = () => {
 
   return (
     <>
-      <Banner></Banner>
+      <Banner />
       <SearchContainer>
         <Search size="xl" styleType="default"></Search>
       </SearchContainer>
+      <TagContainer></TagContainer>
       <ArticleSection>
         <h1>링크 아티클 섹션</h1>
         {fakeArticleList.map((a) => (

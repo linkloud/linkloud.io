@@ -2,6 +2,8 @@ import styled, { css } from "styled-components";
 
 export const Container = styled.div`
   max-width: 588px;
+  margin-top: 16px;
+  margin-bottom: 40px;
 
   & nav {
     display: flex;
