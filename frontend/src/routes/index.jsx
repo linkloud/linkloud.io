@@ -1,12 +1,21 @@
 import Layout from "@/components/layout";
-import Home from "@/pages/home";
+import HomePage from "@/pages/home";
+import ArticleRegPage from "@/pages/article/articleReg";
 
 const routes = [
   {
     path: "",
     element: (
       <Layout>
-        <Home />
+        <HomePage />
+      </Layout>
+    ),
+  },
+  {
+    path: "/link/reg",
+    element: (
+      <Layout>
+        <ArticleRegPage />
       </Layout>
     ),
   },

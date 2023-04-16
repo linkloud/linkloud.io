@@ -3,7 +3,7 @@ import Banner from "@/components/banner";
 import Search from "@/components/search";
 import ArticleCard from "@/components/article/articleCard";
 
-const Home = () => {
+const HomePage = () => {
   const fakeArticleList = [
     {
       title: "이름1",
@@ -63,4 +63,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

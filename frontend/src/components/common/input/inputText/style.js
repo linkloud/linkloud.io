@@ -13,7 +13,6 @@ const colorByStyleType = (styleType, theme) => {
 
 export const Container = styled.div`
   position: relative;
-  margin: 20px;
 
   /* input */
   input {
@@ -52,7 +51,7 @@ export const Container = styled.div`
   /* input:focus styles */
   ${({ theme, styleType }) => css`
     input:focus + label {
-      top: -20px;
+      top: -12px;
       font-size: ${theme.FONT_SIZE.DESCRIPTION};
       color: ${colorByStyleType(styleType, theme)};
     }
