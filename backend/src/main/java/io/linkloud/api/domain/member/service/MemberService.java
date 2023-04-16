@@ -41,7 +41,6 @@ public class MemberService {
 
     private void validateDuplicatedEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
-            // TODO : 예외처리
             throw new LogicException(ExceptionCode.MEMBER_ALREADY_EXISTS);
         }
     }
