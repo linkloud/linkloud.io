@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +45,14 @@ public class ArticleController {
         ArticleResponseDto createdArticleDto = articleService.createArticle(articleRequestDto);
 
         return new ResponseEntity<>(createdArticleDto, HttpStatus.OK);
+    }
+
+    /** 아티클 수정 */
+    @PutMapping("{id}")
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
+        ArticleResponseDto updatedArticleDto = articleService.updateArticle(id, articleRequestDto);
+
+        return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
     }
 
 }

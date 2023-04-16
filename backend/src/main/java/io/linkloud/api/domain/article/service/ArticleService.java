@@ -44,4 +44,16 @@ public class ArticleService {
         return new ArticleResponseDto(createdArticle);
     }
 
+    /** 아티클 수정 */
+    @Transactional
+    public ArticleResponseDto updateArticle(Long id, ArticleRequestDto requestDto) {
+        Article updatedArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 없습니다."));   // 수정할 아티클 조회
+        updatedArticle.articleUpdate(
+            requestDto.getTitle(),
+            requestDto.getUrl(),
+            requestDto.getDescription());
+
+        return new ArticleResponseDto(updatedArticle);
+    }
+
 }
