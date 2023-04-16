@@ -77,7 +77,6 @@ public class GoogleOAuthClientImpl implements OAuthClient {
         try {
             return objectMapper.readValue(responseBody, GoogleAccessToken.class);
         } catch (JsonProcessingException e) {
-            // TODO : 커스텀 예외 처리
             throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
         }
     }
@@ -96,10 +95,9 @@ public class GoogleOAuthClientImpl implements OAuthClient {
                 .orElseThrow(() -> new IOException("구글 사용자 정보요청에 실패했습니다"));
         } catch (IOException e) {
             log.error("GoogleUserInfo 요청 중 예외 발생: " + e.getMessage());
-            // TODO : 커스텀 예외 처리
-            throw new RuntimeException("AccessToken 요청에 실패했습니다. 재시도해주세요.");
+            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
         }
-        log.info("사용자 정보={}", userInfoResponseBody);
+            log.info("사용자 정보={}", userInfoResponseBody);
         OAuthAttributes userInfo = new OAuthAttributes(
             convertToGoogleUser(userInfoResponseBody));
         return userInfo;
