@@ -1,6 +1,6 @@
 import { Container } from "./style";
 
-const FormText = ({ labelText, styleType = "default" }) => {
+const InputText = ({ labelText, styleType = "default" }) => {
   return (
     <Container styleType={styleType}>
       <input required type="text" id={labelText} placeholder={labelText} />
@@ -10,4 +10,4 @@ const FormText = ({ labelText, styleType = "default" }) => {
   );
 };
 
-export default FormText;
+export default InputText;
