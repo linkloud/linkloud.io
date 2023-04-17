@@ -48,10 +48,7 @@ public class ArticleService {
     @Transactional
     public ArticleResponseDto updateArticle(Long id, ArticleRequestDto requestDto) {
         Article updatedArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 없습니다."));   // 수정할 아티클 조회
-        updatedArticle.articleUpdate(
-            requestDto.getTitle(),
-            requestDto.getUrl(),
-            requestDto.getDescription());
+        updatedArticle.articleUpdate(requestDto);
 
         return new ArticleResponseDto(updatedArticle);
     }
