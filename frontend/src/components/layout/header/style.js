@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 
-export const Wrap = styled.header`
+export const Container = styled.header`
   position: sticky;
+  z-index: 1;
   top: 0;
   background-color: white;
   ${({ theme }) => css`

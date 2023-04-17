@@ -1,9 +1,10 @@
-import { Main, SearchContainer, ArticleSection } from "./style";
+import { SearchContainer, ArticleSection } from "./style";
 import Banner from "@/components/banner";
 import Search from "@/components/search";
-import ArticleCard from "@/components/article/card";
+import ArticleCard from "@/components/article/articleCard";
+import TagContainer from "@/components/tag/tagContainer";
 
-const Home = () => {
+const HomePage = () => {
   const fakeArticleList = [
     {
       title: "이름1",
@@ -48,19 +49,20 @@ const Home = () => {
   ];
 
   return (
-    <Main>
-      <Banner></Banner>
+    <>
+      <Banner />
       <SearchContainer>
         <Search size="xl" styleType="default"></Search>
       </SearchContainer>
+      <TagContainer></TagContainer>
       <ArticleSection>
         <h1>링크 아티클 섹션</h1>
         {fakeArticleList.map((a) => (
           <ArticleCard article={a} key={a.title}></ArticleCard>
         ))}
       </ArticleSection>
-    </Main>
+    </>
   );
 };
 
-export default Home;
+export default HomePage;

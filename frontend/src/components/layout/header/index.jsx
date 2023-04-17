@@ -1,5 +1,5 @@
-import { Wrap, HeaderContent, HeaderTitle } from "./style";
-import HeaderNav from "./nav";
+import { Container, HeaderContent, HeaderTitle } from "./style";
+import HeaderNav from "./headerNav";
 import { LogoLabel } from "@/static/svg";
 
 const Header = () => {
@@ -7,7 +7,7 @@ const Header = () => {
   const userRole = "GUEST";
 
   return (
-    <Wrap>
+    <Container>
       <HeaderContent>
         <HeaderTitle>
           linkloud
@@ -17,7 +17,7 @@ const Header = () => {
         </HeaderTitle>
         <HeaderNav role={userRole}></HeaderNav>
       </HeaderContent>
-    </Wrap>
+    </Container>
   );
 };
 
