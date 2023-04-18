@@ -7,40 +7,25 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.header}")
-    private String accessHeader;
+    private final JwtProperties jwtProperties;
 
-    /**
-     * 메모리 노출
-     * private SecretKey key =  Keys.secretKeyFor(SignatureAlgorithm.HS256); 로 변경
-     * */
-    @Deprecated
-    @Value("${jwt.secretKey}")
-
-    private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-    @Value("${jwt.accessTokenExpiration}")
-    private Long accessTokenExpiration;
-
-    @Value("${jwt.refreshTokenExpiration}")
-    private Long refreshTokenExpiration;
-
-    @Value("${jwt.refresh-header}")
-    private String refreshHeader;
-
-    private final String BEARER = "Bearer";
+    private final Key secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS256.getJcaName());
 
 
     /**
@@ -50,14 +35,14 @@ public class JwtProvider {
     public String generateAccessToken(Long memberID) {
         log.info("액세스토큰 생성");
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(accessTokenExpiration);
+        Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
 
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
             .claim("memberId",memberID)
             .setExpiration(Date.from(expiration))
-            .signWith(key, SignatureAlgorithm.HS256)
+            .signWith(secretKey)
             .compact();
     }
 
@@ -70,14 +55,14 @@ public class JwtProvider {
         log.info("리프레시 토큰 생성");
         UUID uuid = UUID.randomUUID();
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(refreshTokenExpiration);
+        Instant expiration = now.plusSeconds(jwtProperties.getRefreshTokenExpiration());
 
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
             .claim("refreshTokenId", uuid.toString())
             .setExpiration(Date.from(expiration))
-            .signWith(key, SignatureAlgorithm.HS256)
+            .signWith(secretKey)
             .compact();
     }
 
@@ -91,7 +76,7 @@ public class JwtProvider {
          try{
              log.info("액세스 토큰 검증로직 시작");
              Jws<Claims> claimsJws = Jwts.parserBuilder()
-                 .setSigningKey(key)
+                 .setSigningKey(secretKey)
                  .build()
                  .parseClaimsJws(accessToken);
              return claimsJws.getBody().get("memberId", Long.class);
