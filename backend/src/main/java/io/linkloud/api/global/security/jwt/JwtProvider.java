@@ -6,16 +6,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -26,13 +23,15 @@ public class JwtProvider {
     private final JwtProperties jwtProperties;
 
     private final Key secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    private static final String MEMBER_ID_CLAIM = "memberId";
+    private static final String REFRESH_TOKEN_ID_CLAIM = "refreshTokenId";
 
-
+    // TODO : 권한 넘겨야 됨
     /**
      * AccessToken 생성
-     * memberID 기반
+     * memberId 기반
      */
-    public String generateAccessToken(Long memberID) {
+    public String generateAccessToken(Long memberId) {
         log.info("액세스토큰 생성");
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
@@ -40,7 +39,7 @@ public class JwtProvider {
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
-            .claim("memberId",memberID)
+            .claim(MEMBER_ID_CLAIM,memberId)
             .setExpiration(Date.from(expiration))
             .signWith(secretKey)
             .compact();
@@ -54,14 +53,14 @@ public class JwtProvider {
      */
     public String generateRefreshToken() {
         log.info("리프레시 토큰 생성");
-        UUID uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID(); // TODO : Member 테이블 refreshToken
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getRefreshTokenExpiration());
 
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
-            .claim("refreshTokenId", uuid.toString())
+            .claim(REFRESH_TOKEN_ID_CLAIM, uuid.toString())
             .setExpiration(Date.from(expiration))
             .signWith(secretKey)
             .compact();
