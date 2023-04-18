@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,9 @@ public class JwtProvider {
     private final String BEARER = "Bearer";
 
 
-
+    /**
+     * memberID 기준으로 AccessToken 을 생성
+     */
     public String generateAccessToken(Long memberID) {
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(accessTokenExpiration);
@@ -53,5 +56,25 @@ public class JwtProvider {
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
+
+    /**
+     * AccessToken 을 생성
+     * 보안상 사용자의 memberID 를 이용하지않고,
+     * 랜덤 값인 UUID 를 이용해 claim 으로 저장
+     */
+    public String generateRefreshToken() {
+        UUID uuid = UUID.randomUUID();
+        Instant now = Instant.now();
+        Instant expiration = now.plusSeconds(refreshTokenExpiration);
+
+        return Jwts.builder()
+            .setIssuer("linkloud")
+            .setIssuedAt(Date.from(now))
+            .claim("refreshTokenId", uuid.toString())
+            .setExpiration(Date.from(expiration))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
+    }
+
 
 }
