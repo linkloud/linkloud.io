@@ -33,7 +33,7 @@ public class ArticleRequestDto {
     /** Dto -> Entity */
     public Article toAriticleEntity() {
         Article article = Article.builder()
-            .member_id(member_id)
+            .member(member_id)
             .title(title)
             .url(url)
             .description(description)

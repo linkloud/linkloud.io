@@ -36,7 +36,7 @@ public class ArticleResponseDto {
     /** Entity -> Dto */
     public ArticleResponseDto(Article article) {
         this.id = article.getId();
-        this.member_id = article.getMember_id().getId();    // article.getMember_id()에서 Member형의 member_id를 가져온 후, Member 아티클의 getter를 이용.
+        this.member_id = article.getMember().getId();    // article.getMember_id()에서 Member형의 member_id를 가져온 후, Member 아티클의 getter를 이용.
         this.title = article.getTitle();
         this.url = article.getUrl();
         this.description = article.getDescription();

@@ -29,7 +29,7 @@ public class Article extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member_id;
+    private Member member;
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -49,9 +49,9 @@ public class Article extends Auditable {
 
     /** 생성자 */
     @Builder
-    public Article(Long id, Member member_id, String title, String url, String description, Integer views, Integer bookmarks) {
+    public Article(Long id, Member member, String title, String url, String description, Integer views, Integer bookmarks) {
         this.id = id;
-        this.member_id = member_id;
+        this.member = member;
         this.title = title;
         this.url = url;
         this.description = description;
