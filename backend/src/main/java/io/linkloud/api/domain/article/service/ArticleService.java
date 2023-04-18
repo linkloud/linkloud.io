@@ -2,9 +2,13 @@ package io.linkloud.api.domain.article.service;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
+import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.global.exception.ExceptionCode;
+import io.linkloud.api.global.exception.LogicException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -41,16 +45,17 @@ public class ArticleService {
     /** 아티클 생성 */
     @Transactional
     public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
-        Article createdArticle = articleRepository.save(requestDto.toAriticleEntity(memberRepository));  // requestDto를 엔티티로 변환.
+        Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Article createdArticle = articleRepository.save(requestDto.toArticleEntity(foundedMember));  // requestDto를 엔티티로 변환.
 
         return new ArticleResponseDto(createdArticle);
     }
 
     /** 아티클 수정 */
     @Transactional
-    public ArticleResponseDto updateArticle(Long id, ArticleRequestDto requestDto) {
+    public ArticleResponseDto updateArticle(Long id, ArticleUpdateDto updateDto) {
         Article updatedArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 없습니다."));   // 수정할 아티클 조회
-        updatedArticle.articleUpdate(requestDto);
+        updatedArticle.articleUpdate(updateDto);
 
         return new ArticleResponseDto(updatedArticle);
     }
