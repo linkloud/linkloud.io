@@ -50,6 +50,7 @@ public class JwtProvider {
      * RefreshToken 생성
      * 보안상 사용자의 memberID 를 이용하지않고,
      * 랜덤 값인 UUID 를 이용해 claim 으로 저장
+     * @return refreshToken
      */
     public String generateRefreshToken() {
         log.info("리프레시 토큰 생성");
@@ -84,7 +85,27 @@ public class JwtProvider {
              log.error("Invalid JWT token: {}", e.getMessage());
              throw new JwtException("Invalid JWT token", e);
          }
-     }
+    }
+
+    /**
+     * RefreshToken 검증하고, 복호화한다음에 refreshTokenId 를 리턴한다
+     * @param refreshToken JWT 토큰
+     * @return refreshTokenId
+     * @throws JwtException 검증 실패시 예외 발생
+     */
+    public String validateRefreshToken(String refreshToken) throws JwtException {
+        try {
+            log.info("리프레시 토큰 검증로직 시작");
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(refreshToken);
+            return claimsJws.getBody().get("refreshTokenId", String.class);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+            throw new JwtException("Invalid JWT token", e);
+        }
+    }
 
 
 }
