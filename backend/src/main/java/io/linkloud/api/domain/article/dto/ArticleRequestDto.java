@@ -2,7 +2,6 @@ package io.linkloud.api.domain.article.dto;
 
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.member.model.Member;
-import io.linkloud.api.domain.member.repository.MemberRepository;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,10 +31,7 @@ public class ArticleRequestDto {
 
 
     /** Dto -> Entity */
-    public Article toAriticleEntity(MemberRepository memberRepository) {
-
-        Member member = memberRepository.findById(member_id)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+    public Article toArticleEntity(Member member) {
 
         Article article = Article.builder()
             .member(member)
