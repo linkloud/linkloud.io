@@ -79,7 +79,7 @@ public class JwtProvider {
                  .setSigningKey(secretKey)
                  .build()
                  .parseClaimsJws(accessToken);
-             return claimsJws.getBody().get("memberId", Long.class);
+             return claimsJws.getBody().get(MEMBER_ID_CLAIM, Long.class);
          } catch (JwtException | IllegalArgumentException e) {
              log.error("Invalid JWT token: {}", e.getMessage());
              throw new JwtException("Invalid JWT token", e);
@@ -99,7 +99,7 @@ public class JwtProvider {
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(refreshToken);
-            return claimsJws.getBody().get("refreshTokenId", String.class);
+            return claimsJws.getBody().get(REFRESH_TOKEN_ID_CLAIM, String.class);
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
             throw new JwtException("Invalid JWT token", e);
