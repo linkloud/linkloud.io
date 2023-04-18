@@ -43,6 +43,7 @@ public class ArticleService {
     }
 
     /** 아티클 생성 */
+    /** TODO: 게시글 생성하려면 가입 후 3일 경과해야함. 가입날과 오늘날짜 비교하는 private void 메소드 작성. 예외처리로 판단. */
     @Transactional
     public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
         Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
