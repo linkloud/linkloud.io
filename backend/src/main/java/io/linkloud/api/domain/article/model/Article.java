@@ -1,6 +1,5 @@
 package io.linkloud.api.domain.article.model;
 
-import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.global.audit.Auditable;

@@ -1,7 +1,5 @@
 package io.linkloud.api.domain.article.dto;
 
-import io.linkloud.api.domain.article.model.Article;
-import io.linkloud.api.domain.member.model.Member;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
