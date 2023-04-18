@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.article.model;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDto;
+import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.global.audit.Auditable;
 import jakarta.persistence.Column;
@@ -60,10 +61,10 @@ public class Article extends Auditable {
     }
 
     /** 아티클 수정 */
-    public void articleUpdate(ArticleRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.url = requestDto.getUrl();
-        this.description = requestDto.getDescription();
+    public void articleUpdate(ArticleUpdateDto updateDto) {
+        this.title = updateDto.getTitle();
+        this.url = updateDto.getUrl();
+        this.description = updateDto.getDescription();
     }
 
     /** 조회수 변동 */
