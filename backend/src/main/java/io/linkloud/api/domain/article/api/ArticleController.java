@@ -2,6 +2,7 @@ package io.linkloud.api.domain.article.api;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.service.ArticleService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -10,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,9 +50,11 @@ public class ArticleController {
     }
 
     /** 아티클 수정 */
-    @PutMapping("{id}")
-    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto updatedArticleDto = articleService.updateArticle(id, articleRequestDto);
+    // PutMapping   : 해당 리소스를 대체하는 메소드
+    // PatchMapping : 리소스의 일부를 바꾸는 메소드
+    @PatchMapping("{id}")
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
+        ArticleResponseDto updatedArticleDto = articleService.updateArticle(id, articleUpdateDto);
 
         return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
     }
