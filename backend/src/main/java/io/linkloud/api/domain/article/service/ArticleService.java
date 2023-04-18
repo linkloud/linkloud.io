@@ -4,6 +4,7 @@ import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
+import io.linkloud.api.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final MemberRepository memberRepository;
 
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
@@ -39,7 +41,7 @@ public class ArticleService {
     /** 아티클 생성 */
     @Transactional
     public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
-        Article createdArticle = articleRepository.save(requestDto.toAriticleEntity());  // requestDto를 엔티티로 변환.
+        Article createdArticle = articleRepository.save(requestDto.toAriticleEntity(memberRepository));  // requestDto를 엔티티로 변환.
 
         return new ArticleResponseDto(createdArticle);
     }
