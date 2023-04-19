@@ -1,6 +1,6 @@
 import { SearchContainer, ArticleSection } from "./style";
 import Banner from "@/components/banner";
-import Search from "@/components/search";
+import Search from "@/components/search/searchContainer";
 import ArticleCard from "@/components/article/articleCard";
 import TagContainer from "@/components/tag/tagContainer";
 
