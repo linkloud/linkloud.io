@@ -16,15 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
-    private final Key secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    //    private final Key secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    private final Key secretKey;
     private static final String MEMBER_ID_CLAIM = "memberId";
     private static final String REFRESH_TOKEN_ID_CLAIM = "refreshTokenId";
+
+    public JwtProvider(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+        this.secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    }
 
     // TODO : 권한 넘겨야 됨
     /**
