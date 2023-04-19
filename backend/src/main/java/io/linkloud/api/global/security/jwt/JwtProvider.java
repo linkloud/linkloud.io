@@ -6,8 +6,11 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.security.Key;
+import java.security.SignatureException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -86,11 +89,25 @@ public class JwtProvider {
                  .build()
                  .parseClaimsJws(accessToken);
              return claimsJws.getBody().get(MEMBER_ID_CLAIM, Long.class);
-         } catch (JwtException | IllegalArgumentException e) {
-             log.error("Invalid JWT token: {}", e.getMessage());
-             throw new JwtException("Invalid JWT token", e);
+
+         } catch (ExpiredJwtException e) {
+             log.error("만료된 JWT 토큰입니다: {}", e.getMessage());
+             throw new JwtException("만료된 JWT 토큰입니다", e);
+         } catch (UnsupportedJwtException e) {
+             log.error("지원되지 않는 JWT 토큰입니다: {}", e.getMessage());
+             throw new JwtException("지원되지 않는 JWT 토큰입니다", e);
+         } catch (MalformedJwtException e) {
+             log.error("잘못된 형식의 JWT 토큰입니다: {}", e.getMessage());
+             throw new JwtException("잘못된 형식의 JWT 토큰입니다", e);
+         } catch (IllegalArgumentException e) {
+             log.error("JWT 토큰이 null이거나 빈 문자열입니다: {}", e.getMessage());
+             throw new JwtException("JWT 토큰이 null이거나 빈 문자열입니다", e);
          }
-    }
+     }
+
+
+
+
 
     /**
      * RefreshToken 검증하고, 복호화한다음에 refreshTokenId 를 리턴한다
@@ -106,9 +123,18 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(refreshToken);
             return claimsJws.getBody().get(REFRESH_TOKEN_ID_CLAIM, String.class);
-        } catch (JwtException | IllegalArgumentException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
-            throw new JwtException("Invalid JWT token", e);
+        } catch (ExpiredJwtException e) {
+            log.error("만료된 JWT 토큰입니다: {}", e.getMessage());
+            throw new JwtException("만료된 JWT 토큰입니다", e);
+        } catch (UnsupportedJwtException e) {
+            log.error("지원되지 않는 JWT 토큰입니다: {}", e.getMessage());
+            throw new JwtException("지원되지 않는 JWT 토큰입니다", e);
+        } catch (MalformedJwtException e) {
+            log.error("잘못된 형식의 JWT 토큰입니다: {}", e.getMessage());
+            throw new JwtException("잘못된 형식의 JWT 토큰입니다", e);
+        } catch (IllegalArgumentException e) {
+            log.error("JWT 토큰이 null이거나 비어있습니다: {}", e.getMessage());
+            throw new JwtException("JWT 토큰이 null이거나 비어있습니다", e);
         }
     }
 
