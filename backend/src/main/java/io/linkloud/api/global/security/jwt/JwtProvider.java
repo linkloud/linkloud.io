@@ -2,6 +2,7 @@ package io.linkloud.api.global.security.jwt;
 
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -108,6 +109,24 @@ public class JwtProvider {
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
             throw new JwtException("Invalid JWT token", e);
+        }
+    }
+
+
+    /**
+     * accessToken 추출
+     * @param accessToken
+     * @return
+     */
+    public Claims getClaims(String accessToken) {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+        } catch (ExpiredJwtException e) { // Access Token
+            return e.getClaims();
         }
     }
 
