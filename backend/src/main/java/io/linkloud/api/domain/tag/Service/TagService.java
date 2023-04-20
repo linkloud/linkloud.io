@@ -32,7 +32,7 @@ public class TagService {
     }
 
     // 임시용임
-    // TODO : 아티클 기능 완성시 아티클 생성시에 로직 추가 예정.
+    // TODO : 아티클 기능 완성시 아티클 생성로직으로 편입될 예정.
     public void addArticleTag(ArticleTagDto.Post post) {
         // 태그들이 비어있을 경우 예외 발생.
         if(post.getTags().isEmpty()) {
