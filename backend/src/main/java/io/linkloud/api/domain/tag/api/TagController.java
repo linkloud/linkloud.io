@@ -26,7 +26,8 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // Article 임시 생성 api
+    // Article-Tag 임시 생성 api\
+    // TODO: Article 기능 완성되면 통합해야 함.
     @PostMapping("/article-tag")
     public ResponseEntity<?> postArticleTag() {
         return new ResponseEntity<>(HttpStatus.CREATED);
