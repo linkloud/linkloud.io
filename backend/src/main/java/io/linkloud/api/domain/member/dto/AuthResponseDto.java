@@ -8,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthResponseDto {
 
-    private Long id;
+    private final String accessToken;
+    private final String refreshToken;
+    private final String tokenType;
 
-    public AuthResponseDto(Member member) {
-        this.id = member.getId();
-    }
+
 
 
 }

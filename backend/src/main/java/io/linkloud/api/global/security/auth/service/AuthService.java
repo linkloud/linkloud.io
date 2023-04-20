@@ -4,8 +4,10 @@ import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
+import io.linkloud.api.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,10 @@ public class AuthService {
     private final Map<String, OAuthClient> oAuthClients;
     private final MemberService memberService;
 
+    private final JwtProvider jwtProvider;
+
+    private static final String BEARER = "Bearer";
+
 
     /**
      * 사용자 인증하고 JWT 토큰 발급
@@ -31,15 +37,18 @@ public class AuthService {
     public AuthResponseDto authenticate(AuthRequestDto dto) {
         OAuthClient oAuthClient = oAuthClients.get(dto.getSocialType() + "OAuthClientImpl");
         // 1
-        String accessToken = oAuthClient.getAccessToken(dto.getCode());
+        String getOAuthAccessToken = oAuthClient.getAccessToken(dto.getCode());
 
         // 2
-        OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
+        OAuthAttributes userInfo = oAuthClient.getUserInfo(getOAuthAccessToken);
 
         // 3
         Member member = memberService.registerIfNotExists(userInfo);
 
         // 4
-        return new AuthResponseDto(member);
+        String jwtAccessToken = jwtProvider.generateAccessToken(member.getId());
+        String jwtRefreshToken = jwtProvider.generateRefreshToken();
+
+        return new AuthResponseDto(jwtAccessToken,jwtRefreshToken,BEARER);
     }
 }
