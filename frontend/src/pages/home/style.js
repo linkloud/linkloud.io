@@ -6,7 +6,23 @@ export const SearchContainer = styled.div`
   transform: translateY(-50%);
 `;
 
-export const ArticleSection = styled.section`
+export const ArticleOrder = styled.div`
+  width: 100%;
+  max-width: 792px;
+  margin-top: 20px;
+  margin-bottom: 32px;
+
+  ul {
+    display: flex;
+  }
+
+  li {
+    display: inline-block;
+    margin-right: 4px;
+  }
+`;
+
+export const ArticleCardList = styled.section`
   width: 100%;
   max-width: 792px;
 
