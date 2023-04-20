@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.tag.api;
 
 import io.linkloud.api.domain.tag.Service.TagService;
+import io.linkloud.api.domain.tag.dto.ArticleTagDto;
 import io.linkloud.api.domain.tag.dto.TagDto;
 import io.linkloud.api.domain.tag.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,8 @@ public class TagController {
     // Article-Tag 임시 생성 api\
     // TODO: Article 기능 완성되면 통합해야 함.
     @PostMapping("/article-tag")
-    public ResponseEntity<?> postArticleTag() {
+    public ResponseEntity<?> postArticleTag(@RequestBody ArticleTagDto.Post post) {
+        tagService.addArticleTag(post);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
