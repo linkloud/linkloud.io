@@ -26,7 +26,7 @@ public class TagService {
 
     public void addTag(Tag tag) {
         verifyExistTag(tag.getName());
-        Tag addedTag = tagRepository.save(tag);
+        tagRepository.save(tag);
 
         log.info("Tag 생성 완료.");
     }
