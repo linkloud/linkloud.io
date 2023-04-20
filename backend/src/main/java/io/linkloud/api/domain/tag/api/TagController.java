@@ -30,7 +30,7 @@ public class TagController {
     // Article-Tag 임시 생성 api\
     // TODO: Article 기능 완성되면 통합해야 함.
     @PostMapping("/article-tag")
-    public ResponseEntity<?> postArticleTag(@RequestBody ArticleTagDto.Post post) {
+    public ResponseEntity<?> createArticleTag(@RequestBody ArticleTagDto.Post post) {
         tagService.addArticleTag(post);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
