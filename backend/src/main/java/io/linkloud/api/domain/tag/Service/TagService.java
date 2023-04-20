@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -57,7 +61,17 @@ public class TagService {
         log.info("아티클에 태그 추가.");
     }
 
-    public void fetchTags() {}
+    public Page<Tag> fetchTags(int page, String sort) {
+
+        // 이름순은 오름차순.
+        Sort.Direction sd = Direction.DESC;
+        if(sort.equals("name")) {
+            sd = Direction.ASC;
+        }
+
+        PageRequest pageable = PageRequest.of(page - 1, 20, Sort.by(sd, sort));
+        return tagRepository.findAll(pageable);
+    }
 
     public void fetchTagListBySearch() {}
 
