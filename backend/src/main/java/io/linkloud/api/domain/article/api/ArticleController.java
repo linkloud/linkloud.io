@@ -4,6 +4,7 @@ import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.service.ArticleService;
+import io.linkloud.api.global.common.SingleDataResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,10 @@ public class ArticleController {
 
     /** 아티클 한 개 조회 */
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleResponseDto> getOneArticle(@PathVariable @Valid Long id) {
+    public SingleDataResponse<ArticleResponseDto> getOneArticle(@PathVariable @Valid Long id) {
         ArticleResponseDto getOneArticleDto = articleService.getArticleById(id);
 
-        return new ResponseEntity<>(getOneArticleDto, HttpStatus.OK);
+        return new SingleDataResponse<>(getOneArticleDto);
     }
 
     /** 아티클 작성 */
