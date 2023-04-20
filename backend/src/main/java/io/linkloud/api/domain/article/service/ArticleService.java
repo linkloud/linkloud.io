@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.linkloud.api.global.exception.ExceptionCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
@@ -36,7 +38,7 @@ public class ArticleService {
     /** 아티클 한 개 반환 */
     @Transactional
     public ArticleResponseDto getArticleById(Long id) {
-        Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 없습니다."));
+        Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));
         foundedArticle.articleViewIncrease(foundedArticle.getViews() + 1);  // 조회수 증가
 
         return new ArticleResponseDto(foundedArticle);
@@ -55,7 +57,7 @@ public class ArticleService {
     /** 아티클 수정 */
     @Transactional
     public ArticleResponseDto updateArticle(Long id, ArticleUpdateDto updateDto) {
-        Article updatedArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 없습니다."));   // 수정할 아티클 조회
+        Article updatedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));   // 수정할 아티클 조회
         updatedArticle.articleUpdate(updateDto);
 
         return new ArticleResponseDto(updatedArticle);
@@ -64,7 +66,7 @@ public class ArticleService {
     /** 아티클 삭제 */
     @Transactional
     public void deleteArticle(Long id) {
-        Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 없습니다."));
+        Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));
         articleRepository.delete(foundedArticle);
     }
 
