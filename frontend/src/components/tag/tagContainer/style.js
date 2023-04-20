@@ -30,7 +30,7 @@ export const Container = styled.div`
 
     ${({ theme }) => css`
       color: ${theme.COLOR.TEXT.MEDIUM};
-      font-size: ${theme.FONT_SIZE.CAPTION};
+      font-size: ${theme.FONT_SIZE.DESCRIPTION};
 
       & a {
         display: flex;
