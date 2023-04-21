@@ -1,6 +1,6 @@
 import { GnbUl, Nav } from "./style";
 import Button from "@/components/common/button";
-import LoginModalContainer from "@/components/auth/loginModalContainer";
+import LoginModalContainer from "@/container/LoginModalContainer";
 
 import { useModalActions, useLoginModalState } from "@/stores/useModalStore";
 

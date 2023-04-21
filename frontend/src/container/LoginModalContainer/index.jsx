@@ -1,5 +1,5 @@
 import { Title, SocialLoginContainer } from "./style";
-import SocialList from "../socialList";
+import SocialList from "@/components/auth/SocialList";
 import Modal from "@/components/common/modal";
 
 const LoginModalContainer = ({ isOpened, onCloseLoginModal }) => {

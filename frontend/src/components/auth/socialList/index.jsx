@@ -1,5 +1,5 @@
 import { Container } from "./style";
-import GoogleLoginButton from "../googleLoginButton";
+import GoogleLoginButton from "../GoogleLoginButton";
 
 const SocialList = () => {
   return (
