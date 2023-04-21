@@ -1,9 +1,9 @@
 import { Container } from "./style";
-import Tag from "..";
+import Tag from "../TagItem";
 import Anchor from "@/components/common/anchor";
 import { ArrowRightIcon } from "@/static/svg";
 
-const TagContainer = () => {
+const TagItemList = () => {
   const fakeTags = [
     "#무료",
     "#스프링",
@@ -35,4 +35,4 @@ const TagContainer = () => {
   );
 };
 
-export default TagContainer;
+export default TagItemList;

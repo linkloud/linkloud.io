@@ -1,9 +1,9 @@
 import { SearchContainer, ArticleOrder, ArticleCardList } from "./style";
 import Banner from "@/components/banner";
-import Search from "@/components/search/searchContainer";
-import ArticleCard from "@/components/article/articleCard";
-import TagContainer from "@/components/tag/tagContainer";
-import AnchorBottomLine from "@/components/common/anchor/anchorBottomLine";
+import Search from "@/components/search";
+import ArticleCard from "@/components/article/ArticleCard";
+import TagContainer from "@/components/tag/TagItemList";
+import AnchorBottomLine from "@/components/common/anchor/AnchorBottomLine";
 
 const HomePage = () => {
   const fakeArticleList = [

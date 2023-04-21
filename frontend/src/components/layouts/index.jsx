@@ -1,4 +1,4 @@
-import Header from "./header";
+import Header from "./Header";
 import { Main } from "./style";
 
 const Layout = ({ children }) => {

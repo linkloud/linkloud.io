@@ -5,9 +5,9 @@ import {
   TagRequestAction,
   TagCardList,
 } from "./style";
-import TagRequestModal from "@/components/tag/tagRequestModal";
-import TagOrderList from "@/components/tag/tagOrderList";
-import TagCard from "@/components/tag/tagCard";
+import TagRequestModal from "@/components/tag/TagRequestModal";
+import TagOrderList from "@/components/tag/TagOrderList";
+import TagCard from "@/components/tag/TagCard";
 
 import {
   useRequestTagModalState,

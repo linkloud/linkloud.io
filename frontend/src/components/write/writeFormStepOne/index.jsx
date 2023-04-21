@@ -1,4 +1,4 @@
-import InputText from "@/components/common/input/inputText";
+import InputText from "@/components/common/input/InputText";
 import { FlexColumn } from "@/styles";
 
 const WriteFormStepOne = () => {

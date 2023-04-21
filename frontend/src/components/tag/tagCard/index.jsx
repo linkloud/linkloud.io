@@ -1,5 +1,5 @@
 import { Container } from "./style";
-import Tag from "..";
+import Tag from "../TagItem";
 
 const TagCard = ({ tag }) => {
   return (

@@ -1,5 +1,5 @@
 import { Container } from "./style";
-import LabelCircle from "@/components/common/label/labelCircle";
+import LabelCircle from "@/components/common/label/LabelCircle";
 import { CheckMarkIcon } from "@/static/svg";
 
 const WriteProgress = ({ state, stepNum, content }) => {

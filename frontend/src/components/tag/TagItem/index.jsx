@@ -1,4 +1,4 @@
-import { Container } from "./style";
+import { Container } from "../TagItem/style";
 
 const Tag = ({ children }) => {
   return <Container href={`/tagged/TODO`}>{children}</Container>;

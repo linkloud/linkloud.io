@@ -1,6 +1,6 @@
 import { Title, Description } from "./style";
 import Modal from "@/components/common/modal";
-import InputText from "@/components/common/input/inputText";
+import InputText from "@/components/common/input/InputText";
 import Button from "@/components/common/button";
 import { FlexRow } from "@/styles";
 

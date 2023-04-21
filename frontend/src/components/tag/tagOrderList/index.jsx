@@ -1,5 +1,5 @@
 import { TagOrder } from "./style";
-import AnchorBottomLine from "@/components/common/anchor/anchorBottomLine";
+import AnchorBottomLine from "@/components/common/anchor/AnchorBottomLine";
 
 const TagOrderList = () => {
   const orderList = [
