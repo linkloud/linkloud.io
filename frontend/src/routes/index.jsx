@@ -1,6 +1,7 @@
-import Layout from "@/components/layout";
+import Layout from "@/components/layouts";
 import HomePage from "@/pages/home";
-import ArticleRegPage from "@/pages/article/articleReg";
+import ArticleRegPage from "@/pages/article/ArticleReg";
+import TagsPage from "@/pages/tags";
 
 const routes = [
   {
@@ -16,6 +17,14 @@ const routes = [
     element: (
       <Layout>
         <ArticleRegPage />
+      </Layout>
+    ),
+  },
+  {
+    path: "/tags",
+    element: (
+      <Layout>
+        <TagsPage />
       </Layout>
     ),
   },

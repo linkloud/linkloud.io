@@ -43,6 +43,10 @@ export const Container = styled.div`
   & label {
     display: none;
   }
+  /* 부모 요소 또는 그 이상 깊이의 하위 요소 중 하나가 포커스를 가지고 있을 때 해당 요소를 선택 */
+  &:focus-within > form + div {
+    display: block;
+  }
 
   ${({ theme }) => css`
     & svg {

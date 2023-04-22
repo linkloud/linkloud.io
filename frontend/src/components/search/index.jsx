@@ -1,4 +1,5 @@
 import { Container, Input } from "./style";
+import SearchOptionPopup from "./SearchOptionPopup";
 import { SearchIcon } from "@/static/svg";
 
 const Search = ({ size = "md", styleType = "default" }) => {
@@ -15,6 +16,7 @@ const Search = ({ size = "md", styleType = "default" }) => {
           type="search"
         ></Input>
       </form>
+      <SearchOptionPopup></SearchOptionPopup>
     </Container>
   );
 };

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container } from "./style";
-import WriteProgressContainer from "../writeProgressContainer";
-import WriteFormContainer from "../writeFormContainer";
+import WriteProgressContainer from "../WriteProgressContainer";
+import WriteFormContainer from "../WriteFormContainer";
 
 const WriteContainer = () => {
   // 작성 단계
@@ -36,7 +36,7 @@ const WriteContainer = () => {
 
   return (
     <Container>
-      <h1>링크 아티클 등록 영역</h1>
+      <h1>링크 아티클을 등록</h1>
       <WriteProgressContainer step={step} />
       <WriteFormContainer
         step={step}

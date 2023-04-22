@@ -1,7 +1,7 @@
 import { Container } from "./style";
-import WriteFormStepOne from "../writeFormStepOne";
-import WriteFormStepTwo from "../writeFormStepTwo";
-import WriteFormStepThree from "../writeFormStepThree";
+import WriteFormStepOne from "@/components/write/WriteFormStepOne";
+import WriteFormStepTwo from "@/components/write/WriteFormStepTwo";
+import WriteFormStepThree from "@/components/write/WriteFormStepThree";
 import Button from "@/components/common/button";
 import { FlexRow } from "@/styles";
 

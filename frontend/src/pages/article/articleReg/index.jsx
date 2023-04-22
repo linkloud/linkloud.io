@@ -1,4 +1,4 @@
-import WriteContainer from "@/components/write/writeContainer";
+import WriteContainer from "@/container/WriteContainer";
 
 const ArticleRegPage = () => {
   return <WriteContainer />;

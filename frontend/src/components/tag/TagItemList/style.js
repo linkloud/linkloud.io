@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 export const Container = styled.div`
   max-width: 588px;
   margin-top: 16px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 
   & nav {
     display: flex;
@@ -30,7 +30,7 @@ export const Container = styled.div`
 
     ${({ theme }) => css`
       color: ${theme.COLOR.TEXT.MEDIUM};
-      font-size: ${theme.FONT_SIZE.CAPTION};
+      font-size: ${theme.FONT_SIZE.DESCRIPTION};
 
       & a {
         display: flex;

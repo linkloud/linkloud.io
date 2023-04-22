@@ -1,6 +1,6 @@
 import { Container } from "./style";
-import WriteProgress from "../writeProgress";
-import WriteProgressSepoaratorBar from "../writeProgressSepoaratorBar";
+import WriteProgress from "@/components/write/WriteProgress";
+import WriteProgressSepoaratorBar from "@/components/write/WriteProgressSepoaratorBar";
 
 const WriteProgressContainer = ({ step }) => {
   let firstState;
