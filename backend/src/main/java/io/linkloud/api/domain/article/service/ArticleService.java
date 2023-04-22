@@ -12,6 +12,10 @@ import io.linkloud.api.global.exception.LogicException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +39,21 @@ public class ArticleService {
         return articleDtoList;
     }
 
+    /** 페이지 정보 반환 */
+    @Transactional
+    public Page<ArticleResponseDto> getPage(){
+        Page page = new PageImpl(
+            /* 객체를 담고 있는 리스트
+             * 페이지 표현 정보 : 0 페이지에서 10개씩 데이터를 가져옴, createdAt 필드를 기준으로 내림차순 정렬
+             * 전체 데이터(아티클)의 개수 */
+            articleRepository.findAll(),
+            PageRequest.of(0, 10, Sort.by("createdAt").descending()),
+            articleRepository.findAll().size());
+
+        return page;
+    }
+
+
     /** 아티클 한 개 반환 */
     @Transactional
     public ArticleResponseDto getArticleById(Long id) {
@@ -45,7 +64,6 @@ public class ArticleService {
     }
 
     /** 아티클 생성 */
-    /** TODO: 게시글 생성하려면 가입 후 3일 경과해야함. 가입날과 오늘날짜 비교하는 private void 메소드 작성. 예외처리로 판단. */
     @Transactional
     public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
         Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));

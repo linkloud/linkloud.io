@@ -10,9 +10,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,13 +32,7 @@ public class ArticleController {
     @GetMapping
     public MultiDataResponse getAllArticle() {
         List<ArticleResponseDto> getAllArticleDto = articleService.getAllArticle();
-        Page<ArticleResponseDto> page = new PageImpl<>(
-            /* 객체를 담고 있는 리스트
-             * 페이지 표현 정보 : 0 페이지에서 10개씩 데이터를 가져옴, createdAt 필드를 기준으로 내림차순 정렬
-             * 전체 데이터(아티클)의 개수 */
-            getAllArticleDto,
-            PageRequest.of(0, 10, Sort.by("createdAt").descending()),
-            getAllArticleDto.size());
+        Page<ArticleResponseDto> page = articleService.getPage();
 
         return new MultiDataResponse(getAllArticleDto, page);
     }
