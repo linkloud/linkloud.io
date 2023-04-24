@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container } from "./style";
+
 import WriteProgressContainer from "../WriteProgressContainer";
 import WriteFormContainer from "../WriteFormContainer";
 
@@ -35,8 +35,8 @@ const WriteContainer = () => {
   };
 
   return (
-    <Container>
-      <h1>링크 아티클을 등록</h1>
+    <section className="w-full max-w-3xl mt-10">
+      <h1 className="hidden">링크 아티클을 등록</h1>
       <WriteProgressContainer step={step} />
       <WriteFormContainer
         step={step}
@@ -44,7 +44,7 @@ const WriteContainer = () => {
         prevStep={prevStep}
         handleInputData={handleInputData}
       />
-    </Container>
+    </section>
   );
 };
 

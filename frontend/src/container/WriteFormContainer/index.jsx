@@ -1,18 +1,18 @@
-import { Container } from "./style";
 import WriteFormStepOne from "@/components/write/WriteFormStepOne";
 import WriteFormStepTwo from "@/components/write/WriteFormStepTwo";
 import WriteFormStepThree from "@/components/write/WriteFormStepThree";
-import Button from "@/components/common/button";
-import { FlexRow } from "@/styles";
+import Button from "@/components/common/button/DefaultButton";
 
 const WriteFormContainer = ({ step, nextStep, prevStep, handleInputData }) => {
   switch (step) {
     case 1:
       return (
-        <Container>
-          <p>게시하려는 링크의 이름과 주소를 작성해주세요.</p>
-          <WriteFormStepOne></WriteFormStepOne>
-          <FlexRow css={{ justifyContent: "flex-end;" }}>
+        <div className="flex flex-col gap-10">
+          <h2 className="text-xl">
+            게시하려는 링크의 이름과 주소를 작성해주세요.
+          </h2>
+          <WriteFormStepOne />
+          <div className="flex justify-end">
             <Button
               size="md"
               styleType="fill"
@@ -21,15 +21,15 @@ const WriteFormContainer = ({ step, nextStep, prevStep, handleInputData }) => {
             >
               다음
             </Button>
-          </FlexRow>
-        </Container>
+          </div>
+        </div>
       );
     case 2:
       return (
-        <Container>
-          <p>간단한 한 줄 설명을 작성해주세요.</p>
-          <WriteFormStepTwo></WriteFormStepTwo>
-          <FlexRow css={{ justifyContent: "space-between" }}>
+        <div className="flex flex-col gap-10">
+          <h2 className="text-xl">간단한 한 줄 설명을 작성해주세요.</h2>
+          <WriteFormStepTwo />
+          <div className="flex justify-between">
             <Button
               size="md"
               styleType="fill"
@@ -46,15 +46,15 @@ const WriteFormContainer = ({ step, nextStep, prevStep, handleInputData }) => {
             >
               다음
             </Button>
-          </FlexRow>
-        </Container>
+          </div>
+        </div>
       );
     case 3:
       return (
-        <Container>
-          <p>태그를 넣으면 찾기 쉬워질거에요.(선택)</p>
-          <WriteFormStepThree></WriteFormStepThree>
-          <FlexRow css={{ justifyContent: "space-between" }}>
+        <div className="flex flex-col gap-10">
+          <h2 className="text-xl">태그를 넣으면 찾기 쉬워질거에요.(선택)</h2>
+          <WriteFormStepThree />
+          <div className="flex justify-between">
             <Button
               size="md"
               styleType="fill"
@@ -66,8 +66,8 @@ const WriteFormContainer = ({ step, nextStep, prevStep, handleInputData }) => {
             <Button size="md" styleType="fill" onClick={nextStep}>
               등록
             </Button>
-          </FlexRow>
-        </Container>
+          </div>
+        </div>
       );
   }
 };
