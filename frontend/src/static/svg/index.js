@@ -6,3 +6,4 @@ export { ReactComponent as GoogleIcon } from "./icon-google.svg";
 export { ReactComponent as ArrowRightIcon } from "./icon-arrow-right.svg";
 export { ReactComponent as WarningAltIcon } from "./icon-warning-alt.svg";
 export { ReactComponent as CheckMarkIcon } from "./icon-checkmark.svg";
+export { ReactComponent as XMarkIcon } from "./icon-x-mark.svg";

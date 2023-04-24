@@ -1,5 +1,4 @@
-import { GnbUl, Nav } from "./style";
-import Button from "@/components/common/button";
+import DefaultButton from "@/components/common/button/DefaultButton";
 import LoginModalContainer from "@/container/LoginModalContainer";
 
 import { useModalActions, useLoginModalState } from "@/stores/useModalStore";
@@ -19,59 +18,59 @@ const HeaderNav = ({ role = "GUEST" }) => {
   // 로그인 모달 끝
 
   return (
-    <Nav>
-      <h1>네비게이션</h1>
-      <GnbUl>
-        <li>
-          <Button
+    <nav>
+      <h1 className="hidden">navigation</h1>
+      <ul className="flex items-center">
+        <li className="mr-2">
+          <DefaultButton
             size="md"
             styleType="default"
             aria-haspopup="dialog"
             onClick={console.log("공지사항")}
           >
             공지사항
-          </Button>
+          </DefaultButton>
         </li>
         {role === "ADMIN" && (
-          <li>
-            <Button
+          <li className="mr-2">
+            <DefaultButton
               size="md"
-              styleType="default"
+              styleType="inverted"
               aria-haspopup="dialog"
               onClick={console.log("태그등록")}
             >
               태그 등록
-            </Button>
+            </DefaultButton>
           </li>
         )}
-        <li>
-          <Button
+        <li className="mr-2">
+          <DefaultButton
             size="md"
             styleType="default"
             aria-haspopup="dialog"
             onClick={console.log("링크 등록")}
           >
             링크 등록
-          </Button>
+          </DefaultButton>
         </li>
         {role === "GUEST" && (
-          <li>
-            <Button
+          <li className="mr-2">
+            <DefaultButton
               size="md"
               styleType="fill"
               aria-haspopup="dialog"
               onClick={handleOpenLoginModal}
             >
               로그인
-            </Button>
+            </DefaultButton>
             <LoginModalContainer
               isOpened={isLoginModalOpened}
               onCloseLoginModal={handleCloseLoginModal}
             ></LoginModalContainer>
           </li>
         )}
-      </GnbUl>
-    </Nav>
+      </ul>
+    </nav>
   );
 };
 

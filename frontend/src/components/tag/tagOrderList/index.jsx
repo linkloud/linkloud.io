@@ -1,4 +1,3 @@
-import { TagOrder } from "./style";
 import AnchorBottomLine from "@/components/common/anchor/AnchorBottomLine";
 
 const TagOrderList = () => {
@@ -20,18 +19,16 @@ const TagOrderList = () => {
     },
   ];
 
-  const t = (e) => {
-    console.log(e.target.key);
-  };
+  const t = (e) => {};
 
   return (
-    <TagOrder>
+    <ul className="flex mt-7 mb-4">
       {orderList.map((o) => (
-        <li key={o.id} onClick={t}>
+        <li key={o.id} onClick={t} className="mr-1">
           <AnchorBottomLine isActive={o.isSelected}>{o.name}</AnchorBottomLine>
         </li>
       ))}
-    </TagOrder>
+    </ul>
   );
 };
 

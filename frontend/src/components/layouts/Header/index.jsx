@@ -1,5 +1,5 @@
-import { Container, HeaderContent, HeaderTitle } from "./style";
-import HeaderNav from "./HeaderNav";
+import HeaderNav from "../HeaderNav";
+
 import { LogoLabel } from "@/static/svg";
 
 const Header = () => {
@@ -7,17 +7,17 @@ const Header = () => {
   const userRole = "GUEST";
 
   return (
-    <Container>
-      <HeaderContent>
-        <HeaderTitle>
-          linkloud
+    <header className="sticky top-0 bg-white border-b-gray-300">
+      <div className="mx-auto px-4 flex justify-between items-center h-20 max-w-6xl">
+        <h1>
+          <span className="hidden">linkloud</span>
           <a href="/" aria-label="linkloud home">
             <LogoLabel />
           </a>
-        </HeaderTitle>
+        </h1>
         <HeaderNav role={userRole}></HeaderNav>
-      </HeaderContent>
-    </Container>
+      </div>
+    </header>
   );
 };
 

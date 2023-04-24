@@ -1,4 +1,3 @@
-import { Container } from "./style";
 import WriteProgress from "@/components/write/WriteProgress";
 import WriteProgressSepoaratorBar from "@/components/write/WriteProgressSepoaratorBar";
 
@@ -32,7 +31,7 @@ const WriteProgressContainer = ({ step }) => {
   }
 
   return (
-    <Container>
+    <div className="w-full my-12 flex items-center justify-between">
       <WriteProgress stepNum={1} content="기본정보" state={firstState} />
       <WriteProgressSepoaratorBar isComplete={firstSeparatorComplete} />
       <WriteProgress
@@ -46,7 +45,7 @@ const WriteProgressContainer = ({ step }) => {
         content="태그"
         state={thirdState}
       ></WriteProgress>
-    </Container>
+    </div>
   );
 };
 

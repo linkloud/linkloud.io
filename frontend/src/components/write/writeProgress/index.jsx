@@ -1,10 +1,9 @@
-import { Container } from "./style";
 import LabelCircle from "@/components/common/label/LabelCircle";
+
 import { CheckMarkIcon } from "@/static/svg";
 
 const WriteProgress = ({ state, stepNum, content }) => {
   let labelCircleStyle;
-
   switch (state) {
     case "disabled":
       labelCircleStyle = "disabled";
@@ -15,13 +14,21 @@ const WriteProgress = ({ state, stepNum, content }) => {
       break;
   }
 
+  const spanClass = state === "disabled" ? "text-zinc-400" : "";
+
   return (
-    <Container styleType={state}>
+    <div className="flex items-center font-semibold text-lg">
       <LabelCircle size="lg" styleType={labelCircleStyle}>
-        {state === "complete" ? <CheckMarkIcon /> : stepNum}
+        {state === "complete" ? (
+          <CheckMarkIcon className="stroke-neutral-50" />
+        ) : (
+          stepNum
+        )}
       </LabelCircle>
-      <span>{content}</span>
-    </Container>
+      <span className={`${spanClass} ml-2 transition-all duration-300}`}>
+        {content}
+      </span>
+    </div>
   );
 };
 
