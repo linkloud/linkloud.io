@@ -42,17 +42,17 @@ public class ArticleService {
     /** 페이지 정보 반환 */
     @Transactional
     public Page<ArticleResponseDto> getPage(){
+        List<ArticleResponseDto> articleDtoList = getAllArticle();
         Page page = new PageImpl(
             /* 객체를 담고 있는 리스트
              * 페이지 표현 정보 : 0 페이지에서 10개씩 데이터를 가져옴, createdAt 필드를 기준으로 내림차순 정렬
              * 전체 데이터(아티클)의 개수 */
-            articleRepository.findAll(),
+            articleDtoList,
             PageRequest.of(0, 10, Sort.by("createdAt").descending()),
-            articleRepository.findAll().size());
+            articleDtoList.size());
 
         return page;
     }
-
 
     /** 아티클 한 개 반환 */
     @Transactional
