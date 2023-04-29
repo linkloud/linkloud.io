@@ -1,6 +1,6 @@
-import Layout from "@/components/layouts";
+import Layout from "@/pages/Layout";
 import HomePage from "@/pages/home";
-import ArticleRegPage from "@/pages/article/ArticleReg";
+import ArticleRegPage from "@/pages/links/reg";
 import TagsPage from "@/pages/tags";
 import SearchPage from "@/pages/search";
 
