@@ -13,12 +13,12 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
       ? "w-auto top-auto h-full"
       : "top-1/4 border-solid border-gray-300 shadow-md rounded-lg";
 
-  const className = `${responsiveClass} flex flex-col p-9 bg-white z-50 max-w-6xl`;
+  const className = `${responsiveClass} flex flex-col p-9 bg-white z-[1000] max-w-6xl`;
 
   return (
     <Portal elementId="modal-wrap">
       {isOpened && (
-        <div className="fixed inset-0">
+        <>
           <Dimmed onClick={onCloseModal}></Dimmed>
           <dialog className={className}>
             <div className="flex justify-end">
@@ -29,7 +29,7 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
             </div>
             {children}
           </dialog>
-        </div>
+        </>
       )}
     </Portal>
   );

@@ -91,15 +91,18 @@ const HomePage = () => {
         <section className="w-full p-5">
           <h1 className="hidden">link article section</h1>
           <div className="hidden md:block w-full mb-4">
-            <ul className="flex py-3">
-              {orderList.map((o) => (
-                <li key={o.id}>
-                  <AnchorBottomLine isActive={o.isSelected}>
-                    {o.name}
-                  </AnchorBottomLine>
-                </li>
-              ))}
-            </ul>
+            <nav>
+              <h1 className="hidden">link article order option</h1>
+              <ul className="flex py-3">
+                {orderList.map((o) => (
+                  <li key={o.id}>
+                    <AnchorBottomLine isActive={o.isSelected}>
+                      {o.name}
+                    </AnchorBottomLine>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
           {fakeArticleList.map((a) => (
             <ArticleCard article={a} key={a.id}></ArticleCard>

@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
+
 const Anchor = ({ children, className = "", ...props }) => {
   return (
-    <a
+    <Link
       className={
         className +
         " cursor-pointer hover:text-blue-500 hover:fill-blue-500 hover:stroke-blue-500 hover:underline"
@@ -8,7 +10,7 @@ const Anchor = ({ children, className = "", ...props }) => {
       {...props}
     >
       {children}
-    </a>
+    </Link>
   );
 };
 
