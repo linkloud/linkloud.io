@@ -1,10 +1,13 @@
 import { useGoogleLogin } from "@react-oauth/google";
 
+import { socialLogin } from "@/service/api";
 import { GoogleIcon } from "@/static/svg";
 
 const GoogleLoginButton = () => {
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
+    onSuccess: async (codeResponse) => {
+      await socialLogin("google", codeResponse.code);
+    },
     flow: "auth-code",
   });
 

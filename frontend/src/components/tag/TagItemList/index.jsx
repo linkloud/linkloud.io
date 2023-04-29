@@ -16,7 +16,7 @@ const TagItemList = () => {
   return (
     <div className="my-5 w-full">
       <div className="pb-2 flex w-auto stroke-gray-600">
-        <Anchor href="/tags" className="flex items-center text-sm">
+        <Anchor to="/tags" className="flex items-center text-sm">
           모든 태그 <ArrowRightIcon className="w-4 h-4" />
         </Anchor>
       </div>
