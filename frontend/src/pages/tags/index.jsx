@@ -1,6 +1,8 @@
-import TagRequestModal from "@/components/tag/TagRequestModal";
-import TagOrderList from "@/components/tag/TagOrderList";
-import TagCardContainer from "@/container/TagCardContainer";
+import TagRequestModal from "./components/TagRequestModal";
+import TagCard from "@/common/components/tag/TagCard";
+import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
+
+import { fakeTagList } from "@/common/utils/fakedata";
 
 import {
   useRequestTagModalState,
@@ -21,6 +23,24 @@ const TagsPage = () => {
   };
   // 태그 요청 모달 끝
 
+  const orderList = [
+    {
+      id: 1,
+      name: "인기순",
+      isSelected: true,
+    },
+    {
+      id: 2,
+      name: "최신순",
+      isSelected: false,
+    },
+    {
+      id: 3,
+      name: "이름순",
+      isSelected: false,
+    },
+  ];
+
   return (
     <div className="max-w-4xl px-2.5">
       <h2 className="mt-7 mb-4 font-bold text-2xl">태그</h2>
@@ -40,8 +60,22 @@ const TagsPage = () => {
         isOpened={isReqTagModalOpened}
         onCloseReqTagModal={handleCloseReqTagModal}
       ></TagRequestModal>
-      <TagOrderList />
-      <TagCardContainer />
+      {/* 태그 정렬 옵션 */}
+      <ul className="flex mt-7 mb-4">
+        {orderList.map((o) => (
+          <li key={o.id} onClick={() => console.log("test")} className="mr-1">
+            <AnchorSelectable isSelected={o.isSelected}>
+              {o.name}
+            </AnchorSelectable>
+          </li>
+        ))}
+      </ul>
+      <section className="flex flex-wrap gap-y-4 gap-x-6 py-3">
+        <h1 className="hidden">tag card list section</h1>
+        {fakeTagList.map((item) => (
+          <TagCard tag={item} key={item.id} />
+        ))}
+      </section>
     </div>
   );
 };

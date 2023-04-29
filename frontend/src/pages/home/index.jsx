@@ -1,64 +1,12 @@
-import Banner from "@/components/banner";
-import ArticleCard from "@/components/article/ArticleCard";
-import AnchorBottomLine from "@/components/common/anchor/AnchorBottomLine";
-import HomeSearchContainer from "@/container/HomeSearchContainer";
-import HomeAsideContainer from "@/container/HomeAsideContainer";
+import Banner from "./components/Banner";
+import Aside from "./components/Aside";
+import Search from "@/common/components/search";
+import ArticleCard from "@/common/components/article/ArticleCard";
+import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
+
+import { fakeArticleList } from "@/common/utils/fakedata";
 
 const HomePage = () => {
-  const fakeArticleList = [
-    {
-      id: 1,
-      title: "이름1",
-      description: "설명",
-      tags: [{ name: "태그1" }, { name: "태그2" }],
-    },
-    {
-      id: 2,
-      title: "이름2",
-      description: "설명",
-    },
-    {
-      id: 3,
-      title: "이름3",
-      description: "설명",
-    },
-    {
-      id: 4,
-      title: "이름4",
-      description: "설명",
-    },
-    {
-      id: 5,
-      title: "이름5",
-      description: "설명",
-    },
-    {
-      id: 6,
-      title: "이름6",
-      description: "설명",
-    },
-    {
-      id: 7,
-      title: "이름7",
-      description: "설명",
-    },
-    {
-      id: 8,
-      title: "이름8",
-      description: "설명",
-    },
-    {
-      id: 9,
-      title: "이름9",
-      description: "설명",
-    },
-    {
-      id: 10,
-      title: "이름10",
-      description: "설명",
-    },
-  ];
-
   const orderList = [
     {
       id: 1,
@@ -85,20 +33,23 @@ const HomePage = () => {
   return (
     <>
       <Banner />
-      <HomeSearchContainer />
+      <section className="w-full max-w-[600px] translate-y-[-50%]">
+        <h1 className="hidden">search section</h1>
+        <Search />
+      </section>
       <div className="flex flex-row-reverse w-full max-w-6xl">
-        <HomeAsideContainer />
+        <Aside />
         <section className="w-full p-5">
-          <h1 className="hidden">link article section</h1>
+          <h1 className="hidden">link article list section</h1>
           <div className="hidden md:block w-full mb-4">
             <nav>
               <h1 className="hidden">link article order option</h1>
               <ul className="flex py-3">
                 {orderList.map((o) => (
                   <li key={o.id}>
-                    <AnchorBottomLine isActive={o.isSelected}>
+                    <AnchorSelectable isSelected={o.isSelected}>
                       {o.name}
-                    </AnchorBottomLine>
+                    </AnchorSelectable>
                   </li>
                 ))}
               </ul>
