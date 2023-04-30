@@ -9,54 +9,36 @@ import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.ExceptionCode;
 import io.linkloud.api.global.exception.LogicException;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import static io.linkloud.api.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
 
+
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
-    public List<ArticleResponseDto> getAllArticle() {
-        List<ArticleResponseDto> articleDtoList = articleRepository.findAll()
-            .stream()
-            .map(ArticleResponseDto::new)
-            .collect(Collectors.toList());  // stream의 결과를 List로 수집
+    public Page<ArticleResponseDto> fetchAllArticle(int pageNum) {
+        Page<Article> articlesPage = articleRepository.findAll(PageRequest.of(pageNum - 1, 10, Sort.by("createdAt").descending()));
 
-        return articleDtoList;
-    }
-
-    /** 페이지 정보 반환 */
-    @Transactional
-    public Page<ArticleResponseDto> getPage(){
-        List<ArticleResponseDto> articleDtoList = getAllArticle();
-        Page page = new PageImpl(
-            /* 객체를 담고 있는 리스트
-             * 페이지 표현 정보 : 0 페이지에서 10개씩 데이터를 가져옴, createdAt 필드를 기준으로 내림차순 정렬
-             * 전체 데이터(아티클)의 개수 */
-            articleDtoList,
-            PageRequest.of(0, 10, Sort.by("createdAt").descending()),
-            articleDtoList.size());
-
-        return page;
+        return articlesPage.map(article -> new ArticleResponseDto(article));
     }
 
     /** 아티클 한 개 반환 */
     @Transactional
-    public ArticleResponseDto getArticleById(Long id) {
+    public ArticleResponseDto fetchArticleById(Long id) {
         Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));
         foundedArticle.articleViewIncrease(foundedArticle.getViews() + 1);  // 조회수 증가
 
@@ -65,7 +47,7 @@ public class ArticleService {
 
     /** 아티클 생성 */
     @Transactional
-    public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
+    public ArticleResponseDto addArticle(ArticleRequestDto requestDto) {
         Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Article createdArticle = articleRepository.save(requestDto.toArticleEntity(foundedMember));  // requestDto를 엔티티로 변환.
 
@@ -83,7 +65,7 @@ public class ArticleService {
 
     /** 아티클 삭제 */
     @Transactional
-    public void deleteArticle(Long id) {
+    public void removeArticle(Long id) {
         Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));
         articleRepository.delete(foundedArticle);
     }
