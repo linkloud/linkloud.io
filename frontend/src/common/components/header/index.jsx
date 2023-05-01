@@ -2,11 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Button from "../button";
 import UserProfile from "../user/UserProfile";
-import AuthLoginModal from "../auth/AuthLoginModal";
+
 import { LogoLabel } from "@/static/svg";
 
 import useUserStore from "@/stores/useUserStore";
-import { useModalActions, useLoginModalState } from "@/stores/useModalStore";
+import { useModalActions } from "@/stores/useModalStore";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -18,15 +18,11 @@ const Header = () => {
   }));
 
   // 로그인 모달
-  const isLoginModalOpened = useLoginModalState();
-  const { setOpen, setClose } = useModalActions();
-
+  const { setOpen } = useModalActions();
   const handleOpenLoginModal = () => setOpen("login");
 
-  const handleCloseLoginModal = () => setClose("login");
-  // 로그인 모달 끝
-
-  const handleRegisterTag = () => {
+  // 링크 등록
+  const handleRegisterLink = () => {
     if (!userRole || userRole === "guest") {
       setOpen("login");
       return;
@@ -74,7 +70,7 @@ const Header = () => {
                   size="md"
                   styleType="default"
                   aria-haspopup="dialog"
-                  onClick={handleRegisterTag}
+                  onClick={handleRegisterLink}
                 >
                   링크 등록
                 </Button>
@@ -91,14 +87,10 @@ const Header = () => {
                 >
                   로그인
                 </Button>
-                <AuthLoginModal
-                  isOpened={isLoginModalOpened}
-                  onCloseLoginModal={handleCloseLoginModal}
-                ></AuthLoginModal>
               </li>
             )}
             {userRole !== "guest" && (
-              <li className="px-2">
+              <li className="relative px-2">
                 <UserProfile name={name} profileImage={profileImage} />
               </li>
             )}

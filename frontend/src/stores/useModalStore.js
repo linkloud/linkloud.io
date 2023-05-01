@@ -18,8 +18,4 @@ const useModalStore = create((set) => ({
 
 export const useModalActions = () => useModalStore((state) => state.actions);
 
-export const useLoginModalState = () => useModalStore((state) => state.login);
-export const useRequestTagModalState = () =>
-  useModalStore((state) => state.requestTag);
-
 export default useModalStore;

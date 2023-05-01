@@ -1,27 +1,16 @@
-import TagRequestModal from "./components/TagRequestModal";
 import TagCard from "@/common/components/tag/TagCard";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
 
 import { fakeTagList } from "@/common/utils/fakedata";
 
-import {
-  useRequestTagModalState,
-  useModalActions,
-} from "@/stores/useModalStore";
+import { useModalActions } from "@/stores/useModalStore";
 
 const TagsPage = () => {
   // 태그 요청 모달
-  const isReqTagModalOpened = useRequestTagModalState();
-  const { setOpen, setClose } = useModalActions();
-
+  const { setOpen } = useModalActions();
   const handleOpenReqTagModal = () => {
     setOpen("requestTag");
   };
-
-  const handleCloseReqTagModal = () => {
-    setClose("requestTag");
-  };
-  // 태그 요청 모달 끝
 
   const orderList = [
     {
@@ -56,10 +45,6 @@ const TagsPage = () => {
         </a>
         를 클릭하세요.
       </p>
-      <TagRequestModal
-        isOpened={isReqTagModalOpened}
-        onCloseReqTagModal={handleCloseReqTagModal}
-      ></TagRequestModal>
       {/* 태그 정렬 옵션 */}
       <ul className="flex mt-7 mb-4">
         {orderList.map((o) => (
