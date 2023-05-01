@@ -1,6 +1,6 @@
 import { userProfile } from "@/static/images";
 
-const UserProfile = ({ name, profileImage, size = "md" }) => {
+const UserProfile = ({ name, profileImage, size = "md", ...props }) => {
   const sizeTable = {
     sm: "x-6 h-6",
     md: "x-10 h-10",
@@ -10,7 +10,7 @@ const UserProfile = ({ name, profileImage, size = "md" }) => {
   const imgClassName = `${sizeTable[size]} rounded-full`;
 
   return (
-    <a className={`bg-gray-200 rounded-full cursor-pointer`}>
+    <a {...props} className={`bg-gray-200 rounded-full cursor-pointer`}>
       <img
         src={profileImage || userProfile}
         alt={name}

@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
+import HeaderActionMenu from "./HeaderActionMenu";
 import Button from "../button";
 import UserProfile from "../user/UserProfile";
 
@@ -10,6 +12,7 @@ import { useModalActions } from "@/stores/useModalStore";
 
 const Header = () => {
   const navigate = useNavigate();
+  const [isActionMenuVisable, setIsActionMenuVisable] = useState(false);
 
   const { userRole, name, profileImage } = useUserStore((state) => ({
     name: state.name,
@@ -28,6 +31,18 @@ const Header = () => {
       return;
     }
     navigate("/links/reg");
+  };
+
+  const handleHoverProfile = () => {
+    showActionMenu();
+  };
+
+  const showActionMenu = () => {
+    setIsActionMenuVisable(true);
+  };
+
+  const hideActionMenu = () => {
+    setIsActionMenuVisable(false);
   };
 
   return (
@@ -77,7 +92,7 @@ const Header = () => {
               </li>
             )}
 
-            {userRole === "guest" && (
+            {userRole === "guest" ? (
               <li className="mr-2">
                 <Button
                   size="md"
@@ -88,10 +103,16 @@ const Header = () => {
                   로그인
                 </Button>
               </li>
-            )}
-            {userRole !== "guest" && (
+            ) : (
               <li className="relative px-2">
-                <UserProfile name={name} profileImage={profileImage} />
+                <UserProfile
+                  name={name}
+                  profileImage={profileImage}
+                  onClick={handleHoverProfile}
+                />
+                {isActionMenuVisable && (
+                  <HeaderActionMenu handleMouseLeave={hideActionMenu} />
+                )}
               </li>
             )}
           </ul>
