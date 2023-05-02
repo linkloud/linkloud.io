@@ -34,8 +34,8 @@ public class ArticleController {
 
     /** 아티클 모두 조회 */
     @GetMapping
-    public ResponseEntity<MultiDataResponse> getAllArticle(@Positive @RequestParam int pageNum) {
-        Page<ArticleResponseDto> getAllArticleDto = articleService.fetchAllArticle(pageNum);
+    public ResponseEntity<MultiDataResponse> getAllArticle(@Positive @RequestParam int page) {
+        Page<ArticleResponseDto> getAllArticleDto = articleService.fetchAllArticle(page);
 
         return ResponseEntity.ok().body(new MultiDataResponse(getAllArticleDto.getContent(), getAllArticleDto));
     }

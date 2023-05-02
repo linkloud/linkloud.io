@@ -30,8 +30,8 @@ public class ArticleService {
 
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
-    public Page<ArticleResponseDto> fetchAllArticle(int pageNum) {
-        Page<Article> articlesPage = articleRepository.findAll(PageRequest.of(pageNum - 1, 10, Sort.by("createdAt").descending()));
+    public Page<ArticleResponseDto> fetchAllArticle(int page) {
+        Page<Article> articlesPage = articleRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
 
         return articlesPage.map(article -> new ArticleResponseDto(article));
     }
