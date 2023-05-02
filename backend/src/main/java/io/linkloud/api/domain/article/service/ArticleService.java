@@ -15,13 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import static io.linkloud.api.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
-@Validated
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
