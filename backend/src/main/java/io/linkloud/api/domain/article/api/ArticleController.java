@@ -34,7 +34,7 @@ public class ArticleController {
 
     /** 아티클 모두 조회 */
     @GetMapping
-    public ResponseEntity getAllArticle(@Positive @RequestParam int pageNum) {
+    public ResponseEntity<MultiDataResponse> getAllArticle(@Positive @RequestParam int pageNum) {
         Page<ArticleResponseDto> getAllArticleDto = articleService.fetchAllArticle(pageNum);
 
         return ResponseEntity.ok().body(new MultiDataResponse(getAllArticleDto.getContent(), getAllArticleDto));
@@ -42,10 +42,10 @@ public class ArticleController {
 
     /** 아티클 한 개 조회 */
     @GetMapping("/{id}")
-    public SingleDataResponse<ArticleResponseDto> getOneArticle(@PathVariable @Valid Long id) {
+    public ResponseEntity<SingleDataResponse> getOneArticle(@PathVariable @Valid Long id) {
         ArticleResponseDto getOneArticleDto = articleService.fetchArticleById(id);
 
-        return new SingleDataResponse<>(getOneArticleDto);
+        return ResponseEntity.ok().body(new SingleDataResponse<>(getOneArticleDto));
     }
 
     /** 아티클 작성 */
