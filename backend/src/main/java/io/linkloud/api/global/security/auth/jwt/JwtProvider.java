@@ -27,15 +27,12 @@ public class JwtProvider {
 
     private final Key secretKey;
 
-    private final MemberRepository memberRepository;
-
     private static final String MEMBER_ID_CLAIM = "memberId";
 
 
-    public JwtProvider(JwtProperties jwtProperties, MemberRepository memberRepository) {
+    public JwtProvider(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
         this.secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS256.getJcaName());
-        this.memberRepository = memberRepository;
     }
 
     /**
