@@ -8,6 +8,7 @@ import io.linkloud.api.global.exception.ExceptionCode;
 import io.linkloud.api.global.exception.LogicException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
+import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +21,7 @@ public class AuthService {
 
     private final Map<String, OAuthClient> oAuthClients;
     private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
 
     /**
@@ -41,9 +43,10 @@ public class AuthService {
         OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
 
         // 3
-        MemberSignUpResponseDto memberSignUpResponseDto = memberService.signUpIfNotExists(userInfo);
+        MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
+        String jwtAccessToken = jwtProvider.generateAccessToken(memberDto.getId(),memberDto.getSocialType());
 
         // 4
-        return new AuthResponseDto(memberSignUpResponseDto);
+        return new AuthResponseDto(jwtAccessToken);
     }
 }
