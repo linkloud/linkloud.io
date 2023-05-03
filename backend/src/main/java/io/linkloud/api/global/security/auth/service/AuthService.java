@@ -4,6 +4,8 @@ import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.global.exception.ExceptionCode;
+import io.linkloud.api.global.exception.LogicException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +31,12 @@ public class AuthService {
      * 4. JWT 토큰 발급 후 반환
      */
     public AuthResponseDto authenticate(AuthRequestDto dto) {
+        log.info(dto.getSocialType());
+        log.info(dto.getSocialType() + "OAuthClientImpl");
         OAuthClient oAuthClient = oAuthClients.get(dto.getSocialType() + "OAuthClientImpl");
+        if (oAuthClient == null) {
+            throw new LogicException(ExceptionCode.INVALID_SOCIAL_TYPE);
+        }
         // 1
         String accessToken = oAuthClient.getAccessToken(dto.getCode());
 

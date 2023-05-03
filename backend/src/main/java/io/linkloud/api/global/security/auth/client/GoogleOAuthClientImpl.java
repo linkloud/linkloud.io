@@ -98,14 +98,12 @@ public class GoogleOAuthClientImpl implements OAuthClient {
             throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
         }
             log.info("사용자 정보={}", userInfoResponseBody);
-        OAuthAttributes userInfo = new OAuthAttributes(
+        return new OAuthAttributes(
             convertToGoogleUser(userInfoResponseBody));
-        return userInfo;
     }
 
     private GoogleUserInfo convertToGoogleUser(String body) {
         try {
-            GoogleUserInfo googleUser = objectMapper.readValue(body, GoogleUserInfo.class);
             return objectMapper.readValue(body, GoogleUserInfo.class);
         } catch (JsonProcessingException e) {
             throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);

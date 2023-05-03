@@ -10,7 +10,9 @@ public enum ExceptionCode {
     MEMBER_UNAUTHORIZED(401, "Member Unauthorized"),
     MEMBER_NOT_MATCH(403, "Member Not Matched"),
     MEMBER_ALREADY_EXISTS(409, "Member Already Exist."),
-    JSON_REQUEST_FAILED(400, "Json Request Failed.");
+    JSON_REQUEST_FAILED(400, "Json Request Failed."),
+    INVALID_SOCIAL_TYPE(404, "Invalid Social Type requested"); // OAuth 액세스토큰 요청 구현체 클래스를 찾지 못할때
+
 
 
     @Getter
