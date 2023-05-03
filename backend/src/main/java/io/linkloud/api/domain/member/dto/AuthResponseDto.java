@@ -10,8 +10,8 @@ public class AuthResponseDto {
 
     private Long id;
 
-    public AuthResponseDto(Member member) {
-        this.id = member.getId();
+    public AuthResponseDto(MemberSignUpResponseDto memberSignUpResponseDto) {
+        this.id = memberSignUpResponseDto.getId();
     }
 
 
