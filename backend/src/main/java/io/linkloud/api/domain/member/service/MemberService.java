@@ -1,5 +1,6 @@
 package io.linkloud.api.domain.member.service;
 
+import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
@@ -8,6 +9,7 @@ import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.ExceptionCode;
 import io.linkloud.api.global.exception.LogicException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
+import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,4 +65,13 @@ public class MemberService {
         return splitEmail[0] + "_" + userInfo.getSocialType().name();
     }
 
+    public MemberLoginResponse fetchPrincipal(SecurityMember principalMember) {
+        Member member = fetchMemberById(principalMember.getId());
+        return new MemberLoginResponse(member);
+    }
+
+    public Member fetchMemberById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
 }
