@@ -8,11 +8,11 @@ import UserProfile from "../user/UserProfile";
 import { LogoLabel } from "@/static/svg";
 
 import useUserStore from "@/stores/useUserStore";
-import { useModalActions } from "@/stores/useModalStore";
+import useModalStore from "@/stores/useModalStore";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isActionMenuVisable, setIsActionMenuVisable] = useState(false);
+  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
 
   const { userRole, name, profileImage } = useUserStore((state) => ({
     name: state.name,
@@ -20,9 +20,10 @@ const Header = () => {
     profileImage: state.profileImage,
   }));
 
+  const { openModal } = useModalStore();
+
   // 로그인 모달
-  const { setOpen } = useModalActions();
-  const handleOpenLoginModal = () => setOpen("login");
+  const handleOpenLoginModal = () => openModal("login");
 
   // 링크 등록
   const handleRegisterLink = () => {
@@ -34,15 +35,11 @@ const Header = () => {
   };
 
   const handleHoverProfile = () => {
-    showActionMenu();
+    setIsActionMenuVisible(true);
   };
 
-  const showActionMenu = () => {
-    setIsActionMenuVisable(true);
-  };
-
-  const hideActionMenu = () => {
-    setIsActionMenuVisable(false);
+  const handleLeaveProfile = () => {
+    setIsActionMenuVisible(false);
   };
 
   return (
@@ -83,7 +80,7 @@ const Header = () => {
               <li className="mr-2">
                 <Button
                   size="md"
-                  styleType="default"
+                  styleType="subtle"
                   aria-haspopup="dialog"
                   onClick={handleRegisterLink}
                 >
@@ -91,7 +88,6 @@ const Header = () => {
                 </Button>
               </li>
             )}
-
             {userRole === "guest" ? (
               <li className="mr-2">
                 <Button
@@ -110,8 +106,8 @@ const Header = () => {
                   profileImage={profileImage}
                   onClick={handleHoverProfile}
                 />
-                {isActionMenuVisable && (
-                  <HeaderActionMenu handleMouseLeave={hideActionMenu} />
+                {isActionMenuVisible && (
+                  <HeaderActionMenu handleMouseLeave={handleLeaveProfile} />
                 )}
               </li>
             )}

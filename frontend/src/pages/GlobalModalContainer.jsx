@@ -1,18 +1,17 @@
 import AuthLoginModal from "@/common/components/auth/AuthLoginModal";
 import TagRequestModal from "@/common/components/tag/TagRequestModal";
 
-import useModalStore, { useModalActions } from "@/stores/useModalStore";
+import useModalStore from "@/stores/useModalStore";
 
 const GlobalModalContainer = () => {
-  const { setClose } = useModalActions();
+  const {
+    login: isLoginModalOpened,
+    requestTag: isReqTagModalOpened,
+    closeModal,
+  } = useModalStore();
 
-  // login modal
-  const isLoginModalOpened = useModalStore((state) => state.login);
-  const handleCloseLoginModal = () => setClose("login");
-
-  // request tag modal
-  const isReqTagModalOpened = useModalStore((state) => state.requestTag);
-  const handleCloseReqTagModal = () => setClose("requestTag");
+  const handleCloseLoginModal = () => closeModal("login");
+  const handleCloseReqTagModal = () => closeModal("requestTag");
 
   return (
     <>

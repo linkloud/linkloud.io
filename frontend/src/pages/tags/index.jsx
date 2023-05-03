@@ -3,13 +3,13 @@ import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
 
 import { fakeTagList } from "@/common/utils/fakedata";
 
-import { useModalActions } from "@/stores/useModalStore";
+import useModalStore from "@/stores/useModalStore";
 
 const TagsPage = () => {
   // 태그 요청 모달
-  const { setOpen } = useModalActions();
+  const { openModal } = useModalStore();
   const handleOpenReqTagModal = () => {
-    setOpen("requestTag");
+    openModal("requestTag");
   };
 
   const orderList = [

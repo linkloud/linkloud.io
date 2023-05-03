@@ -1,12 +1,12 @@
 import ActionMenu from "../action-menu/ActionMenu";
 import ActionMenuItem from "../action-menu/ActionMenuItem";
 
-import { useModalActions } from "@/stores/useModalStore";
+import useModalStore from "@/stores/useModalStore";
 
 const HeaderActionMenu = ({ handleMouseLeave }) => {
   // 태그 요청 모달
-  const { setOpen } = useModalActions();
-  const handleOpenReqTagModal = () => setOpen("requestTag");
+  const { openModal } = useModalStore();
+  const handleOpenReqTagModal = () => openModal("requestTag");
 
   return (
     <ActionMenu onMouseLeave={handleMouseLeave}>
