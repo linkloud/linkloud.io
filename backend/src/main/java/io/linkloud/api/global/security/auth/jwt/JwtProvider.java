@@ -40,22 +40,38 @@ public class JwtProvider {
 
     /**
      * access 토큰 생성
-     * @param memberID (claim 에 담을 회원 정보)
-     * @param socialType
+     * @param memberId (id 에 담을 회원 정보)
+     * @param socialType 소셜타입
      * @return JwtAccessToken
      */
-    public String generateAccessToken(Long memberID, SocialType socialType) {
+    public String generateAccessToken(Long memberId, SocialType socialType) {
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
         return Jwts.builder()
-            .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
             .setAudience(socialType.name())
+            .setId(String.valueOf(memberId))
+            .setExpiration(Date.from(expiration))
+            .signWith(secretKey, SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    /**
+     * refresh 토큰 생성
+     *  @param memberID (id 에 담을 회원 정보)
+     *  @return JwtRefreshToken
+     */
+    public String generateRefreshToken(Long memberID) {
+        Instant now = Instant.now();
+        Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
+        return Jwts.builder()
+            .setIssuedAt(Date.from(now))
             .setId(String.valueOf(memberID))
             .setExpiration(Date.from(expiration))
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
     }
+
     /**
      * access 토큰 검증
      * @param accessToken 액세스 토큰

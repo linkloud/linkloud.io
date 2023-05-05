@@ -45,8 +45,10 @@ public class AuthService {
 
         // 3
         MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(oAuthClientUserInfo);
-        String jwtAccessToken = jwtProvider.generateAccessToken(memberDto.getId(),memberDto.getSocialType());
-        String jwtRefreshToken = "refreshToken";
+        Long memberId = memberDto.getId();
+
+        String jwtAccessToken = jwtProvider.generateAccessToken(memberId,memberDto.getSocialType());
+        String jwtRefreshToken = jwtProvider.generateRefreshToken(memberId);
 
         // 4
         return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
