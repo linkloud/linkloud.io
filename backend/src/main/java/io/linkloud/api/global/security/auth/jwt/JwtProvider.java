@@ -10,6 +10,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.global.exception.ExceptionCode;
+import io.linkloud.api.global.exception.LogicException;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
@@ -71,16 +73,16 @@ public class JwtProvider {
             return expiration.toInstant().isAfter(now);
         } catch (ExpiredJwtException e) {
             log.error("만료된 JWT 토큰입니다: {}", e.getMessage());
-            throw new JwtException("만료된 JWT 토큰입니다", e);
+            throw new LogicException(ExceptionCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.error("지원되지 않는 JWT 토큰입니다: {}", e.getMessage());
-            throw new JwtException("지원되지 않는 JWT 토큰입니다", e);
+            throw new LogicException(ExceptionCode.UNSUPPORTED_TOKEN);
         } catch (MalformedJwtException e) {
             log.error("잘못된 형식의 JWT 토큰입니다: {}", e.getMessage());
-            throw new JwtException("잘못된 형식의 JWT 토큰입니다", e);
+            throw new LogicException(ExceptionCode.MALFORMED_TOKEN);
         } catch (IllegalArgumentException e) {
             log.error("JWT 토큰이 null 이거나 빈 문자열입니다: {}", e.getMessage());
-            throw new JwtException("JWT 토큰이 null 이거나 빈 문자열입니다", e);
+            throw new LogicException(ExceptionCode.INVALID_TOKEN);
         }
     }
 
@@ -105,7 +107,7 @@ public class JwtProvider {
                 .parseClaimsJws(accessToken)
                 .getBody();
         } catch (IllegalArgumentException e) {
-            throw new JwtException("the claimsJws string is null or empty or only whitespace", e);
+            throw new LogicException(ExceptionCode.INVALID_TOKEN);
         }
     }
 }
