@@ -5,7 +5,7 @@ import HeaderActionMenu from "./HeaderActionMenu";
 import Button from "../button";
 import UserProfile from "../user/UserProfile";
 
-import { LogoLabel } from "@/static/svg";
+import { LogoLabel, Logo } from "@/static/svg";
 
 import useUserStore from "@/stores/useUserStore";
 import useModalStore from "@/stores/useModalStore";
@@ -44,17 +44,18 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 bg-white border-b-gray-300 z-50">
-      <div className="mx-auto px-4 flex justify-between items-center h-20 max-w-6xl">
+      <div className="mx-auto px-4 flex justify-between items-center h-16 md:h-20 max-w-6xl">
         <h1>
           <span className="hidden">linkloud</span>
           <Link to="/" aria-label="linkloud home">
-            <LogoLabel />
+            <LogoLabel className="hidden md:inline" />
+            <Logo className="md:hidden" />
           </Link>
         </h1>
         <nav>
           <h1 className="hidden">navigation</h1>
           <ul className="flex items-center">
-            <li className="mr-2">
+            <li className="mr-2 hidden md:block">
               <Button
                 size="md"
                 styleType="subtle"

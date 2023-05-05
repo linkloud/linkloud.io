@@ -20,7 +20,7 @@ const Search = () => {
           type="search"
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => setIsInputFocused(false)}
-          className="h-14 w-full leading-7 px-4 pl-10 outline-none rounded-lg shadow-lg"
+          className="h-12 md:h-14 w-full leading-7 px-4 pl-10 outline-none rounded-lg shadow-lg"
         ></input>
       </form>
       <SearchHelperPopup isVisible={isInputFocused}></SearchHelperPopup>

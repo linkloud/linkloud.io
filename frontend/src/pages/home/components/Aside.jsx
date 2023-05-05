@@ -6,7 +6,7 @@ import { fakeHashTags } from "@/common/utils/fakedata";
 
 const Aside = () => {
   return (
-    <aside className="max-w-xs w-full p-6">
+    <aside className="hidden md:block max-w-xs w-full p-6">
       <h1 className="hidden">side</h1>
       <div className="my-5 w-full">
         <div className="pb-2 flex w-auto stroke-gray-600">
