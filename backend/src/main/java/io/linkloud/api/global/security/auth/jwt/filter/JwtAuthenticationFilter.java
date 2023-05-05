@@ -72,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (JwtException e) {
             log.error("JWT parsing error: {}", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(ExceptionCode.MEMBER_UNAUTHORIZED.getStatus());
             return;
         }
         log.info("JWT 인증 필터 종료");
