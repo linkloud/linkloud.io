@@ -40,6 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
+    private final HeaderUtil headerUtil;
+
     private final MemberRepository memberRepository;
 
     @Override
@@ -50,8 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // 1. Header 검증 후 Jwt Token 추출
-        log.info("JWT 인증 필터 실행 = {}", HeaderUtil.getAccessToken(request));
-        String accessToken = HeaderUtil.getAccessToken(request);
+        log.info("JWT 인증 필터 실행 = {}", headerUtil.extractAccessToken(request));
+        String accessToken = headerUtil.extractAccessToken(request);
+        String refreshToken = headerUtil.extractRefreshToken(request);
 
         try {
             // 2. 토큰이 유효한지 검증

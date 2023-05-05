@@ -1,4 +1,4 @@
-package io.linkloud.api.global.security.auth.jwt;
+package io.linkloud.api.global.security.auth.jwt.utils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
