@@ -12,9 +12,10 @@ import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -37,16 +38,17 @@ public class AuthService {
             throw new LogicException(ExceptionCode.INVALID_SOCIAL_TYPE);
         }
         // 1
-        String accessToken = oAuthClient.getAccessToken(dto.getCode());
+        String oAuthClientAccessToken = oAuthClient.getAccessToken(dto.getCode());
 
         // 2
-        OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
+        OAuthAttributes oAuthClientUserInfo = oAuthClient.getUserInfo(oAuthClientAccessToken);
 
         // 3
-        MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
+        MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(oAuthClientUserInfo);
         String jwtAccessToken = jwtProvider.generateAccessToken(memberDto.getId(),memberDto.getSocialType());
+        String jwtRefreshToken = "refreshToken";
 
         // 4
-        return new AuthResponseDto(jwtAccessToken);
+        return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
     }
 }
