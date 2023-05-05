@@ -13,6 +13,7 @@ import io.linkloud.api.domain.member.repository.MemberRepository;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.function.Function;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -48,12 +49,11 @@ public class JwtProvider {
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
             .setAudience(socialType.name())
-            .claim(MEMBER_ID_CLAIM,memberID)
+            .setId(String.valueOf(memberID))
             .setExpiration(Date.from(expiration))
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
     }
-
     /**
      * access 토큰 검증
      * @param accessToken 액세스 토큰
@@ -84,19 +84,28 @@ public class JwtProvider {
         }
     }
 
+
     /**
-     * accessToken 으로 MemberId 추출
-     * @param accessToken 액세스 토큰
-     * @return memberId
+     * 전달된 JWT 토큰을 파싱하여 Claims 객체를 얻고,
+     * Claims 객체를 함수형 인터페이스 Function<Claims, R>에 전달하여 R 타입의 값을 반환
+     * @param token 토큰
+     * @param <R> Claims 객체를 입력받아 'R' 타입의 결과값으로 반환
+     * @return Claims 에서 추출한 R 타입의 결과 값
      */
-    public Long extractMemberIdByAccessToken(String accessToken) {
-        Claims claims = Jwts.parserBuilder()
-            .setSigningKey(secretKey)
-            .build()
-            .parseClaimsJws(accessToken)
-            .getBody();
-        return claims.get(MEMBER_ID_CLAIM, Long.class);
+    public <R> R getClaims(String token, Function<Claims, R> claimsResolver) {
+        final Claims claims = parseClaimsJwt(token);
+        return claimsResolver.apply(claims);
     }
 
-
+    private Claims parseClaimsJwt(final String accessToken) {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("the claimsJws string is null or empty or only whitespace", e);
+        }
+    }
 }

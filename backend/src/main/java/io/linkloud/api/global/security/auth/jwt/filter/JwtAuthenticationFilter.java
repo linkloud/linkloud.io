@@ -1,5 +1,6 @@
 package io.linkloud.api.global.security.auth.jwt.filter;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
@@ -58,8 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.info("토근이 유효합니다.");
 
                 // 3. 사용자 정보 추출
-                Long memberId = jwtProvider.extractMemberIdByAccessToken(accessToken);
-                Member member = memberRepository.findById(memberId).orElseThrow(
+                String memberId = jwtProvider.getClaims(accessToken, Claims::getId);
+                Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(
                     () -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND)
                 );
 
