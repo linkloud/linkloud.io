@@ -18,4 +18,9 @@ public class Controller {
             throw new LogicException(ExceptionCode.TEMPORARY_ERROR);
         return "error";
     }
+
+    @GetMapping("/restdocs")
+    public String restdocsTest() {
+        return "restdocs!!";
+    }
 }
