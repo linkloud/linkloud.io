@@ -1,26 +1,42 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-
-import HeaderActionMenu from "./HeaderActionMenu";
-import Button from "../button";
-import UserProfile from "../user/UserProfile";
-
-import { LogoLabel, Logo } from "@/static/svg";
+import { useState, useEffect } from "react";
 
 import useUserStore from "@/stores/useUserStore";
 import useModalStore from "@/stores/useModalStore";
 
+import HeaderActionMenu from "./HeaderActionMenu";
+import Button from "../button";
+import UserProfile from "../user/UserProfile";
+import { LogoLabel, Logo } from "@/static/svg";
+
+import { throttle } from "@/common/utils";
+
 const Header = () => {
   const navigate = useNavigate();
-  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
 
   const { userRole, name, profileImage } = useUserStore((state) => ({
     name: state.name,
     userRole: state.role,
     profileImage: state.profileImage,
   }));
-
   const { openModal } = useModalStore();
+  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
+  const [isScrollTop, setIsScrollTop] = useState(true);
+
+  useEffect(() => {
+    document.addEventListener("scroll", throttledHandleScroll);
+    return () => {
+      document.removeEventListener("scroll", throttledHandleScroll);
+    };
+  }, [isScrollTop]);
+
+  const throttledHandleScroll = throttle(() => {
+    if (window.scrollY > 30) {
+      setIsScrollTop(false);
+    } else if (window.scrollY <= 30) {
+      setIsScrollTop(true);
+    }
+  }, 50);
 
   // 로그인 모달
   const handleOpenLoginModal = () => openModal("login");
@@ -43,7 +59,11 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 bg-white border-b-gray-300 z-50">
+    <header
+      className={`sticky top-0 bg-white z-50 transition-all duration-100${
+        !isScrollTop && " shadow-md"
+      }`}
+    >
       <div className="mx-auto px-4 flex justify-between items-center h-16 md:h-20 max-w-6xl">
         <h1>
           <span className="hidden">linkloud</span>
