@@ -57,15 +57,13 @@ public class JwtProvider {
 
     /**
      * refresh 토큰 생성
-     *  @param memberID (id 에 담을 회원 정보)
      *  @return JwtRefreshToken
      */
-    public String generateRefreshToken(Long memberID) {
+    public String generateRefreshToken() {
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
         return Jwts.builder()
             .setIssuedAt(Date.from(now))
-            .setId(String.valueOf(memberID))
             .setExpiration(Date.from(expiration))
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
