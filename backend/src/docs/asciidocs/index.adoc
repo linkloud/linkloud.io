@@ -33,7 +33,7 @@ include::{snippets}/auth/authenticate_success/request-body.adoc[]
 .response-body
 include::{snippets}/auth/authenticate_success/response-body.adoc[]
 
-=== 소셜 로그인 인증 실패
+=== 소셜 로그인 잘못된 socialType 요청으로 인한 실패
 
 .path-parameters
 include::{snippets}/auth/authenticate_failure/path-parameters.adoc[]
@@ -61,7 +61,7 @@ include::{snippets}/auth/authenticate_failure/response-body.adoc[]
 
 
 
-=== 회원 수정
+=== 회원 닉네임 수정
 
 
 
