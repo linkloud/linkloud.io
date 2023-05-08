@@ -2,11 +2,13 @@ package io.linkloud.api.global.security.auth.service;
 
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
-import io.linkloud.api.domain.member.model.Member;
+import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.global.exception.ExceptionCode;
+import io.linkloud.api.global.exception.LogicException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
-import jakarta.servlet.http.HttpSession;
+import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +21,7 @@ public class AuthService {
 
     private final Map<String, OAuthClient> oAuthClients;
     private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
 
     /**
@@ -30,6 +33,9 @@ public class AuthService {
      */
     public AuthResponseDto authenticate(AuthRequestDto dto) {
         OAuthClient oAuthClient = oAuthClients.get(dto.getSocialType() + "OAuthClientImpl");
+        if (oAuthClient == null) {
+            throw new LogicException(ExceptionCode.INVALID_SOCIAL_TYPE);
+        }
         // 1
         String accessToken = oAuthClient.getAccessToken(dto.getCode());
 
@@ -37,9 +43,10 @@ public class AuthService {
         OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
 
         // 3
-        Member member = memberService.registerIfNotExists(userInfo);
+        MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
+        String jwtAccessToken = jwtProvider.generateAccessToken(memberDto.getId(),memberDto.getSocialType());
 
         // 4
-        return new AuthResponseDto(member);
+        return new AuthResponseDto(jwtAccessToken);
     }
 }

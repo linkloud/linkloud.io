@@ -1,24 +1,27 @@
-import Layout from "@/components/layout";
+import { createBrowserRouter } from "react-router-dom";
+import Layout from "@/pages/Layout";
 import HomePage from "@/pages/home";
-import ArticleRegPage from "@/pages/article/articleReg";
+import SearchPage from "@/pages/search";
+import links from "./links";
+import tags from "./tags";
 
-const routes = [
+const router = createBrowserRouter([
   {
     path: "",
-    element: (
-      <Layout>
-        <HomePage />
-      </Layout>
-    ),
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
+      },
+      links,
+      tags,
+    ],
   },
-  {
-    path: "/link/reg",
-    element: (
-      <Layout>
-        <ArticleRegPage />
-      </Layout>
-    ),
-  },
-];
+]);
 
-export default routes;
+export default router;

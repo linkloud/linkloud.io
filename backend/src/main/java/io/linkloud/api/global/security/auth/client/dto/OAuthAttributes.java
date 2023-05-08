@@ -10,21 +10,16 @@ import lombok.Getter;
 @Getter
 public class OAuthAttributes {
 
-    private OAuth2UserInfo oauth2UserInfo; // 소셜 타입별 로그인 유저 정보(닉네임, 이메일, 프로필 사진 등등)
-
-
-    // 1231321321424141421 (google 로 따지면 sub 의 값을 가져옴 기본키)
-    private String socialId;
+    // sub_123 (google 로 따지면 sub 의 값을 가져옴 기본키)
+    private final String socialId;
 
     // test@gmail.com
-    private String email;
+    private final String email;
 
     //  프로필사진
-    private String picture;
+    private final String picture;
 
-    private SocialType socialType;
-
-
+    private final SocialType socialType;
 
     public OAuthAttributes(OAuth2UserInfo oauth2UserInfo) {
         this.email = oauth2UserInfo.getEmail();
@@ -32,6 +27,4 @@ public class OAuthAttributes {
         this.socialId = oauth2UserInfo.getId();
         this.socialType = oauth2UserInfo.getSocialType();
     }
-
-
 }

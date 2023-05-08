@@ -9,9 +9,10 @@ import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.ExceptionCode;
 import io.linkloud.api.global.exception.LogicException;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +25,18 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
 
+
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
-    public List<ArticleResponseDto> getAllArticle() {
-        List<ArticleResponseDto> articleDtoList = articleRepository.findAll()
-            .stream()
-            .map(ArticleResponseDto::new)
-            .collect(Collectors.toList());  // stream의 결과를 List로 수집
+    public Page<ArticleResponseDto> fetchAllArticle(int page) {
+        Page<Article> articlesPage = articleRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
 
-        return articleDtoList;
+        return articlesPage.map(article -> new ArticleResponseDto(article));
     }
 
     /** 아티클 한 개 반환 */
     @Transactional
-    public ArticleResponseDto getArticleById(Long id) {
+    public ArticleResponseDto fetchArticleById(Long id) {
         Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));
         foundedArticle.articleViewIncrease(foundedArticle.getViews() + 1);  // 조회수 증가
 
@@ -45,9 +44,8 @@ public class ArticleService {
     }
 
     /** 아티클 생성 */
-    /** TODO: 게시글 생성하려면 가입 후 3일 경과해야함. 가입날과 오늘날짜 비교하는 private void 메소드 작성. 예외처리로 판단. */
     @Transactional
-    public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
+    public ArticleResponseDto addArticle(ArticleRequestDto requestDto) {
         Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Article createdArticle = articleRepository.save(requestDto.toArticleEntity(foundedMember));  // requestDto를 엔티티로 변환.
 
@@ -65,7 +63,7 @@ public class ArticleService {
 
     /** 아티클 삭제 */
     @Transactional
-    public void deleteArticle(Long id) {
+    public void removeArticle(Long id) {
         Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new LogicException(TEMPORARY_ERROR));
         articleRepository.delete(foundedArticle);
     }

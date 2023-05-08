@@ -1,6 +1,6 @@
 package io.linkloud.api.domain.member.dto;
 
-import io.linkloud.api.domain.member.model.Member;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,11 +8,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthResponseDto {
 
-    private Long id;
+    private String accessToken;
 
-    public AuthResponseDto(Member member) {
-        this.id = member.getId();
+    public AuthResponseDto(String accessToken) {
+        this.accessToken = accessToken;
     }
-
-
 }
