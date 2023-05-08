@@ -31,7 +31,7 @@ const TagsPage = () => {
   ];
 
   return (
-    <div className="max-w-4xl px-2.5">
+    <div className="max-w-7xl px-6">
       <h2 className="mt-7 mb-4 font-bold text-2xl">태그</h2>
       <p className="max-w-[640px]">
         태그는 링크를 분류하는 키워드입니다. <br />

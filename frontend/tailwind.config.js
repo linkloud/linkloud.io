@@ -16,6 +16,12 @@ export default {
           900: "#152471",
         },
       },
+      maxWidth: {
+        "2xs": "270px",
+        sm: "368px",
+        xl: "564px",
+        "7xl": "1200px",
+      },
     },
   },
   plugins: [],

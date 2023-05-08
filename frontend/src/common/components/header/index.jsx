@@ -64,7 +64,7 @@ const Header = () => {
         !isScrollTop && " shadow-md"
       }`}
     >
-      <div className="mx-auto px-4 flex justify-between items-center h-16 md:h-20 max-w-6xl">
+      <div className="mx-auto px-6 flex justify-between items-center h-16 max-w-7xl">
         <h1>
           <span className="hidden">linkloud</span>
           <Link to="/" aria-label="linkloud home">
