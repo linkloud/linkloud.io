@@ -4,11 +4,11 @@ import { ArrowRightIcon } from "@/static/svg";
 
 import { fakeHashTags } from "@/common/utils/fakedata";
 
-const Aside = () => {
+const TagItemContainer = () => {
   return (
-    <aside className="max-w-xs w-full p-6">
-      <h1 className="hidden">side</h1>
-      <div className="my-5 w-full">
+    <aside className="hidden md:block max-w-sm w-full py-8">
+      <h1 className="sr-only">side</h1>
+      <div className="w-full">
         <div className="pb-2 flex w-auto stroke-gray-600">
           <AnchorHoverable to="/tags" className="flex items-center text-sm">
             모든 태그 <ArrowRightIcon className="w-4 h-4" />
@@ -30,4 +30,4 @@ const Aside = () => {
   );
 };
 
-export default Aside;
+export default TagItemContainer;

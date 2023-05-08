@@ -1,5 +1,5 @@
 import Banner from "./components/Banner";
-import Aside from "./components/Aside";
+import TagItemContainer from "@/common/components/tag/TagItemContainer";
 import Search from "@/common/components/search";
 import ArticleCard from "@/common/components/article/ArticleCard";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
@@ -33,13 +33,12 @@ const HomePage = () => {
   return (
     <>
       <Banner />
-      <section className="w-full max-w-[600px] translate-y-[-50%]">
-        <h1 className="hidden">search section</h1>
+      <section className="px-5 md:px-0 w-full max-w-xl translate-y-[-50%]">
+        <h1 className="sr-only">search section</h1>
         <Search />
       </section>
-      <div className="flex flex-row-reverse w-full max-w-6xl">
-        <Aside />
-        <section className="w-full p-5">
+      <div className="flex w-full max-w-7xl">
+        <section className="w-full p-6">
           <h1 className="hidden">link article list section</h1>
           <div className="hidden md:block w-full mb-4">
             <nav>
@@ -59,6 +58,7 @@ const HomePage = () => {
             <ArticleCard article={a} key={a.id}></ArticleCard>
           ))}
         </section>
+        <TagItemContainer />
       </div>
     </>
   );

@@ -10,7 +10,7 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
 
   const responsiveClass =
     type === "xs"
-      ? "w-auto top-auto h-full"
+      ? "qh-full inset-0"
       : "top-1/4 border-solid border-gray-300 shadow-md rounded-lg";
 
   const className = `${responsiveClass} flex flex-col p-9 bg-white z-[1000] max-w-6xl`;

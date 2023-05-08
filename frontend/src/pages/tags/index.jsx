@@ -1,27 +1,16 @@
-import TagRequestModal from "./components/TagRequestModal";
 import TagCard from "@/common/components/tag/TagCard";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
 
 import { fakeTagList } from "@/common/utils/fakedata";
 
-import {
-  useRequestTagModalState,
-  useModalActions,
-} from "@/stores/useModalStore";
+import useModalStore from "@/stores/useModalStore";
 
 const TagsPage = () => {
   // 태그 요청 모달
-  const isReqTagModalOpened = useRequestTagModalState();
-  const { setOpen, setClose } = useModalActions();
-
+  const { openModal } = useModalStore();
   const handleOpenReqTagModal = () => {
-    setOpen("requestTag");
+    openModal("requestTag");
   };
-
-  const handleCloseReqTagModal = () => {
-    setClose("requestTag");
-  };
-  // 태그 요청 모달 끝
 
   const orderList = [
     {
@@ -42,7 +31,7 @@ const TagsPage = () => {
   ];
 
   return (
-    <div className="max-w-4xl px-2.5">
+    <div className="max-w-7xl px-6">
       <h2 className="mt-7 mb-4 font-bold text-2xl">태그</h2>
       <p className="max-w-[640px]">
         태그는 링크를 분류하는 키워드입니다. <br />
@@ -56,10 +45,6 @@ const TagsPage = () => {
         </a>
         를 클릭하세요.
       </p>
-      <TagRequestModal
-        isOpened={isReqTagModalOpened}
-        onCloseReqTagModal={handleCloseReqTagModal}
-      ></TagRequestModal>
       {/* 태그 정렬 옵션 */}
       <ul className="flex mt-7 mb-4">
         {orderList.map((o) => (

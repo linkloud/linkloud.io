@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-
-import Button from "../button";
-import UserProfile from "../user/UserProfile";
-import AuthLoginModal from "../auth/AuthLoginModal";
-import { LogoLabel } from "@/static/svg";
+import { useState, useEffect } from "react";
 
 import useUserStore from "@/stores/useUserStore";
-import { useModalActions, useLoginModalState } from "@/stores/useModalStore";
+import useModalStore from "@/stores/useModalStore";
+
+import HeaderActionMenu from "./HeaderActionMenu";
+import Button from "../button";
+import UserProfile from "../user/UserProfile";
+import { LogoLabel, Logo } from "@/static/svg";
+
+import { throttle } from "@/common/utils";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,17 +19,30 @@ const Header = () => {
     userRole: state.role,
     profileImage: state.profileImage,
   }));
+  const { openModal } = useModalStore();
+  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
+  const [isScrollTop, setIsScrollTop] = useState(true);
+
+  useEffect(() => {
+    document.addEventListener("scroll", throttledHandleScroll);
+    return () => {
+      document.removeEventListener("scroll", throttledHandleScroll);
+    };
+  }, [isScrollTop]);
+
+  const throttledHandleScroll = throttle(() => {
+    if (window.scrollY > 30) {
+      setIsScrollTop(false);
+    } else if (window.scrollY <= 30) {
+      setIsScrollTop(true);
+    }
+  }, 50);
 
   // 로그인 모달
-  const isLoginModalOpened = useLoginModalState();
-  const { setOpen, setClose } = useModalActions();
+  const handleOpenLoginModal = () => openModal("login");
 
-  const handleOpenLoginModal = () => setOpen("login");
-
-  const handleCloseLoginModal = () => setClose("login");
-  // 로그인 모달 끝
-
-  const handleRegisterTag = () => {
+  // 링크 등록
+  const handleRegisterLink = () => {
     if (!userRole || userRole === "guest") {
       setOpen("login");
       return;
@@ -34,19 +50,32 @@ const Header = () => {
     navigate("/links/reg");
   };
 
+  const handleHoverProfile = () => {
+    setIsActionMenuVisible(true);
+  };
+
+  const handleLeaveProfile = () => {
+    setIsActionMenuVisible(false);
+  };
+
   return (
-    <header className="sticky top-0 bg-white border-b-gray-300 z-50">
-      <div className="mx-auto px-4 flex justify-between items-center h-20 max-w-6xl">
+    <header
+      className={`sticky top-0 bg-white z-50 transition-all duration-100${
+        !isScrollTop && " shadow-md"
+      }`}
+    >
+      <div className="mx-auto px-6 flex justify-between items-center h-16 max-w-7xl">
         <h1>
           <span className="hidden">linkloud</span>
           <Link to="/" aria-label="linkloud home">
-            <LogoLabel />
+            <LogoLabel className="hidden md:inline" />
+            <Logo className="md:hidden" />
           </Link>
         </h1>
         <nav>
           <h1 className="hidden">navigation</h1>
           <ul className="flex items-center">
-            <li className="mr-2">
+            <li className="mr-2 hidden md:block">
               <Button
                 size="md"
                 styleType="subtle"
@@ -72,16 +101,15 @@ const Header = () => {
               <li className="mr-2">
                 <Button
                   size="md"
-                  styleType="default"
+                  styleType="subtle"
                   aria-haspopup="dialog"
-                  onClick={handleRegisterTag}
+                  onClick={handleRegisterLink}
                 >
                   링크 등록
                 </Button>
               </li>
             )}
-
-            {userRole === "guest" && (
+            {userRole === "guest" ? (
               <li className="mr-2">
                 <Button
                   size="md"
@@ -91,15 +119,17 @@ const Header = () => {
                 >
                   로그인
                 </Button>
-                <AuthLoginModal
-                  isOpened={isLoginModalOpened}
-                  onCloseLoginModal={handleCloseLoginModal}
-                ></AuthLoginModal>
               </li>
-            )}
-            {userRole !== "guest" && (
-              <li className="px-2">
-                <UserProfile name={name} profileImage={profileImage} />
+            ) : (
+              <li className="relative px-2">
+                <UserProfile
+                  name={name}
+                  profileImage={profileImage}
+                  onClick={handleHoverProfile}
+                />
+                {isActionMenuVisible && (
+                  <HeaderActionMenu handleMouseLeave={handleLeaveProfile} />
+                )}
               </li>
             )}
           </ul>
