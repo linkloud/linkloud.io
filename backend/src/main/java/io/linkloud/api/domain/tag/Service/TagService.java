@@ -3,6 +3,7 @@ package io.linkloud.api.domain.tag.Service;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.tag.dto.ArticleTagDto;
+import io.linkloud.api.domain.tag.dto.TagDto;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.domain.tag.repository.ArticleTagRepository;
@@ -27,6 +28,8 @@ public class TagService {
     private final TagRepository tagRepository;
     private final ArticleTagRepository articleTagRepository;
     private final ArticleRepository articleRepository;
+
+    private final int PAGE_SIZE = 16;
 
     public void addTag(Tag tag) {
         verifyExistTag(tag.getName());
@@ -61,16 +64,16 @@ public class TagService {
         log.info("아티클에 태그 추가.");
     }
 
-    public Page<Tag> fetchTags(int page, String sort) {
+    public Page<TagDto.Response> fetchTags(int page, String sortBy) {
 
         // 이름순은 오름차순.
-        Sort.Direction sd = Direction.DESC;
-        if(sort.equals("name")) {
-            sd = Direction.ASC;
+        Sort.Direction orderBy = Direction.DESC;
+        if(sortBy.equals("name")) {
+            orderBy = Direction.ASC;
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, 20, Sort.by(sd, sort));
-        return tagRepository.findAll(pageable);
+        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by(orderBy, sortBy));
+        return tagRepository.findAllOrderBy(pageable);
     }
 
     public void fetchTagListBySearch() {}
