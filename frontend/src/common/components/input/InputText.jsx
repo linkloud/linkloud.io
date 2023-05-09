@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const InputText = ({ labelText }) => {
+const InputText = ({ labelText, className }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [text, setText] = useState("");
 
@@ -15,7 +15,7 @@ const InputText = ({ labelText }) => {
   };
 
   return (
-    <div className="relative w-full">
+    <div className={`relative w-full ${className ? className : ""}`}>
       <input
         type="text"
         id={labelText}
