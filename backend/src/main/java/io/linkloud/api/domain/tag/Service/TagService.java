@@ -94,4 +94,16 @@ public class TagService {
         return optionalTag
             .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
+
+    // 존재하는 정렬 옵션인지 확인.
+    public Tag.SortBy verifyOrderBy(String sortField) {
+        for (Tag.SortBy tagsOrderby : Tag.SortBy.values()) {
+            if (tagsOrderby.getSortBy().equals(sortField)) {
+                return tagsOrderby;
+            }
+        }
+
+        // 임시 오류.
+        throw new LogicException(ExceptionCode.TEMPORARY_ERROR);
+    }
 }
