@@ -20,6 +20,7 @@ export default {
         "2xs": "270px",
         sm: "368px",
         xl: "564px",
+        "3xl": "870px",
         "7xl": "1200px",
       },
     },
