@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,15 @@ public class Tag extends Auditable {
     @Builder
     public Tag(String name) {
         this.name = name;
+    }
+
+    @AllArgsConstructor
+    public enum SortBy {
+        popularity("popularity"),
+        latest("createdAt"),
+        name("name");
+
+        @Getter
+        private String sortBy;
     }
 }
