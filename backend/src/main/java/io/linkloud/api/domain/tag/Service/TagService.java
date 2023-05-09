@@ -64,15 +64,15 @@ public class TagService {
         log.info("아티클에 태그 추가.");
     }
 
-    public Page<TagDto.Response> fetchTags(int page, String sortBy) {
+    public Page<TagDto.Response> fetchTags(int page, String sortField) {
 
         // 이름순은 오름차순.
         Sort.Direction orderBy = Direction.DESC;
-        if(sortBy.equals("name")) {
+        if(sortField.equals("name")) {
             orderBy = Direction.ASC;
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by(orderBy, sortBy));
+        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by(orderBy, sortField));
         return tagRepository.findAllOrderBy(pageable);
     }
 
@@ -96,10 +96,10 @@ public class TagService {
     }
 
     // 존재하는 정렬 옵션인지 확인.
-    public Tag.SortBy verifyOrderBy(String sortField) {
-        for (Tag.SortBy tagsOrderby : Tag.SortBy.values()) {
-            if (tagsOrderby.getSortBy().equals(sortField)) {
-                return tagsOrderby;
+    public Tag.SortBy verifySortField(String sortField) {
+        for (Tag.SortBy tagListOrderBy : Tag.SortBy.values()) {
+            if (tagListOrderBy.getSortBy().equals(sortField)) {
+                return tagListOrderBy;
             }
         }
 

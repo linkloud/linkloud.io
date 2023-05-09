@@ -45,7 +45,7 @@ public class TagController {
     @GetMapping
     public ResponseEntity<?> getTags(@RequestParam int page, @RequestParam String sortBy) {
         // sortBy 옵션이 존재하는지 확인.
-        Tag.SortBy sortField = tagService.verifyOrderBy(sortBy);
+        Tag.SortBy sortField = tagService.verifySortField(sortBy);
 
         Page<TagDto.Response> tags = tagService.fetchTags(page, sortField.getSortBy());
         return ResponseEntity.ok().body(new MultiDataResponse<>(tags.getContent(), tags));
