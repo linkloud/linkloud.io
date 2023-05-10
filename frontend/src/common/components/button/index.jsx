@@ -1,4 +1,10 @@
-const Button = ({ children, size = "md", styleType = "fill", ...props }) => {
+const Button = ({
+  children,
+  size = "md",
+  styleType = "fill",
+  className,
+  ...props
+}) => {
   const sizeTable = {
     xs: "px-2 h-6 text-sm",
     sm: "px-4 h-8 text-sm",
@@ -13,10 +19,14 @@ const Button = ({ children, size = "md", styleType = "fill", ...props }) => {
     fill: "rounded text-white bg-primary-600 hover:bg-primary-500 transition-colors",
   };
 
-  const className = `${styleTable[styleType]} ${sizeTable[size]}`;
+  const styleClassName = `${styleTable[styleType]} ${sizeTable[size]}`;
 
   return (
-    <button {...props} type="button" className={className}>
+    <button
+      {...props}
+      type="button"
+      className={`${styleClassName} ${className ? className : ""}`}
+    >
       {children}
     </button>
   );
