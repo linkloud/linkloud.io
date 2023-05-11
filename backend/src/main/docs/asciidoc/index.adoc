@@ -31,6 +31,29 @@ include::{snippets}/auth/authenticate_success/request-body.adoc[]
 .response-body
 include::{snippets}/auth/authenticate_success/response-body.adoc[]
 
+==== 실패
+.path-parameters
+include::{snippets}/auth/authenticate_failure/path-parameters.adoc[]
+
+.curl-request
+include::{snippets}/auth/authenticate_failure/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/authenticate_failure/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/authenticate_failure/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/authenticate_failure/request-body.adoc[]
+
+.response-fields
+include::{snippets}/auth/authenticate_failure/response-fields.adoc[]
+
+.response-body
+include::{snippets}/auth/authenticate_failure/response-body.adoc[]
+
+
 == 회원
 
 == 게시글

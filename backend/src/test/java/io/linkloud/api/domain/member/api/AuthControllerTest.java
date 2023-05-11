@@ -82,4 +82,34 @@ class AuthControllerTest {
         verify(authService).authenticate(any());
     }
 
+    @Test
+    @DisplayName("authenticate 실패 - OAuthClient 구현체를 찾을 수 없을 때")
+    void authenticate_fail_invalid_social_type() throws Exception {
+        // given
+        String socialType = "INVALID_SOCIAL_TYPE";
+        AuthRequestDto requestDto = new AuthRequestDto(socialType, "code");
+
+        when(authService.authenticate(any())).thenThrow(new LogicException(ExceptionCode.INVALID_SOCIAL_TYPE));
+
+        // when
+        mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isNotFound())
+                .andDo(document("auth/authenticate_failure",
+                        pathParameters(
+                                parameterWithName("socialType").description("소셜 타입 (google 등)")
+                        ),
+                        requestFields(
+                                fieldWithPath("socialType").description("소셜 로그인 타입"),
+                                fieldWithPath("code").description("소셜 로그인 후 발급받은 코드")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("HTTP status 상태 코드"),
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("fieldErrors").ignored(),
+                                fieldWithPath("violationErrors").ignored()
+                        )));
+    }
+
 }
