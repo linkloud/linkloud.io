@@ -8,8 +8,8 @@
   *::after {
     box-sizing: border-box;
     @apply text-gray-800;
-    font-family: "PretendardVariableWoff2", -apple-system, BlinkMacSystemFont,
-      system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    font-family: "SUIT-Variable", -apple-system, BlinkMacSystemFont, system-ui,
+      Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
       "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
       "Segoe UI Symbol", sans-serif;
   }
