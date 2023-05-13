@@ -6,8 +6,6 @@ import io.linkloud.api.domain.tag.dto.TagDto;
 import io.linkloud.api.domain.tag.mapper.TagMapper;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.global.common.MultiDataResponse;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -48,7 +46,7 @@ public class TagController {
         Tag.SortBy sortField = tagService.verifySortField(sortBy);
 
         Page<TagDto.Response> tags = tagService.fetchTags(page, sortField.getSortBy());
-        return ResponseEntity.ok().body(new MultiDataResponse<>(tags.getContent(), tags));
+        return ResponseEntity.ok().body(new MultiDataResponse<>(tags));
     }
 
     // Tag 리스트 임시 검색 api

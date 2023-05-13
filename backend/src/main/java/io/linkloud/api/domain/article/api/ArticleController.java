@@ -37,7 +37,7 @@ public class ArticleController {
     public ResponseEntity<MultiDataResponse> getAllArticle(@Positive @RequestParam int page) {
         Page<ArticleResponseDto> getAllArticleDto = articleService.fetchAllArticle(page);
 
-        return ResponseEntity.ok().body(new MultiDataResponse(getAllArticleDto.getContent(), getAllArticleDto));
+        return ResponseEntity.ok().body(new MultiDataResponse(getAllArticleDto));
     }
 
     /** 아티클 한 개 조회 */

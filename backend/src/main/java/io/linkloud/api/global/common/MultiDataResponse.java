@@ -10,8 +10,8 @@ public class MultiDataResponse<T> {
     private List<T> data;
     private PageInfo pageInfo;
 
-    public MultiDataResponse(List<T> data, Page page) {
-        this.data = data;
+    public MultiDataResponse(Page page) {
+        this.data = page.getContent();
         this.pageInfo = new PageInfo(page.getNumber() + 1,
             page.getSize(), page.getTotalElements(), page.getTotalPages());
     }
