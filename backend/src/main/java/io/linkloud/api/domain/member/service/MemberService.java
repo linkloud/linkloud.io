@@ -4,10 +4,9 @@ import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
-import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.repository.MemberRepository;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
+import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +71,6 @@ public class MemberService {
 
     public Member fetchMemberById(Long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
     }
 }

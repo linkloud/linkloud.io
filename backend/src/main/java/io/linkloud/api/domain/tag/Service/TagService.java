@@ -8,8 +8,9 @@ import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.domain.tag.repository.ArticleTagRepository;
 import io.linkloud.api.domain.tag.repository.TagRepository;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
+import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.exception.ExceptionCode.ValidationExceptionCode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,13 +44,13 @@ public class TagService {
     public void addArticleTag(ArticleTagDto.Post post) {
         // 태그들이 비어있을 경우 예외 발생.
         if(post.getTags().isEmpty()) {
-            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
+            throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
         }
 
         Optional<Article> optionalArticle = articleRepository.findById(post.getArticleId());
 
         Article foundArticle = optionalArticle
-            .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
 
         List<Tag> tags = new ArrayList<>();
         List<ArticleTag> articleTags = new ArrayList<>();
@@ -83,7 +84,7 @@ public class TagService {
         if(verifiedTag) {
             // 임시용 이기 때문에 409 아무거나
             // TODO : 예외 코드 추가하거나, 태그 생성 기능을 삭제하면 같이 삭제할 예정.
-            throw new LogicException(ExceptionCode.MEMBER_ALREADY_EXISTS);
+            throw new CustomException(LogicExceptionCode.MEMBER_ALREADY_EXISTS);
         }
     }
 
@@ -92,7 +93,7 @@ public class TagService {
         Optional<Tag> optionalTag = tagRepository.findTagByName(name);
 
         return optionalTag
-            .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
     }
 
     // 존재하는 정렬 옵션인지 확인.
@@ -104,6 +105,6 @@ public class TagService {
         }
 
         // 임시 오류.
-        throw new LogicException(ExceptionCode.TEMPORARY_ERROR);
+        throw new CustomException(ValidationExceptionCode.ORDER_BY_NOT_VALID);
     }
 }

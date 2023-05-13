@@ -4,8 +4,8 @@ import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
+import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
@@ -34,7 +34,7 @@ public class AuthService {
     public AuthResponseDto authenticate(AuthRequestDto dto) {
         OAuthClient oAuthClient = oAuthClients.get(dto.getSocialType() + "OAuthClientImpl");
         if (oAuthClient == null) {
-            throw new LogicException(ExceptionCode.INVALID_SOCIAL_TYPE);
+            throw new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE);
         }
         // 1
         String accessToken = oAuthClient.getAccessToken(dto.getCode());
