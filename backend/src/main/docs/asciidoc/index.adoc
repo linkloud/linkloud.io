@@ -58,7 +58,42 @@ include::{snippets}/auth/authenticate_failure/response-body.adoc[]
 ==== 실패, OAuth 액세스 토큰 잘못된 요청
 
 ==== 실패, OAuth 사용자 정보 잘못된 요청
+
 == 회원
+
+=== 회원 정보 조회
+
+==== 성공
+.curl-request
+include::{snippets}/member/me/success/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/me/success/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/me/success/http-response.adoc[]
+
+.response-fields
+include::{snippets}/member/me/success/response-fields.adoc[]
+
+.response-body
+include::{snippets}/member/me/success/response-body.adoc[]
+
+==== 실패, 회원이 존재하지 않음
+.curl-request
+include::{snippets}/member/me/fail/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/me/fail/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/me/fail/http-response.adoc[]
+
+.response-fields
+include::{snippets}/member/me/fail/response-fields.adoc[]
+
+.response-body
+include::{snippets}/member/me/fail/response-body.adoc[]
 
 == 게시글
 
