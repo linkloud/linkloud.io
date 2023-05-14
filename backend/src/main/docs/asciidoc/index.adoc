@@ -5,7 +5,9 @@
 :toc-title: API 목록
 :source-highlighter: prettify
 
+
 == 인증
+=== 소셜로그인
 ==== 성공
 .path-parameters
 include::{snippets}/auth/authenticate_success/path-parameters.adoc[]
@@ -31,7 +33,7 @@ include::{snippets}/auth/authenticate_success/request-body.adoc[]
 .response-body
 include::{snippets}/auth/authenticate_success/response-body.adoc[]
 
-==== 실패
+==== 실패, 잘못된 소셜타입 요청
 .path-parameters
 include::{snippets}/auth/authenticate_failure/path-parameters.adoc[]
 
@@ -53,7 +55,9 @@ include::{snippets}/auth/authenticate_failure/response-fields.adoc[]
 .response-body
 include::{snippets}/auth/authenticate_failure/response-body.adoc[]
 
+==== 실패, OAuth 액세스 토큰 잘못된 요청
 
+==== 실패, OAuth 사용자 정보 잘못된 요청
 == 회원
 
 == 게시글
