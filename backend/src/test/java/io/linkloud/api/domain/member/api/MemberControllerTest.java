@@ -1,6 +1,5 @@
 package io.linkloud.api.domain.member.api;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -202,6 +201,47 @@ class MemberControllerTest {
     @DisplayName("회원 닉네임 변경 실패 중복 닉네임 예외처리")
     @Test
     public void updateNickname_duplicated_nickname_throws() throws Exception {
+
+        // given
+        Member member1 = memberRepository.findById(1L).orElseThrow(()-> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        String dupNickname = "member2_google";
+
+        // member1 이 요청
+        SecurityMember securityMember = new SecurityMember(
+            member1.getId(),
+            member1.getNickname(),
+            List.of(new SimpleGrantedAuthority("ROLE_USER")),
+            member1.getPicture(),
+            member1.getSocialType()
+        );
+
+        // member1 이 member2_google 닉네임으로 변경 요청
+        MemberNicknameRequestDto nicknameRequestDto = new MemberNicknameRequestDto(dupNickname);
+
+        doThrow(new LogicException(ExceptionCode.MEMBER_ALREADY_EXISTS))
+            .when(memberService).updateNickname(securityMember, nicknameRequestDto);
+
+
+        // when
+        mockMvc.perform(patch("/api/v1/member/nickname")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nicknameRequestDto))
+                .with(user(securityMember)))
+            .andDo(print())
+            // then
+            .andExpect(status().isConflict())
+            .andDo(document("member/nickname/fail/duplicated",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("nickname").description("수정할 닉네임")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("HTTP 상태 코드. 중복된 닉네임일 경우 409 (Conflict)을 반환합니다."),
+                    fieldWithPath("message").description("에러 메시지"),
+                    fieldWithPath("fieldErrors").description("필드 에러 리스트"),
+                    fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
+                )));
 
     }
 }
