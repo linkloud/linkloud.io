@@ -6,10 +6,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -18,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
+import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.model.SocialType;
@@ -36,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -162,6 +166,37 @@ class MemberControllerTest {
     @Test
     public void updateNickname_success() throws Exception {
 
+        // given
+        Member member1 = memberRepository.findById(1L).orElseThrow(()-> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        String newNickname = "new_nickname";
+
+
+        SecurityMember securityMember = new SecurityMember(
+            member1.getId(),
+            member1.getNickname(),
+            List.of(new SimpleGrantedAuthority("ROLE_USER")),
+            member1.getPicture(),
+            member1.getSocialType()
+        );
+
+        MemberNicknameRequestDto nicknameRequestDto = new MemberNicknameRequestDto(newNickname);
+
+
+        // when
+        mockMvc.perform(patch("/api/v1/member/nickname")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nicknameRequestDto))
+                .with(user(securityMember)))
+            .andDo(print())
+            // then
+            .andExpect(status().isNoContent())
+            .andDo(document("member/nickname/success",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("nickname").description("수정할 닉네임")
+                )
+            ));
     }
 
     @DisplayName("회원 닉네임 변경 실패 중복 닉네임 예외처리")
