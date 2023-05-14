@@ -1,13 +1,30 @@
 package io.linkloud.api.domain.member.api;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.global.exception.ExceptionCode;
+import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -67,7 +85,40 @@ class MemberControllerTest {
 
     @DisplayName("회원 조회 성공")
     @Test
-    public void member_me() {
+    public void member_me() throws Exception {
+
+        // given
+        Member savedMember = memberRepository.findById(1L)
+            .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        SecurityMember securityMember = new SecurityMember(
+            savedMember.getId(),
+            savedMember.getNickname(),
+            List.of(new SimpleGrantedAuthority("ROLE_USER")),
+            savedMember.getPicture(),
+            savedMember.getSocialType()
+        );
+
+        MemberLoginResponse memberLoginResponse = new MemberLoginResponse(savedMember);
+        given(memberService.fetchPrincipal(securityMember)).willReturn(memberLoginResponse);
+
+        mockMvc.perform(get("/api/v1/member/me").with(user(securityMember)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.nickname").value(savedMember.getNickname()))
+            .andExpect(jsonPath("$.data.picture").value(savedMember.getPicture()))
+            .andExpect(jsonPath("$.data.role").value(Role.USER.toString()))
+            .andDo(print())
+            .andDo(document("member/me/success",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    responseFields(
+                        fieldWithPath("data.nickname").description("회원의 닉네임."),
+                        fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
+                        fieldWithPath("data.role").description("회원의 권한")
+                    )
+                )
+            );
+
 
     }
 
