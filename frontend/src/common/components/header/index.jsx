@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import useUserStore from "@/stores/useUserStore";
+import useAuthStore from "@/stores/useAuthStore";
 import useModalStore from "@/stores/useModalStore";
 
 import HeaderActionMenu from "./HeaderActionMenu";
@@ -10,16 +10,16 @@ import UserProfile from "../user/UserProfile";
 import { LogoLabel, Logo } from "@/static/svg";
 
 import { throttle } from "@/common/utils";
+import { ROLE } from "@/common/constants";
 
 const Header = () => {
   const navigate = useNavigate();
 
-  const { userRole, name, profileImage } = useUserStore((state) => ({
-    name: state.name,
-    userRole: state.role,
-    profileImage: state.profileImage,
-  }));
+  const { userInfo } = useAuthStore();
+  const { role, picture, nickname } = userInfo;
+
   const { openModal } = useModalStore();
+
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
   const [isScrollTop, setIsScrollTop] = useState(true);
 
@@ -60,8 +60,8 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 bg-white z-50 transition-all duration-100${
-        !isScrollTop && " shadow-md"
+      className={`sticky top-0 bg-white z-50 transition-all ${
+        isScrollTop ? "" : "shadow-md"
       }`}
     >
       <div className="mx-auto px-6 flex justify-between items-center h-16 max-w-7xl">
@@ -85,7 +85,7 @@ const Header = () => {
                 공지사항
               </Button>
             </li>
-            {userRole === "admin" && (
+            {role === ROLE.ADMIN && (
               <li className="mr-2">
                 <Button
                   size="md"
@@ -97,7 +97,7 @@ const Header = () => {
                 </Button>
               </li>
             )}
-            {userRole !== "guest" && (
+            {role !== ROLE.GUEST && (
               <li className="mr-2">
                 <Button
                   size="md"
@@ -109,7 +109,7 @@ const Header = () => {
                 </Button>
               </li>
             )}
-            {userRole === "guest" ? (
+            {role === ROLE.GUEST ? (
               <li className="mr-2">
                 <Button
                   size="md"
@@ -123,8 +123,8 @@ const Header = () => {
             ) : (
               <li className="relative px-2">
                 <UserProfile
-                  name={name}
-                  profileImage={profileImage}
+                  name={nickname}
+                  profileImage={picture}
                   onClick={handleClickProfile}
                 />
                 {isActionMenuVisible && (
