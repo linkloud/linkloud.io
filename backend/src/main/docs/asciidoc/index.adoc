@@ -95,6 +95,46 @@ include::{snippets}/member/me/fail/response-fields.adoc[]
 .response-body
 include::{snippets}/member/me/fail/response-body.adoc[]
 
+
+=== 회원 닉네임 변경
+
+==== 성공
+
+.request-fields
+include::{snippets}/member/nickname/success/request-fields.adoc[]
+
+.curl-request
+include::{snippets}/member/nickname/success/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/nickname/success/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/nickname/success/http-response.adoc[]
+
+.request-body
+include::{snippets}/member/nickname/success/request-body.adoc[]
+
+==== 실패, 회원 닉네임 중복
+
+.request-fields
+include::{snippets}/member/nickname/fail/duplicated/request-fields.adoc[]
+
+.curl-request
+include::{snippets}/member/nickname/fail/duplicated/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/nickname/fail/duplicated/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/nickname/fail/duplicated/http-response.adoc[]
+
+.request-body
+include::{snippets}/member/nickname/fail/duplicated/request-body.adoc[]
+
+.response-body
+include::{snippets}/member/nickname/fail/duplicated/response-body.adoc[]
+
 == 게시글
 
 == 태그
