@@ -50,8 +50,8 @@ const Header = () => {
     navigate("/links/reg");
   };
 
-  const handleHoverProfile = () => {
-    setIsActionMenuVisible(true);
+  const handleClickProfile = () => {
+    setIsActionMenuVisible((prev) => !prev);
   };
 
   const handleLeaveProfile = () => {
@@ -125,7 +125,7 @@ const Header = () => {
                 <UserProfile
                   name={name}
                   profileImage={profileImage}
-                  onClick={handleHoverProfile}
+                  onClick={handleClickProfile}
                 />
                 {isActionMenuVisible && (
                   <HeaderActionMenu handleMouseLeave={handleLeaveProfile} />
