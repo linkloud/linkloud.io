@@ -1,32 +1,41 @@
+import { useSearchParams } from "react-router-dom";
+
 import Banner from "./components/Banner";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
 import Search from "@/common/components/search";
-import ArticleCard from "@/common/components/article/ArticleCard";
+import ArticleItem from "@/common/components/article/ArticleItem";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
 
 import { fakeArticleList } from "@/common/utils/fakedata";
 
 const HomePage = () => {
-  const orderList = [
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+
+  const sortList = [
     {
       id: 1,
-      name: "최신순",
-      isSelected: true,
+      displayName: "최신순",
+      name: "createdAt",
+      isSelected: sortBy === "createdAt",
     },
     {
       id: 2,
-      name: "인기순",
-      isSelected: false,
+      displayName: "인기순",
+      name: "popularity",
+      isSelected: sortBy === "popularity",
     },
     {
       id: 3,
-      name: "이주의 링크",
-      isSelected: false,
+      displayName: "이주의 링크",
+      name: "weekly",
+      isSelected: sortBy === "weekly",
     },
     {
       id: 4,
-      name: "이달의 링크",
-      isSelected: false,
+      displayName: "이달의 링크",
+      name: "monthly",
+      isSelected: sortBy === "monthly",
     },
   ];
 
@@ -44,10 +53,13 @@ const HomePage = () => {
             <nav>
               <h1 className="hidden">link article order option</h1>
               <ul className="flex py-3">
-                {orderList.map((o) => (
-                  <li key={o.id}>
-                    <AnchorSelectable isSelected={o.isSelected}>
-                      {o.name}
+                {sortList.map((s) => (
+                  <li key={s.id}>
+                    <AnchorSelectable
+                      isSelected={s.isSelected}
+                      to={`?sortBy=${s.name}`}
+                    >
+                      {s.displayName}
                     </AnchorSelectable>
                   </li>
                 ))}
@@ -55,7 +67,7 @@ const HomePage = () => {
             </nav>
           </div>
           {fakeArticleList.map((a) => (
-            <ArticleCard article={a} key={a.id}></ArticleCard>
+            <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
         <TagItemContainer />
