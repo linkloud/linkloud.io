@@ -2,7 +2,7 @@ import { useSearchParams } from "react-router-dom";
 
 import Search from "@/common/components/search";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
-import ArticleCard from "@/common/components/article/ArticleCard";
+import ArticleItem from "@/common/components/article/ArticleItem";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
 
 import { fakeArticleList } from "@/common/utils/fakedata";
@@ -31,11 +31,6 @@ const SearchPage = () => {
         <h1 className="sr-only">search section</h1>
         <Search />
       </section>
-      {/* <section className="pt-5 max-w-7xl w-full">
-        <h1 className="text-xl">
-          <strong>'{searchKeyword}'</strong> 검색 결과
-        </h1>
-      </section> */}
       <div className="px-6">
         <h2 className="text-xl">
           <strong>'{searchKeyword}'</strong> 검색 결과
@@ -59,7 +54,7 @@ const SearchPage = () => {
             </nav>
           </div>
           {fakeArticleList.map((a) => (
-            <ArticleCard article={a} key={a.id}></ArticleCard>
+            <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
         <TagItemContainer />
