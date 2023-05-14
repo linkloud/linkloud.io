@@ -1,7 +1,9 @@
 package io.linkloud.api.domain.member.api;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -126,6 +128,34 @@ class MemberControllerTest {
     @Test
     public void member_me_not_found_throws() throws Exception {
 
+        // given
+        doThrow(new LogicException(ExceptionCode.MEMBER_NOT_FOUND))
+            .when(memberService).fetchPrincipal(any(SecurityMember.class));
+        Member member = memberRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("회원을 찾지 못했습니다"));
+
+        SecurityMember securityMember = new SecurityMember(
+            10000L,
+            member.getNickname(),
+            List.of(new SimpleGrantedAuthority("ROLE_USER")),
+            member.getPicture(),
+            member.getSocialType()
+        );
+
+        mockMvc.perform(get("/api/v1/member/me").with(user(securityMember)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(ExceptionCode.MEMBER_NOT_FOUND.getStatus()))
+            .andExpect(jsonPath("$.message").value(ExceptionCode.MEMBER_NOT_FOUND.getMessage()))
+            .andDo(print())
+            .andDo(document("member/me/fail",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("status").description("에러 코드"),
+                    fieldWithPath("message").description("에러 메시지"),
+                    fieldWithPath("fieldErrors").description("필드 에러"),
+                    fieldWithPath("violationErrors").description("검증 에러")
+                )
+            ));
     }
 
     @DisplayName("회원 닉네임 변경 성공")
