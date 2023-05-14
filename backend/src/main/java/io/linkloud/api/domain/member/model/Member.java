@@ -60,6 +60,11 @@ public class Member extends Auditable {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+
+    // 닉네임 변경
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
 
 
