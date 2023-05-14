@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.member.service;
 
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
+import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
@@ -73,5 +74,33 @@ public class MemberService {
     public Member fetchMemberById(Long id) {
         return memberRepository.findById(id)
             .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
+    /**
+     * 회원 닉네임 변경
+     * 현재 닉네임과 변경하려는 닉네임이 같다면 실행 X
+     * 중복된 닉네임이 있다면 예외처리
+     * @param principalMember 인증요청한 회원
+     * @param nicknameRequestDto 회원 요청 닉네임
+     */
+    @Transactional
+    public void updateNickname(SecurityMember principalMember, MemberNicknameRequestDto nicknameRequestDto) {
+        String requestNickname = nicknameRequestDto.getNickname();
+        Member member = fetchMemberById(principalMember.getId());
+        if (!member.getNickname().equals(requestNickname)) {
+            isNicknameDuplicated(requestNickname);
+            member.updateNickname(requestNickname);
+        }
+    }
+
+    /**
+     * 회원 닉네임 중복검사
+     * @param nickname 회원 닉네임
+     */
+    private void isNicknameDuplicated(String nickname) {
+        if (memberRepository.existsByNickname(nickname)) {
+            log.error("중복된 닉네임 입니다={}",nickname);
+            throw new LogicException(ExceptionCode.MEMBER_ALREADY_EXISTS);
+        }
     }
 }
