@@ -5,14 +5,20 @@
 export const fakeArticleList = [
   {
     id: 1,
-    title: "이름1",
-    description: "설명",
+    title: "Spring Boot 공식문서",
+    description: "Spring Boot 공식문서 입니다",
+    link: "https://springboot.io/io",
+    counts: 3,
     tags: [{ name: "태그1" }, { name: "태그2" }],
   },
   {
     id: 2,
     title: "이름2",
-    description: "설명",
+    description:
+      "설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi ",
+    link: "https://test.io",
+    counts: 3,
+    tags: [{ name: "태그1" }, { name: "태그2" }],
   },
   {
     id: 3,
