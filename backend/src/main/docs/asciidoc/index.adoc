@@ -61,5 +61,3 @@ include::{snippets}/auth/authenticate_failure/response-body.adoc[]
 == 태그
 
 == 검색
-
-== 신고
