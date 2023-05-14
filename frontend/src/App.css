@@ -46,10 +46,8 @@
     font: inherit;
   }
 
-  html,
-  body,
-  #root {
-    height: 100%;
+  body {
+    height: 100vh;
   }
 
   /* input search remove x mark */
