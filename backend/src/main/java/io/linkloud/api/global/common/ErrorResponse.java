@@ -1,6 +1,6 @@
 package io.linkloud.api.global.common;
 
-import io.linkloud.api.global.exception.ExceptionCode;
+import io.linkloud.api.global.exception.ExceptionCode.ExceptionCode;
 import jakarta.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +41,7 @@ public class ErrorResponse {
     **/
     private ErrorResponse(final List<FieldError> fieldErrors,
         final List<ConstraintViolationError> violationErrors) {
+        this.status = 400;
         this.fieldErrors = fieldErrors;
         this.violationErrors = violationErrors;
     }

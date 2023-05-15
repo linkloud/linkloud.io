@@ -1,7 +1,7 @@
 package io.linkloud.api.global.advice;
 
 import io.linkloud.api.global.common.ErrorResponse;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.CustomException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class ExceptionAdvice {
 
     // 서버 로직 내 예외 처리
     @ExceptionHandler
-    public ResponseEntity handleLogicException(LogicException e) {
+    public ResponseEntity handleLogicException(CustomException e) {
         final ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
 
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode()

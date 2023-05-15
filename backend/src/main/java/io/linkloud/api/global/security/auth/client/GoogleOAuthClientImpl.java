@@ -3,8 +3,8 @@ package io.linkloud.api.global.security.auth.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
+import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.client.dto.google.GoogleAccessToken;
 import io.linkloud.api.global.security.auth.client.dto.google.GoogleUserInfo;
@@ -66,7 +66,7 @@ public class GoogleOAuthClientImpl implements OAuthClient {
                 .orElseThrow(() -> new IOException("구글 AccessToken 요청에 실패했습니다"));
         } catch (IOException e) {
             log.error("GoogleAccessToken 요청 중 예외 발생: " + e.getMessage());
-            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
+            throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
         }
         log.info("GoogleAccessToken 요청 성공");
         return convertGoogleAuthToken(responseBody).getAccessToken();
@@ -77,7 +77,7 @@ public class GoogleOAuthClientImpl implements OAuthClient {
         try {
             return objectMapper.readValue(responseBody, GoogleAccessToken.class);
         } catch (JsonProcessingException e) {
-            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
+            throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
         }
     }
 
@@ -95,7 +95,7 @@ public class GoogleOAuthClientImpl implements OAuthClient {
                 .orElseThrow(() -> new IOException("구글 사용자 정보요청에 실패했습니다"));
         } catch (IOException e) {
             log.error("GoogleUserInfo 요청 중 예외 발생: " + e.getMessage());
-            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
+            throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
         }
             log.info("사용자 정보={}", userInfoResponseBody);
         return new OAuthAttributes(
@@ -106,7 +106,7 @@ public class GoogleOAuthClientImpl implements OAuthClient {
         try {
             return objectMapper.readValue(body, GoogleUserInfo.class);
         } catch (JsonProcessingException e) {
-            throw new LogicException(ExceptionCode.JSON_REQUEST_FAILED);
+            throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
         }
     }
 }

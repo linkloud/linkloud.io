@@ -4,8 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
+import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
@@ -61,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 3. 사용자 정보 추출
                 String memberId = jwtProvider.getClaims(accessToken, Claims::getId);
                 Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(
-                    () -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND)
+                    () -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND)
                 );
 
                 // 4. 사용자 정보 스프링 시큐리티 컨텍스트에 등록
@@ -72,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (JwtException e) {
             log.error("JWT parsing error: {}", e.getMessage());
-            response.setStatus(ExceptionCode.MEMBER_UNAUTHORIZED.getStatus());
+            response.setStatus(AuthExceptionCode.USER_UNAUTHORIZED.getStatus());
             return;
         }
         log.info("JWT 인증 필터 종료");
