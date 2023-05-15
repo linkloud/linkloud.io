@@ -1,9 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import useAuthStore from "@/stores/useAuthStore";
-import useModalStore from "@/stores/useModalStore";
-import useScrolledPastThreshold from "@/hooks/useScrolledPastThreshold";
+import useHeader from "./hooks/useHeader";
 
 import HeaderActionMenu from "./HeaderActionMenu";
 import Button from "../button";
@@ -13,35 +10,17 @@ import { LogoLabel, Logo } from "@/static/svg";
 import { ROLE } from "@/common/constants";
 
 const Header = () => {
-  const navigate = useNavigate();
+  const {
+    userInfo,
+    isScrollTop,
+    isActionMenuVisible,
+    handleOpenLoginModal,
+    handleRegisterLink,
+    handleClickProfile,
+    handleLeaveProfile,
+  } = useHeader();
 
-  const { userInfo } = useAuthStore();
   const { role, picture, nickname } = userInfo;
-
-  const { openModal } = useModalStore();
-  const { isScrollTop } = useScrolledPastThreshold();
-
-  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
-
-  // 로그인 모달
-  const handleOpenLoginModal = () => openModal("login");
-
-  // 링크 등록
-  const handleRegisterLink = () => {
-    if (!userRole || userRole === "guest") {
-      setOpen("login");
-      return;
-    }
-    navigate("/links/reg");
-  };
-
-  const handleClickProfile = () => {
-    setIsActionMenuVisible((prev) => !prev);
-  };
-
-  const handleLeaveProfile = () => {
-    setIsActionMenuVisible(false);
-  };
 
   return (
     <header
@@ -60,7 +39,7 @@ const Header = () => {
         <nav>
           <h1 className="hidden">navigation</h1>
           <ul className="flex items-center">
-            <li className="mr-2 hidden md:block">
+            <li className="ml-2 hidden md:block">
               <Button
                 size="md"
                 styleType="subtle"
@@ -71,7 +50,7 @@ const Header = () => {
               </Button>
             </li>
             {role === ROLE.ADMIN && (
-              <li className="mr-2">
+              <li className="ml-2">
                 <Button
                   size="md"
                   styleType="inverted"
@@ -83,7 +62,7 @@ const Header = () => {
               </li>
             )}
             {role !== ROLE.GUEST && (
-              <li className="mr-2">
+              <li className="ml-2">
                 <Button
                   size="md"
                   styleType="subtle"
@@ -95,7 +74,7 @@ const Header = () => {
               </li>
             )}
             {role === ROLE.GUEST ? (
-              <li className="mr-2">
+              <li className="ml-2">
                 <Button
                   size="md"
                   styleType="fill"
