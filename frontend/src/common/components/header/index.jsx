@@ -1,15 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import useAuthStore from "@/stores/useAuthStore";
 import useModalStore from "@/stores/useModalStore";
+import useScrolledPastThreshold from "@/hooks/useScrolledPastThreshold";
 
 import HeaderActionMenu from "./HeaderActionMenu";
 import Button from "../button";
 import UserProfile from "../user/UserProfile";
 import { LogoLabel, Logo } from "@/static/svg";
 
-import { throttle } from "@/common/utils";
 import { ROLE } from "@/common/constants";
 
 const Header = () => {
@@ -19,24 +19,9 @@ const Header = () => {
   const { role, picture, nickname } = userInfo;
 
   const { openModal } = useModalStore();
+  const { isScrollTop } = useScrolledPastThreshold();
 
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
-  const [isScrollTop, setIsScrollTop] = useState(true);
-
-  useEffect(() => {
-    document.addEventListener("scroll", throttledHandleScroll);
-    return () => {
-      document.removeEventListener("scroll", throttledHandleScroll);
-    };
-  }, [isScrollTop]);
-
-  const throttledHandleScroll = throttle(() => {
-    if (window.scrollY > 30) {
-      setIsScrollTop(false);
-    } else if (window.scrollY <= 30) {
-      setIsScrollTop(true);
-    }
-  }, 50);
 
   // 로그인 모달
   const handleOpenLoginModal = () => openModal("login");
