@@ -41,27 +41,51 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, tag);
 
         // 데이터 조회를 위한 메인 쿼리
+        // SELECT t.id, t.name, COUNT(at.tag_id) AS popularity
+        // FROM tag AS t
+        // LEFT JOIN article_tag AS at ON t.id = at.tag_id
+        // GROUP BY t.id, t.name
+        // ORDER BY popularity DESC
         List<TagDto.Response> tags = query
-            .select(Projections.constructor(TagDto.Response.class, tag.id, tag.name,
-                articleTag.tag.count().as("popularity")))
-            .from(tag)
-            .innerJoin(articleTag).on(tag.eq(articleTag.tag)).fetchJoin()
-            .groupBy(tag.id, tag.name)
-            .orderBy(orders)
-            .fetch();
+                .select(Projections.constructor(TagDto.Response.class, tag.id, tag.name,
+                        articleTag.tag.count().as("popularity")))
+                .from(tag)
+                .leftJoin(articleTag).on(tag.eq(articleTag.tag)).fetchJoin()
+                .groupBy(tag.id, tag.name)
+                .orderBy(orders)
+                .fetch();
 
         // pageable을 위한 countQuery
         JPAQuery<Long> countQuery = query
-            .select(tag.count())
-            .distinct()
-            .from(tag);
+                .select(tag.count())
+                .distinct()
+                .from(tag);
 
         return PageableExecutionUtils.getPage(tags, pageable, countQuery::fetchOne);
     }
 
     @Override
-    public List<Tag> findTagByNameIsStartingWith(String name) {
-        return null;
+    public List<TagDto.Response> findTagByNameIsStartingWith(String keyword) {
+        // SELECT t.id, t.name, COUNT(at.tag_id) AS popularity
+        // FROM tag AS t
+        // LEFT JOIN article_tag AS at ON t.id = at.tag_id
+        // WHERE t.name LIKE '{keyword}%'
+        // GROUP BY t.id, t.name
+        // ORDER BY popularity DESC, t.name
+        // LIMIT 5;
+
+        List<TagDto.Response> tags = query
+                .select(Projections.constructor(TagDto.Response.class, tag.id, tag.name,
+                        articleTag.tag.count().as("popularity")))
+                .from(tag)
+                .leftJoin(articleTag).on(tag.eq(articleTag.tag)).fetchJoin()
+                .where(tag.name.startsWith(keyword))
+                .groupBy(tag.id, tag.name)
+                .orderBy(articleTag.tag.count().desc(), tag.name.asc())
+                .limit(5)
+                .fetch();
+
+        return tags;
     }
 
     // pageable에서 sort 객체로 OrderSpecifier를 생성하여 반환.

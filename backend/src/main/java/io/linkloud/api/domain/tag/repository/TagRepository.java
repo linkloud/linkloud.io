@@ -15,5 +15,5 @@ public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCu
     Boolean existsByName(String name);
     Optional<Tag> findTagByName(String name);
     Page<TagDto.Response> findAllOrderBy(Pageable pageable);
-    List<Tag> findTagByNameIsStartingWith(String name);
+    List<TagDto.Response> findTagByNameIsStartingWith(String name);
 }

@@ -32,6 +32,7 @@ public class TagService {
 
     private final int PAGE_SIZE = 16;
 
+    // TODO : 아티클 기능 완성시 아티클 생성로직으로 편입될 예정.
     public void addTag(Tag tag) {
         verifyExistTag(tag.getName());
         tagRepository.save(tag);
@@ -77,7 +78,9 @@ public class TagService {
         return tagRepository.findAllOrderBy(pageable);
     }
 
-    public void fetchTagListBySearch() {}
+    public List<TagDto.Response> fetchTagListBySearch(String keyword) {
+        return tagRepository.findTagByNameIsStartingWith(keyword);
+    }
 
     private void verifyExistTag(String tagName) {
         boolean verifiedTag = tagRepository.existsByName(tagName);

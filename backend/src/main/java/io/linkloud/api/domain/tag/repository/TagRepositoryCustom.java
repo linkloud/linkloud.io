@@ -11,6 +11,6 @@ public interface TagRepositoryCustom {
     Boolean existsByName(String name);
     Optional<Tag> findTagByName(String name);
     Page<TagDto.Response> findAllOrderBy(Pageable pageable);
-    List<Tag> findTagByNameIsStartingWith(String name);
+    List<TagDto.Response> findTagByNameIsStartingWith(String name);
 
 }
