@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.security.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,7 +89,7 @@ class AuthControllerTest {
         String socialType = "INVALID_SOCIAL_TYPE";
         AuthRequestDto requestDto = new AuthRequestDto(socialType, "code");
 
-        when(authService.authenticate(any())).thenThrow(new LogicException(ExceptionCode.INVALID_SOCIAL_TYPE));
+        when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
 
         // when
         mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)

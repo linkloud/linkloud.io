@@ -25,8 +25,8 @@ import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.domain.member.service.MemberService;
-import io.linkloud.api.global.exception.ExceptionCode;
-import io.linkloud.api.global.exception.LogicException;
+import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +94,7 @@ class MemberControllerTest {
 
         // given
         Member savedMember = memberRepository.findById(1L)
-            .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
 
         SecurityMember securityMember = new SecurityMember(
             savedMember.getId(),
@@ -132,7 +132,7 @@ class MemberControllerTest {
     public void member_me_not_found_throws() throws Exception {
 
         // given
-        doThrow(new LogicException(ExceptionCode.MEMBER_NOT_FOUND))
+        doThrow(new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND))
             .when(memberService).fetchPrincipal(any(SecurityMember.class));
         Member member = memberRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("회원을 찾지 못했습니다"));
 
@@ -146,8 +146,8 @@ class MemberControllerTest {
 
         mockMvc.perform(get("/api/v1/member/me").with(user(securityMember)))
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.status").value(ExceptionCode.MEMBER_NOT_FOUND.getStatus()))
-            .andExpect(jsonPath("$.message").value(ExceptionCode.MEMBER_NOT_FOUND.getMessage()))
+            .andExpect(jsonPath("$.status").value(LogicExceptionCode.MEMBER_NOT_FOUND.getStatus()))
+            .andExpect(jsonPath("$.message").value(LogicExceptionCode.MEMBER_NOT_FOUND.getMessage()))
             .andDo(print())
             .andDo(document("member/me/fail",
                 preprocessRequest(prettyPrint()),
@@ -166,7 +166,7 @@ class MemberControllerTest {
     public void updateNickname_success() throws Exception {
 
         // given
-        Member member1 = memberRepository.findById(1L).orElseThrow(()-> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member member1 = memberRepository.findById(1L).orElseThrow(()-> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
         String newNickname = "new_nickname";
 
 
@@ -203,7 +203,7 @@ class MemberControllerTest {
     public void updateNickname_duplicated_nickname_throws() throws Exception {
 
         // given
-        Member member1 = memberRepository.findById(1L).orElseThrow(()-> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member member1 = memberRepository.findById(1L).orElseThrow(()-> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
         String dupNickname = "member2_google";
 
         // member1 이 요청
@@ -218,7 +218,7 @@ class MemberControllerTest {
         // member1 이 member2_google 닉네임으로 변경 요청
         MemberNicknameRequestDto nicknameRequestDto = new MemberNicknameRequestDto(dupNickname);
 
-        doThrow(new LogicException(ExceptionCode.MEMBER_ALREADY_EXISTS))
+        doThrow(new CustomException(LogicExceptionCode.MEMBER_ALREADY_EXISTS))
             .when(memberService).updateNickname(securityMember, nicknameRequestDto);
 
 
