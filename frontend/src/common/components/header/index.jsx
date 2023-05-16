@@ -92,7 +92,10 @@ const Header = () => {
                   onClick={handleClickProfile}
                 />
                 {isActionMenuVisible && (
-                  <HeaderActionMenu handleMouseLeave={handleLeaveProfile} />
+                  <HeaderActionMenu
+                    nickname={nickname}
+                    handleMouseLeave={handleLeaveProfile}
+                  />
                 )}
               </li>
             )}

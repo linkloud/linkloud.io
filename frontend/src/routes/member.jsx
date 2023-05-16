@@ -4,7 +4,7 @@ const members = {
   path: "/members",
   children: [
     {
-      path: ":name",
+      path: ":nickname",
       element: <MemberProfilePage />,
     },
   ],
