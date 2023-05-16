@@ -27,7 +27,10 @@ const ArticleItem = ({ article }) => {
             <ul className="flex">
               {article.tags &&
                 article.tags.map((t) => (
-                  <li className="mr-2 text-gray-400 text-xs md:text-sm">
+                  <li
+                    key={t.id}
+                    className="mr-2 text-gray-400 text-xs md:text-sm"
+                  >
                     #{t.name}
                   </li>
                 ))}
