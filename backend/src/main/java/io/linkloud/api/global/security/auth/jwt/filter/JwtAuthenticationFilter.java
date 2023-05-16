@@ -71,9 +71,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 log.info("Security Context 에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
             }
-        } catch (JwtException e) {
-            log.error("JWT parsing error: {}", e.getMessage());
-            response.setStatus(AuthExceptionCode.USER_UNAUTHORIZED.getStatus());
+        } catch (CustomException e) {
+            log.error("JWT error: {}", e.getMessage());
+            response.setStatus(e.getExceptionCode().getStatus());
             return;
         }
         log.info("JWT 인증 필터 종료");
