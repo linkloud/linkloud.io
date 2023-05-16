@@ -12,7 +12,7 @@ public enum LogicExceptionCode implements ExceptionCode {
     MEMBER_ALREADY_EXISTS(409, "Member Already Exist."),
     ARTICLE_NOT_FOUND(404, "Article not found"),
     BOOKMARK_NOT_FOUND(404, "Bookmark not found"),
-    JSON_REQUEST_FAILED(400, "Json Request Failed.");
+    JSON_REQUEST_FAILED(401, "Json Request Failed.");
 
 
     @Getter

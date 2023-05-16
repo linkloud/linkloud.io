@@ -6,6 +6,7 @@ import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.global.exception.ExceptionCode.ExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
@@ -98,8 +99,7 @@ public class MemberService {
      */
     private void isNicknameDuplicated(String nickname) {
         if (memberRepository.existsByNickname(nickname)) {
-            log.error("중복된 닉네임 입니다={}",nickname);
-            throw new LogicException(ExceptionCode.MEMBER_ALREADY_EXISTS);
+            throw new CustomException(LogicExceptionCode.MEMBER_ALREADY_EXISTS);
         }
     }
 }
