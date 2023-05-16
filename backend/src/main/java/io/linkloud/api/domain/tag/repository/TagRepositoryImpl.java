@@ -41,11 +41,16 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, tag);
 
         // 데이터 조회를 위한 메인 쿼리
+        // SELECT t.id, t.name, COUNT(at.tag_id) AS popularity
+        // FROM tag AS t
+        // LEFT JOIN article_tag AS at ON t.id = at.tag_id
+        // GROUP BY t.id, t.name
+        // ORDER BY popularity DESC
         List<TagDto.Response> tags = query
             .select(Projections.constructor(TagDto.Response.class, tag.id, tag.name,
                 articleTag.tag.count().as("popularity")))
             .from(tag)
-            .innerJoin(articleTag).on(tag.eq(articleTag.tag)).fetchJoin()
+            .leftJoin(articleTag).on(tag.eq(articleTag.tag)).fetchJoin()
             .groupBy(tag.id, tag.name)
             .orderBy(orders)
             .fetch();
