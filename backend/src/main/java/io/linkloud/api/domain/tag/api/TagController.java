@@ -1,9 +1,9 @@
 package io.linkloud.api.domain.tag.api;
 
-import io.linkloud.api.domain.tag.Service.TagService;
 import io.linkloud.api.domain.tag.dto.TagDto;
 import io.linkloud.api.domain.tag.dto.TagDto.Response;
 import io.linkloud.api.domain.tag.model.Tag;
+import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
 import jakarta.validation.constraints.Max;
@@ -29,9 +29,9 @@ public class TagController {
     // Tag 리스트 임시 조회 api
     @GetMapping
     public ResponseEntity<?> getTags(
-        @Positive @RequestParam int page,
-        @Positive @Min(5) @Max(16) @RequestParam int size,
-        @RequestParam String sortBy) {
+            @Positive @RequestParam int page,
+            @Positive @Min(5) @Max(16) @RequestParam int size,
+            @RequestParam String sortBy) {
         // sortBy 옵션이 존재하는지 확인.
         Tag.SortBy sortField = tagService.verifySortField(sortBy);
 

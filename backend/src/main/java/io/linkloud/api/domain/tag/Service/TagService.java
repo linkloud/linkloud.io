@@ -1,4 +1,4 @@
-package io.linkloud.api.domain.tag.Service;
+package io.linkloud.api.domain.tag.service;
 
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
@@ -42,14 +42,14 @@ public class TagService {
     // TODO : 아티클 기능 완성시 아티클 생성로직으로 편입될 예정.
     public void addArticleTag(ArticleTagDto.Post post) {
         // 태그들이 비어있을 경우 예외 발생.
-        if(post.getTags().isEmpty()) {
+        if (post.getTags().isEmpty()) {
             throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
         }
 
         Optional<Article> optionalArticle = articleRepository.findById(post.getArticleId());
 
         Article foundArticle = optionalArticle
-            .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
 
         List<Tag> tags = new ArrayList<>();
         List<ArticleTag> articleTags = new ArrayList<>();
@@ -68,7 +68,7 @@ public class TagService {
 
         // 이름순은 오름차순.
         Sort.Direction orderBy = Direction.DESC;
-        if(sortField.equals("name")) {
+        if (sortField.equals("name")) {
             orderBy = Direction.ASC;
         }
 
@@ -82,7 +82,7 @@ public class TagService {
 
     private void verifyExistTag(String tagName) {
         boolean verifiedTag = tagRepository.existsByName(tagName);
-        if(verifiedTag) {
+        if (verifiedTag) {
             // 임시용 이기 때문에 409 아무거나
             // TODO : 예외 코드 추가하거나, 태그 생성 기능을 삭제하면 같이 삭제할 예정.
             throw new CustomException(LogicExceptionCode.MEMBER_ALREADY_EXISTS);
@@ -90,11 +90,11 @@ public class TagService {
     }
 
     // 이름으로 태그 가져오기
-    private Tag fetchTagByName(String name){
+    private Tag fetchTagByName(String name) {
         Optional<Tag> optionalTag = tagRepository.findTagByName(name);
 
         return optionalTag
-            .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
     }
 
     // 존재하는 정렬 옵션인지 확인.
