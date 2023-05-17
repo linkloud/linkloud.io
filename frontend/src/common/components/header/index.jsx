@@ -30,10 +30,11 @@ const Header = () => {
     >
       <div className="mx-auto px-6 flex justify-between items-center h-16 max-w-7xl">
         <h1>
-          <span className="hidden">linkloud</span>
-          <Link to="/" aria-label="linkloud home">
-            <LogoLabel className="hidden md:inline" />
-            <Logo className="md:hidden" />
+          <Link to="/" aria-label="linkloud" className="flex items-end">
+            <Logo />
+            <span className="hidden md:inline-block ml-2 font-semibold text-2xl">
+              Linkloud
+            </span>
           </Link>
         </h1>
         <nav>
