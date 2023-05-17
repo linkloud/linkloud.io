@@ -3,6 +3,7 @@ import { create } from "zustand";
 const useModalStore = create((set) => ({
   login: false,
   requestTag: false,
+  articleRegConfirm: false,
   toggleModal: (type) => {
     set((state) => ({ ...state, [type]: !state }));
   },

@@ -1,6 +1,6 @@
 import { userProfile } from "@/static/images";
 
-const UserProfile = ({ name, profileImage, size = "md", ...props }) => {
+const UserProfile = ({ nickname, profileImage, size = "md", ...props }) => {
   const sizeTable = {
     sm: "x-6 h-6",
     md: "x-10 h-10",
@@ -13,10 +13,10 @@ const UserProfile = ({ name, profileImage, size = "md", ...props }) => {
     <a {...props} className={`bg-gray-200 rounded-full cursor-pointer`}>
       <img
         src={profileImage || userProfile}
-        alt={name}
+        alt={nickname}
         className={imgClassName}
       />
-      <span className="hidden">{name}</span>
+      <span className="hidden">{nickname}</span>
     </a>
   );
 };
