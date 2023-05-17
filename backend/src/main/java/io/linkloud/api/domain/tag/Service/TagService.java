@@ -30,8 +30,6 @@ public class TagService {
     private final ArticleTagRepository articleTagRepository;
     private final ArticleRepository articleRepository;
 
-    private final int PAGE_SIZE = 16;
-
     // TODO : 아티클 기능 완성시 아티클 생성로직으로 편입될 예정.
     public void addTag(Tag tag) {
         verifyExistTag(tag.getName());
@@ -66,7 +64,7 @@ public class TagService {
         log.info("아티클에 태그 추가.");
     }
 
-    public Page<TagDto.Response> fetchTags(int page, String sortField) {
+    public Page<TagDto.Response> fetchTags(int page, int size, String sortField) {
 
         // 이름순은 오름차순.
         Sort.Direction orderBy = Direction.DESC;
@@ -74,7 +72,7 @@ public class TagService {
             orderBy = Direction.ASC;
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by(orderBy, sortField));
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(orderBy, sortField));
         return tagRepository.findAllOrderBy(pageable);
     }
 
