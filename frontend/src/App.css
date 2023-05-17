@@ -46,7 +46,8 @@
     font: inherit;
   }
 
-  body {
+  body,
+  #root {
     height: 100vh;
   }
 
