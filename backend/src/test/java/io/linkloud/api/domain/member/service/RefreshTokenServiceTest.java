@@ -1,12 +1,15 @@
 package io.linkloud.api.domain.member.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.linkloud.api.domain.member.dto.CreateRefreshTokenRequestDto;
 import io.linkloud.api.domain.member.model.RefreshToken;
 import io.linkloud.api.domain.member.repository.RefreshTokenRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -32,5 +35,25 @@ class RefreshTokenServiceTest {
         refreshTokenRepository.deleteById(refreshToken.getMemberId());
     }
 
+    @DisplayName("리프레시토큰 저장 등록 성공")
+    @Test
+    public void refreshToken_save_success() {
+
+        // given
+        CreateRefreshTokenRequestDto dto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            refreshToken.getRefreshToken()
+        );
+
+        refreshTokenService.createRefreshToken(dto);
+
+        // when
+        RefreshToken persistRefreshToken = refreshTokenRepository.findById(refreshToken.getMemberId())
+            .orElseThrow(RuntimeException::new);
+
+        // then
+        assertThat(persistRefreshToken.getMemberId()).isEqualTo(refreshToken.getMemberId());
+        assertThat(persistRefreshToken.getRefreshToken()).isEqualTo(refreshToken.getRefreshToken());
+    }
 
 }
