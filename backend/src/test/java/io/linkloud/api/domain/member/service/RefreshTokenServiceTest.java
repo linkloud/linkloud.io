@@ -56,4 +56,37 @@ class RefreshTokenServiceTest {
         assertThat(persistRefreshToken.getRefreshToken()).isEqualTo(refreshToken.getRefreshToken());
     }
 
+
+    @DisplayName("리프레시토큰 갱신 성공")
+    @Test
+    public void refreshToken_update_success() {
+
+        // given
+        String oldRefreshTokenValue = "oldRefreshToken";
+        CreateRefreshTokenRequestDto oldRefreshTokenDto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            oldRefreshTokenValue
+        );
+        refreshTokenService.createRefreshToken(oldRefreshTokenDto);
+
+        String newRefreshTokenValue = "newRefreshToken";
+        CreateRefreshTokenRequestDto newRefreshTokenDto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            newRefreshTokenValue
+        );
+
+        // when
+        refreshTokenService.createRefreshToken(newRefreshTokenDto);
+
+        // then
+        RefreshToken isUpdatedToken = refreshTokenRepository.findById(refreshToken.getMemberId())
+            .orElseThrow(RuntimeException::new);
+
+        assertAll(
+            () -> assertThat(isUpdatedToken).isNotNull(),
+            () -> assertThat(isUpdatedToken.getRefreshToken()).isEqualTo(newRefreshTokenValue),
+            () -> assertThat(isUpdatedToken.getRefreshToken()).isNotEqualTo(oldRefreshTokenValue)
+        );
+
+    }
 }
