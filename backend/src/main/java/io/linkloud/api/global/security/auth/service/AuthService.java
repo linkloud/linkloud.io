@@ -2,8 +2,10 @@ package io.linkloud.api.global.security.auth.service;
 
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
+import io.linkloud.api.domain.member.dto.CreateRefreshTokenRequestDto;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.domain.member.service.RefreshTokenService;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
@@ -22,6 +24,7 @@ public class AuthService {
     private final Map<String, OAuthClient> oAuthClients;
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
 
     /**
@@ -44,9 +47,17 @@ public class AuthService {
 
         // 3
         MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
-        String jwtAccessToken = jwtProvider.generateAccessToken(memberDto.getId(),memberDto.getSocialType());
+
+        Long memberId = memberDto.getId();
+        String jwtAccessToken = jwtProvider.generateAccessToken(memberId,memberDto.getSocialType());
+        String jwtRefreshToken = jwtProvider.generateRefreshToken(memberId);
+
+        refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
+            memberId,
+            jwtRefreshToken
+        ));
 
         // 4
-        return new AuthResponseDto(jwtAccessToken);
+        return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
     }
 }
