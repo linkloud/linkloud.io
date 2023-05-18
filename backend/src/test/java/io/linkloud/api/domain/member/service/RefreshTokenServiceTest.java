@@ -1,11 +1,13 @@
 package io.linkloud.api.domain.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 import io.linkloud.api.domain.member.dto.CreateRefreshTokenRequestDto;
 import io.linkloud.api.domain.member.model.RefreshToken;
 import io.linkloud.api.domain.member.repository.RefreshTokenRepository;
+import io.linkloud.api.global.exception.CustomException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -104,5 +106,29 @@ class RefreshTokenServiceTest {
         assertDoesNotThrow(
             () -> refreshTokenService.validateRefreshToken(refreshToken.getMemberId(),
                 refreshToken.getRefreshToken()));
+    }
+
+    @DisplayName("리프레시 토큰 검증 통과 실패")
+    @Test
+    public void refreshToken_validate_fail() {
+
+        // given
+        String oldRefreshTokenValue = "oldRefreshToken";
+        CreateRefreshTokenRequestDto oldRefreshTokenDto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            oldRefreshTokenValue
+        );
+        refreshTokenService.createRefreshToken(oldRefreshTokenDto);
+
+        String newRefreshTokenValue = "newRefreshToken";
+        CreateRefreshTokenRequestDto newRefreshTokenDto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            newRefreshTokenValue
+        );
+        refreshTokenService.createRefreshToken(newRefreshTokenDto);
+
+        assertThatExceptionOfType(CustomException.class).isThrownBy(
+            () -> refreshTokenService.validateRefreshToken(refreshToken.getMemberId(),
+                oldRefreshTokenValue));
     }
 }
