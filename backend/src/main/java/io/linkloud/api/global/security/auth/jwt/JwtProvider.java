@@ -54,6 +54,24 @@ public class JwtProvider {
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
     }
+
+    /** todo : refreshToken 정보에 memberId 가 들어감, 보안상 좋지않음
+     * refresh 토큰 생성
+     * @param memberId (claim 에 담을 회원 정보)
+     * @return JwtAccessToken
+     */
+    public String generateRefreshToken(Long memberId) {
+        Instant now = Instant.now();
+        Instant expiration = now.plusSeconds(jwtProperties.getRefreshTokenExpiration());
+
+        return Jwts.builder()
+            .setIssuer("linkloud")
+            .setIssuedAt(Date.from(now))
+            .setId(String.valueOf(memberId))
+            .setExpiration(Date.from(expiration))
+            .signWith(secretKey, SignatureAlgorithm.HS256)
+            .compact();
+    }
     /**
      * access 토큰 검증
      * @param accessToken 액세스 토큰
