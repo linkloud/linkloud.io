@@ -131,4 +131,21 @@ class RefreshTokenServiceTest {
             () -> refreshTokenService.validateRefreshToken(refreshToken.getMemberId(),
                 oldRefreshTokenValue));
     }
+
+    @DisplayName("리프레시 토큰 삭제 성공")
+    @Test
+    public void refreshToken_remove_success() {
+        // given
+        CreateRefreshTokenRequestDto dto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            refreshToken.getRefreshToken()
+        );
+        refreshTokenService.createRefreshToken(dto);
+
+        // when
+        refreshTokenService.removeRefreshToken(refreshToken.getMemberId());
+
+        // then
+        assertThat(refreshTokenRepository.findById(refreshToken.getMemberId())).isEmpty();
+    }
 }
