@@ -1,6 +1,6 @@
 package io.linkloud.api.domain.member.repository;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import io.linkloud.api.domain.member.model.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
