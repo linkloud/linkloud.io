@@ -89,4 +89,20 @@ class RefreshTokenServiceTest {
         );
 
     }
+
+    @DisplayName("리프레시 토큰 검증 통과")
+    @Test
+    public void refreshToken_validate_success() {
+        // given
+        CreateRefreshTokenRequestDto dto = new CreateRefreshTokenRequestDto(
+            refreshToken.getMemberId(),
+            refreshToken.getRefreshToken()
+        );
+
+        refreshTokenService.createRefreshToken(dto);
+
+        assertDoesNotThrow(
+            () -> refreshTokenService.validateRefreshToken(refreshToken.getMemberId(),
+                refreshToken.getRefreshToken()));
+    }
 }
