@@ -27,6 +27,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // TODO : SecurityMember 가 null 일 경우 500 발생, (추후 현재 회원 요청을 따로 어노테이션으로 만들어서 처리해야 됨)
     @GetMapping("/me")
     public ResponseEntity<SingleDataResponse<MemberLoginResponse>> loginSuccess(
         @AuthenticationPrincipal SecurityMember securityMember) {
