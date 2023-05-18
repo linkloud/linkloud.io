@@ -41,4 +41,13 @@ public class RefreshTokenService {
         token.validateRefreshToken(refreshToken);
     }
 
+    /** refresh token 제거 */
+    public void removeRefreshToken(Long memberId) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(memberId)
+            .orElseThrow(() -> new CustomException(
+                AuthExceptionCode.TOKEN_NOT_FOUND));
+        refreshTokenRepository.deleteById(refreshToken.getMemberId());
+        log.info("리프레시 토큰 삭제");
+    }
+
 }
