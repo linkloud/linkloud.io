@@ -1,4 +1,6 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+import useTags from "@/hooks/tag/useTags";
 
 import Banner from "./components/Banner";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
@@ -10,6 +12,13 @@ import { fakeArticleList } from "@/common/utils/fakedata";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  //TODO: 예외처리
+  const { tags, error: getTagsError } = useTags({
+    page: 1,
+    size: 15,
+    sortBy: "popularity",
+  });
   const sortBy = searchParams.get("sortBy") || "createdAt";
 
   const sortList = [
@@ -70,7 +79,7 @@ const HomePage = () => {
             <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
-        <TagItemContainer />
+        <TagItemContainer tags={tags} />
       </div>
     </>
   );

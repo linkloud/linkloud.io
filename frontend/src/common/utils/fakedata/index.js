@@ -161,12 +161,3 @@ export const fakeTagList = [
     articleCounts: 1,
   },
 ];
-
-export const fakeHashTags = [
-  "#무료",
-  "#스프링",
-  "#프론트엔드",
-  "#디자인",
-  "#아티클",
-  "#리액트",
-];
