@@ -53,7 +53,7 @@ const HomePage = () => {
       <Banner />
       <section className="px-5 md:px-0 w-full max-w-xl translate-y-[-50%]">
         <h1 className="sr-only">search section</h1>
-        <Search onEnter={handleOnSearch} />
+        <Search />
       </section>
       <div className="flex w-full max-w-7xl">
         <section className="w-full p-6">
