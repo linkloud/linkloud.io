@@ -89,9 +89,9 @@ public class MemberService {
      * @param nicknameRequestDto 회원 요청 닉네임
      */
     @Transactional
-    public void updateNickname(SecurityMember principalMember, MemberNicknameRequestDto nicknameRequestDto) {
+    public void updateNickname(Long memberId, MemberNicknameRequestDto nicknameRequestDto) {
         String requestNickname = nicknameRequestDto.getNickname();
-        Member member = fetchMemberById(principalMember.getId());
+        Member member = fetchMemberById(memberId);
         if (!member.getNickname().equals(requestNickname)) {
             isNicknameDuplicated(requestNickname);
             member.updateNickname(requestNickname);

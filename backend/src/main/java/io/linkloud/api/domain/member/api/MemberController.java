@@ -38,10 +38,10 @@ public class MemberController {
 
     @PatchMapping("/nickname")
     public ResponseEntity<Void> updateNickname(
-        @AuthenticationPrincipal @NonNull SecurityMember securityMember,
+        @LoginMemberId @NonNull Long loginMemberId,
         @RequestBody @Valid MemberNicknameRequestDto requestNicknameDto
     ) {
-        memberService.updateNickname(securityMember,requestNicknameDto);
+        memberService.updateNickname(loginMemberId,requestNicknameDto);
         return ResponseEntity.noContent().build();
     }
 
