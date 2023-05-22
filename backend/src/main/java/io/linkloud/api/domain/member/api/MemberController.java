@@ -3,9 +3,11 @@ package io.linkloud.api.domain.member.api;
 
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
+import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
+import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +29,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // TODO : SecurityMember 가 null 일 경우 500 발생, (추후 현재 회원 요청을 따로 어노테이션으로 만들어서 처리해야 됨)
     @GetMapping("/me")
-    public ResponseEntity<SingleDataResponse<MemberLoginResponse>> loginSuccess(
-        @AuthenticationPrincipal SecurityMember securityMember) {
-        MemberLoginResponse principalDto = memberService.fetchPrincipal(securityMember);
-        return ResponseEntity.ok(new SingleDataResponse<>(principalDto));
+    public ResponseEntity<SingleDataResponse<MemberLoginResponse>> findMe(
+        @NonNull @LoginMemberId Long loginMemberId) {
+        MemberLoginResponse memberLoginResponse = memberService.fetchPrincipal(loginMemberId);
+        return ResponseEntity.ok(new SingleDataResponse<>(memberLoginResponse));
     }
 
     @PatchMapping("/nickname")
