@@ -66,12 +66,17 @@ public class MemberService {
         return splitEmail[0] + "_" + userInfo.getSocialType().name();
     }
 
-    public MemberLoginResponse fetchPrincipal(SecurityMember principalMember) {
-        Member member = fetchMemberById(principalMember.getId());
+    public MemberLoginResponse fetchPrincipal(Long memberId) {
+        Member member = fetchMemberById(memberId);
         return new MemberLoginResponse(member);
     }
 
-    public Member fetchMemberById(Long id) {
+    /**
+     * Member 엔티티를 리턴하므로 private 으로 변경
+     * @param id memberId
+     * @return Member
+     */
+    private Member fetchMemberById(Long id) {
         return memberRepository.findById(id)
             .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
     }
