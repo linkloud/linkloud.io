@@ -76,7 +76,7 @@ public class MemberService {
      * @param id memberId
      * @return Member
      */
-    private Member fetchMemberById(Long id) {
+    public Member fetchMemberById(Long id) {
         return memberRepository.findById(id)
             .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
     }
