@@ -3,7 +3,6 @@ name: frontend-pr-test
 on:
   pull_request:
     branches: [ main, dev ]
-  workflow_dispatch:
 
 jobs:
   build:
