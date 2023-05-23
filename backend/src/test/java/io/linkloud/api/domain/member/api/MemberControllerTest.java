@@ -4,6 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -166,14 +168,20 @@ class MemberControllerTest {
             .content(content));
 
         actions
-            .andExpect(status().isNoContent())
-            .andDo(document("member/nickname/success",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                requestFields(
-                    fieldWithPath("nickname").description("수정할 닉네임")
-                )
-            ));
+                .andExpect(status().isNoContent())
+                .andDo(document("member/nickname/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("nickname").description("수정할 닉네임")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("액세스 토큰")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("JWT 토큰")
+                        )
+                ));
     }
 
 
@@ -194,20 +202,20 @@ class MemberControllerTest {
             .content(content));
 
         actions
-            .andDo(print())
-            .andExpect(status().isConflict())
-            .andDo(document("member/nickname/fail/duplicated",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                requestFields(
-                    fieldWithPath("nickname").description("수정할 닉네임")
-                ),
-                responseFields(
-                    fieldWithPath("status").description(
-                        "HTTP 상태 코드. 중복된 닉네임일 경우 409 (Conflict)을 반환."),
-                    fieldWithPath("message").description("에러 메시지"),
-                    fieldWithPath("fieldErrors").description("필드 에러 리스트"),
-                    fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
-                )));
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andDo(document("member/nickname/fail/duplicated",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("nickname").description("수정할 닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(
+                                        "HTTP 상태 코드. 중복된 닉네임일 경우 409 (Conflict)을 반환."),
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("fieldErrors").description("필드 에러 리스트"),
+                                fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
+                        )));
     }
 }
