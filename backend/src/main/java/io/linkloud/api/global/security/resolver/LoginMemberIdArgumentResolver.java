@@ -1,7 +1,11 @@
 package io.linkloud.api.global.security.resolver;
 
 import io.jsonwebtoken.Claims;
+import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
+import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -23,7 +27,6 @@ public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResol
             && parameter.getParameterType().equals(Long.class);
     }
 
-
     @Override
     public Long resolveArgument(
         @NonNull MethodParameter parameter,
@@ -31,7 +34,18 @@ public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResol
         NativeWebRequest webRequest,
         WebDataBinderFactory binderFactory) {
 
-        String accessToken = webRequest.getHeader("Authorization").split("Bearer ")[1];
+        String accessToken = getTokenFromRequest(webRequest);
+        if (!jwtProvider.validateAccessToken(accessToken)) {
+            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
+        }
+
         return Long.valueOf(jwtProvider.getClaims(accessToken, Claims::getId));
     }
+
+
+    private String getTokenFromRequest(NativeWebRequest webRequest) {
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        return HeaderUtil.getAccessToken(request);
+    }
+
 }
