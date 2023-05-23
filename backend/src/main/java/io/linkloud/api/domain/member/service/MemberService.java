@@ -70,7 +70,7 @@ public class MemberService {
     }
 
     /**
-     * Member 엔티티를 리턴하므로 private 으로 변경
+     * Member 객체 리턴(주의 Member 엔티티 자체를 리턴함)
      * @param id memberId
      * @return Member
      */
