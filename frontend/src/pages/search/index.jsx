@@ -8,10 +8,6 @@ import TagItemContainer from "@/common/components/tag/TagItemContainer";
 import { fakeArticleList } from "@/common/utils/fakedata";
 
 const SearchPage = () => {
-  const [searchParams] = useSearchParams();
-  // TODO: q -> api DOC
-  const searchKeyword = searchParams.get("q");
-
   const orderList = [
     {
       id: 1,
@@ -25,16 +21,34 @@ const SearchPage = () => {
     },
   ];
 
+  const [searchParams] = useSearchParams();
+  // TODO: keyword -> api DOC
+  const searchKeyword = searchParams.get("keyword");
+  const tagList = searchParams.getAll("tag");
+
   return (
     <div className="flex flex-col py-10 max-w-7xl w-full">
       <section className="mx-auto max-w-xl w-full">
         <h1 className="sr-only">search section</h1>
         <Search />
       </section>
-      <div className="px-6">
+      <div className="px-6 py-5">
         <h2 className="text-xl">
           <strong>'{searchKeyword}'</strong> 검색 결과
         </h2>
+        {tagList.length > 0 && (
+          <>
+            <p className="mt-1">다음 태그와 함께 검색되었습니다.</p>
+            <ul className="flex">
+              {tagList.map((tag, index) => (
+                <li key={index} className="mr-1 text-gray-400">
+                  #{tag}
+                  {index !== tagList.length - 1 && <>,</>}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
       <div className="flex w-full max-w-7xl">
         <section className="w-full p-6">

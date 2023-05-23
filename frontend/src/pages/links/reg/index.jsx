@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import useToggle from "@/hooks/useToggle";
+import useModal from "@/hooks/useModal";
 import useTags from "@/hooks/tag/useTags";
 
 import ArticleRegConfirmModal from "./components/ArticleRegConfirmModal";
@@ -17,8 +17,8 @@ const LinksRegPage = () => {
     tags: [],
   });
 
-  const { value: isArticleRegConfirmModalOpened, toggle: toggleModal } =
-    useToggle();
+  const { isOpened: isArticleRegConfirmModalOpened, toggle: toggleModal } =
+    useModal();
   const { tags } = useTags({ page: 1, size: 10, sortBy: "popularity" });
 
   const handleInputData = (input) => (e) => {

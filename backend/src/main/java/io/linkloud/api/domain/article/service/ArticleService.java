@@ -9,6 +9,7 @@ import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,8 +47,11 @@ public class ArticleService {
     /** 아티클 생성 */
     @Transactional
     public ArticleResponseDto addArticle(ArticleRequestDto requestDto) {
-        Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new CustomException(
-            LogicExceptionCode.MEMBER_NOT_FOUND));
+        Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        LocalDate joinDate = foundedMember.getCreatedAt().toLocalDate();                             // 가져온 멤버의 가입일을 저장.
+        if(joinDate.compareTo(LocalDate.now()) > -3) throw new CustomException(MEMBER_NOT_MATCH);    // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
+
         Article createdArticle = articleRepository.save(requestDto.toArticleEntity(foundedMember));  // requestDto를 엔티티로 변환.
 
         return new ArticleResponseDto(createdArticle);
