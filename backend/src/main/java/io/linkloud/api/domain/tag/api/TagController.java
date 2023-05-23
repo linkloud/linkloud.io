@@ -2,7 +2,7 @@ package io.linkloud.api.domain.tag.api;
 
 import io.linkloud.api.domain.tag.dto.TagDto;
 import io.linkloud.api.domain.tag.dto.TagDto.Response;
-import io.linkloud.api.domain.tag.model.Tag;
+import io.linkloud.api.domain.tag.model.Tag.SortBy;
 import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
@@ -31,11 +31,9 @@ public class TagController {
     public ResponseEntity<?> getTags(
             @Positive @RequestParam int page,
             @Positive @Min(5) @Max(16) @RequestParam int size,
-            @RequestParam String sortBy) {
-        // sortBy 옵션이 존재하는지 확인.
-        Tag.SortBy sortField = tagService.verifySortField(sortBy);
+            @RequestParam SortBy sortBy) {
 
-        Page<TagDto.Response> tags = tagService.fetchTags(page, size, sortField.getSortBy());
+        Page<TagDto.Response> tags = tagService.fetchTags(page, size, sortBy.getSortBy());
         return ResponseEntity.ok().body(new MultiDataResponse<>(tags));
     }
 
