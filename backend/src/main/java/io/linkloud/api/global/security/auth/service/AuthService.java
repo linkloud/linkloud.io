@@ -1,14 +1,19 @@
 package io.linkloud.api.global.security.auth.service;
 
+import io.jsonwebtoken.Claims;
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
+import io.linkloud.api.domain.member.dto.CreateRefreshTokenRequestDto;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
+import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.domain.member.service.RefreshTokenService;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
+import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +27,7 @@ public class AuthService {
     private final Map<String, OAuthClient> oAuthClients;
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
 
     /**
@@ -44,9 +50,41 @@ public class AuthService {
 
         // 3
         MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
-        String jwtAccessToken = jwtProvider.generateAccessToken(memberDto.getId(),memberDto.getSocialType());
+
+        Long memberId = memberDto.getId();
+        String jwtAccessToken = jwtProvider.generateAccessToken(memberId,memberDto.getSocialType());
+        String jwtRefreshToken = jwtProvider.generateRefreshToken(memberId);
+
+        refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
+            memberId,
+            jwtRefreshToken
+        ));
 
         // 4
-        return new AuthResponseDto(jwtAccessToken);
+        return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
+    }
+
+    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken, String tokenType) {
+        HeaderUtil.checkTokenType(tokenType);
+
+        Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, Claims::getId));
+
+        try {
+            refreshTokenService.validateRefreshToken(memberId,refreshToken);
+        } catch (CustomException e) {
+            refreshTokenService.removeRefreshToken(memberId);
+            throw new CustomException(AuthExceptionCode.AUTHORIZED_FAIL);
+        }
+
+        Member member = memberService.fetchMemberById(memberId);
+        String newJwtAccessToken = jwtProvider.generateAccessToken(member.getId(), member.getSocialType());
+        String newJwtRefreshToken = jwtProvider.generateRefreshToken(member.getId());
+
+        refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
+            member.getId(),
+            newJwtRefreshToken
+        ));
+
+        return new AuthResponseDto(newJwtAccessToken,newJwtRefreshToken);
     }
 }

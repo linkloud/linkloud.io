@@ -55,7 +55,7 @@ class AuthControllerTest {
     void authenticate_success() throws Exception {
         // given
         AuthRequestDto requestDto = new AuthRequestDto("google", "code1234");
-        AuthResponseDto responseDto = new AuthResponseDto("access_token");
+        AuthResponseDto responseDto = new AuthResponseDto("access_token","refresh_token");
 
         given(authService.authenticate(any(AuthRequestDto.class))).willReturn(responseDto);
 
@@ -74,7 +74,8 @@ class AuthControllerTest {
                                 fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
                         ),
                         responseFields(
-                                fieldWithPath("data.accessToken").description("Access Token")
+                                fieldWithPath("data.accessToken").description("Access Token"),
+                                fieldWithPath("data.refreshToken").description("Refresh Token")
                         )
                 ));
 

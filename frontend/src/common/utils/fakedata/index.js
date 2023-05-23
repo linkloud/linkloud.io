@@ -9,7 +9,10 @@ export const fakeArticleList = [
     description: "Spring Boot 공식문서 입니다",
     link: "https://springboot.io/io",
     counts: 3,
-    tags: [{ name: "태그1" }, { name: "태그2" }],
+    tags: [
+      { id: 1, name: "태그1" },
+      { id: 2, name: "태그2" },
+    ],
   },
   {
     id: 2,
@@ -18,7 +21,10 @@ export const fakeArticleList = [
       "설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi 설명 tmi ",
     link: "https://test.io",
     counts: 3,
-    tags: [{ name: "태그1" }, { name: "태그2" }],
+    tags: [
+      { id: 3, name: "태그1" },
+      { id: 4, name: "태그2" },
+    ],
   },
   {
     id: 3,
@@ -154,13 +160,4 @@ export const fakeTagList = [
     description: "설명",
     articleCounts: 1,
   },
-];
-
-export const fakeHashTags = [
-  "#무료",
-  "#스프링",
-  "#프론트엔드",
-  "#디자인",
-  "#아티클",
-  "#리액트",
 ];

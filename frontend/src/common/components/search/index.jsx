@@ -4,8 +4,14 @@ import SearchHelperPopup from "./SearchHelperPopup";
 
 import { SearchIcon } from "@/static/svg";
 
-const Search = () => {
+const Search = ({ onSearch }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const handleKeyDown = (e) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    onSearch(e.target.value);
+  };
 
   return (
     <div className="flex items-center relative w-full">
@@ -20,7 +26,9 @@ const Search = () => {
           type="search"
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => setIsInputFocused(false)}
-          className="h-12 md:h-14 w-full leading-7 px-4 pl-10 outline-none rounded-lg shadow-lg"
+          onKeyDown={handleKeyDown}
+          autoComplete="off"
+          className="h-14 w-full leading-7 px-4 pl-10 outline-none rounded-lg shadow-lg"
         ></input>
       </form>
       <SearchHelperPopup isVisible={isInputFocused}></SearchHelperPopup>

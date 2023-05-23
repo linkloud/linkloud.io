@@ -7,8 +7,8 @@ const InputText = ({ labelText, className }) => {
   // input이 foucs거나 text 값이 있다면 top-[-1rem] text-sm text-blue-400
   const labelFocusedClass =
     isInputFocused || text !== ""
-      ? "top-[-1rem] text-sm text-blue-400"
-      : "text-gray-300";
+      ? "-top-[12px] text-xs text-blue-400"
+      : "top-1 text-gray-300";
 
   const onChange = (e) => {
     setText(e.target.value);
@@ -27,7 +27,7 @@ const InputText = ({ labelText, className }) => {
       />
       <label
         htmlFor={labelText}
-        className={`${labelFocusedClass} absolute top-1 left-0 transition-all duration-300`}
+        className={`${labelFocusedClass} text-sm absolute left-0 transition-all duration-300`}
       >
         {labelText}
       </label>
