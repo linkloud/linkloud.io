@@ -7,17 +7,15 @@ jest.mock("react-router-dom", () => ({
 }));
 
 describe("useArticleSearch TEST", () => {
-  let openSearchValidationModalMock;
+  let navigateMock;
 
   beforeEach(() => {
-    openSearchValidationModalMock = jest.fn();
-    useNavigate.mockReturnValue(jest.fn());
+    navigateMock = jest.fn();
+    useNavigate.mockReturnValue(navigateMock);
   });
 
   it("[success] 요청한 검색 경로로 이동한다", () => {
-    const { result } = renderHook(() =>
-      useArticleSearch(openSearchValidationModalMock)
-    );
+    const { result } = renderHook(() => useArticleSearch());
 
     act(() => {
       result.current.handleSearch("test [tag1] [tag2]");
@@ -29,9 +27,7 @@ describe("useArticleSearch TEST", () => {
   });
 
   it("[fail] 검색 키워드가 없다면 예외가 발생한다", () => {
-    const { result } = renderHook(() =>
-      useArticleSearch(openSearchValidationModalMock)
-    );
+    const { result } = renderHook(() => useArticleSearch());
 
     act(() => {
       result.current.handleSearch("");
@@ -40,13 +36,10 @@ describe("useArticleSearch TEST", () => {
     expect(result.current.searchValidationErrMsg).toEqual(
       "검색어를 입력해 주세요."
     );
-    expect(openSearchValidationModalMock).toHaveBeenCalled();
   });
 
   it("[fail] 태그 검색 최대 5개를 초과할 경우 예외가 발생한다", () => {
-    const { result } = renderHook(() =>
-      useArticleSearch(openSearchValidationModalMock)
-    );
+    const { result } = renderHook(() => useArticleSearch());
 
     act(() => {
       result.current.handleSearch(
@@ -57,6 +50,22 @@ describe("useArticleSearch TEST", () => {
     expect(result.current.searchValidationErrMsg).toEqual(
       "태그의 개수는 최대 5개까지 가능합니다."
     );
-    expect(openSearchValidationModalMock).toHaveBeenCalled();
+  });
+
+  it("검색 예외가 발생하면 에러 모달이 true가 되고, 닫으면 false가 된다.", () => {
+    const { result } = renderHook(() => useArticleSearch());
+
+    act(() => {
+      const emptyKeyword = "";
+      result.current.handleSearch(emptyKeyword);
+    });
+
+    expect(result.current.isSearchValidationErrorModalOpened).toBe(true);
+
+    act(() => {
+      result.current.handleCloseSearchValidationModal();
+    });
+
+    expect(result.current.isSearchValidationErrorModalOpened).toBe(false);
   });
 });
