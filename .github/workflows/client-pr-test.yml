@@ -2,7 +2,9 @@ name: frontend-pr-test
 
 on:
   pull_request:
-    branches: [ main, dev ]
+    branches: 
+      - main
+      - dev
 
 jobs:
   build:
