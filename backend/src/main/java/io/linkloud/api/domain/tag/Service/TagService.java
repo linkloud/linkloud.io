@@ -10,7 +10,6 @@ import io.linkloud.api.domain.tag.repository.ArticleTagRepository;
 import io.linkloud.api.domain.tag.repository.TagRepository;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
-import io.linkloud.api.global.exception.ExceptionCode.ValidationExceptionCode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,17 +94,5 @@ public class TagService {
 
         return optionalTag
                 .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
-    }
-
-    // 존재하는 정렬 옵션인지 확인.
-    public Tag.SortBy verifySortField(String sortField) {
-        for (Tag.SortBy tagListOrderBy : Tag.SortBy.values()) {
-            if (tagListOrderBy.getSortBy().equals(sortField)) {
-                return tagListOrderBy;
-            }
-        }
-
-        // 임시 오류.
-        throw new CustomException(ValidationExceptionCode.ORDER_BY_NOT_VALID);
     }
 }

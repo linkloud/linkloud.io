@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,6 +34,15 @@ public class ExceptionAdvice {
         ConstraintViolationException e) {
 
         return ErrorResponse.of(e.getConstraintViolations());
+    }
+
+    // converter가 변환하지 못했을 경우(enum type에 존재하지 않는 값)
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchException(
+        MethodArgumentTypeMismatchException e) {
+
+        return ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getPropertyName() + " Type Mismatched");
     }
 
     // 서버 로직 내 예외 처리
