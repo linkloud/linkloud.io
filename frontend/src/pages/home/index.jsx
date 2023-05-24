@@ -2,7 +2,6 @@ import { useSearchParams } from "react-router-dom";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
 import useTags from "@/hooks/tag/useTags";
-import useModal from "@/hooks/useModal";
 
 import Banner from "./components/Banner";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
@@ -17,17 +16,14 @@ const HomePage = () => {
   const [searchParams] = useSearchParams();
 
   const {
-    isOpened: isSearchValidationErrorModalOpened,
-    openModal: openSearchValidationModal,
-    closeModal: closeSearchValidationModal,
-  } = useModal();
-
-  const { searchValidationErrMsg, handleSearch } = useArticleSearch(
-    openSearchValidationModal
-  );
+    searchValidationErrMsg,
+    isSearchValidationErrorModalOpened,
+    handleSearch,
+    handleCloseSearchValidationModal,
+  } = useArticleSearch();
 
   //TODO: 예외처리
-  const { tags, error: getTagsError } = useTags({
+  const { tagList, error: getTagListError } = useTags({
     page: 1,
     size: 15,
     sortBy: "popularity",
@@ -71,7 +67,7 @@ const HomePage = () => {
         <SearchValidationErrorModal
           isOpened={isSearchValidationErrorModalOpened}
           errMsg={searchValidationErrMsg}
-          onClose={closeSearchValidationModal}
+          onClose={handleCloseSearchValidationModal}
         />
       </section>
       <div className="flex w-full max-w-7xl">
@@ -98,7 +94,7 @@ const HomePage = () => {
             <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
-        <TagItemContainer tags={tags} />
+        <TagItemContainer tags={tagList} />
       </div>
     </>
   );
