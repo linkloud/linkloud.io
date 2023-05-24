@@ -1,6 +1,10 @@
 import { useSearchParams } from "react-router-dom";
 
+import useArticleSearch from "@/hooks/article/useArticleSearch";
+import useTags from "@/hooks/tag/useTags";
+
 import Search from "@/common/components/search";
+import SearchValidationErrorModal from "@/common/components/search/SearchValidationErrorModal";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
 import ArticleItem from "@/common/components/article/ArticleItem";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
@@ -26,19 +30,46 @@ const SearchPage = () => {
   const searchKeyword = searchParams.get("keyword");
   const tagList = searchParams.getAll("tag");
 
+  const {
+    searchValidationErrMsg,
+    isSearchValidationErrorModalOpened,
+    handleSearch,
+    handleCloseSearchValidationModal,
+  } = useArticleSearch();
+
+  //TODO: 예외처리
+  const { tagList: popularityTagList, error: getTagsError } = useTags({
+    page: 1,
+    size: 15,
+    sortBy: "popularity",
+  });
+
   return (
     <div className="flex flex-col py-10 max-w-7xl w-full">
       <section className="mx-auto max-w-xl w-full">
         <h1 className="sr-only">search section</h1>
-        <Search />
+        <Search onSearch={handleSearch} />
+        <SearchValidationErrorModal
+          isOpened={isSearchValidationErrorModalOpened}
+          errMsg={searchValidationErrMsg}
+          onClose={handleCloseSearchValidationModal}
+        />
       </section>
       <div className="px-6 py-5">
         <h2 className="text-xl">
-          <strong>'{searchKeyword}'</strong> 검색 결과
+          {searchKeyword ? (
+            <>
+              <strong>'{searchKeyword}'</strong> 검색 결과
+            </>
+          ) : (
+            <>태그로 검색 결과</>
+          )}
         </h2>
         {tagList.length > 0 && (
           <>
-            <p className="mt-1">다음 태그와 함께 검색되었습니다.</p>
+            {searchKeyword && (
+              <p className="mt-1">다음 태그와 함께 검색되었습니다.</p>
+            )}
             <ul className="flex">
               {tagList.map((tag, index) => (
                 <li key={index} className="mr-1 text-gray-400">
@@ -71,7 +102,7 @@ const SearchPage = () => {
             <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
-        <TagItemContainer />
+        <TagItemContainer tags={popularityTagList} />
       </div>
     </div>
   );

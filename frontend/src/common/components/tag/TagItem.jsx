@@ -1,11 +1,13 @@
-const TagItem = ({ children }) => {
+import { Link } from "react-router-dom";
+
+const TagItem = ({ tag }) => {
   return (
-    <a
-      href={`/tagged/TODO`}
+    <Link
+      to={`/search?tag=${tag.name}`}
       className="inline-flex justify-center px-3.5 py-1 rounded text-sm cursor-pointer text-indigo-400 bg-indigo-50 hover:bg-indigo-100 transition-colors"
     >
-      {children}
-    </a>
+      #{tag.name}
+    </Link>
   );
 };
 

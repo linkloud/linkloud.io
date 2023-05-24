@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { getTags } from "@/service/api/tag";
 
 const useTags = ({ page = 1, size = 10, sortBy = "popularity" }) => {
-  const [tags, setTags] = useState([]);
+  const [tagList, setTagList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -12,7 +12,7 @@ const useTags = ({ page = 1, size = 10, sortBy = "popularity" }) => {
       try {
         setLoading(true);
         const data = await getTags({ page, size, sortBy });
-        setTags(data);
+        setTagList(data);
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -23,7 +23,7 @@ const useTags = ({ page = 1, size = 10, sortBy = "popularity" }) => {
     fetchTags();
   }, [page, sortBy, page]);
 
-  return { tags, loading, error };
+  return { tagList, loading, error };
 };
 
 export default useTags;

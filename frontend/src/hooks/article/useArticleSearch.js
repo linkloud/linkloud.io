@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const useArticleSearch = (openSearchValidationModal) => {
+import useModal from "../useModal";
+
+const useArticleSearch = () => {
   const [searchValidationErrMsg, setSearchValidationErrMsg] = useState("");
   const navigate = useNavigate();
 
@@ -11,6 +13,12 @@ const useArticleSearch = (openSearchValidationModal) => {
     }
   }, [searchValidationErrMsg]);
 
+  const {
+    isOpened: isSearchValidationErrorModalOpened,
+    openModal: openSearchValidationModal,
+    closeModal: closeSearchValidationModal,
+  } = useModal();
+
   const handleSearch = (searchKeyword) => {
     try {
       const query = createSearchUrl(searchKeyword);
@@ -18,6 +26,12 @@ const useArticleSearch = (openSearchValidationModal) => {
     } catch (e) {
       setSearchValidationErrMsg(e.message);
     }
+  };
+
+  /** 에러메세지 초기화 후 모달을 닫는다. */
+  const handleCloseSearchValidationModal = () => {
+    setSearchValidationErrMsg("");
+    closeSearchValidationModal();
   };
 
   /**
@@ -58,7 +72,12 @@ const useArticleSearch = (openSearchValidationModal) => {
     return query;
   };
 
-  return { searchValidationErrMsg, handleSearch };
+  return {
+    searchValidationErrMsg,
+    isSearchValidationErrorModalOpened,
+    handleSearch,
+    handleCloseSearchValidationModal,
+  };
 };
 
 export default useArticleSearch;
