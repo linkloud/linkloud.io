@@ -94,7 +94,7 @@ const HomePage = () => {
             <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
-        <TagItemContainer tags={tagList} />
+        <TagItemContainer tagList={tagList} />
       </div>
     </>
   );

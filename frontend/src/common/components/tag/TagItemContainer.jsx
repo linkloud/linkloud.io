@@ -2,7 +2,7 @@ import TagItem from "@/common/components/tag/TagItem";
 import AnchorHoverable from "@/common/components/anchor/AnchorHoverable";
 import { ArrowRightIcon } from "@/static/svg";
 
-const TagItemContainer = ({ tags }) => {
+const TagItemContainer = ({ tagList }) => {
   return (
     <aside className="hidden md:block max-w-sm w-full py-8">
       <h1 className="sr-only">side</h1>
@@ -15,10 +15,10 @@ const TagItemContainer = ({ tags }) => {
         <nav className="flex items-center">
           <h1 className="hidden">tag list</h1>
           <ul className="flex flex-wrap gap-2.5 my-2">
-            {tags ? (
-              tags.map((t) => (
-                <li key={t.id}>
-                  <TagItem>#{t.name}</TagItem>
+            {tagList ? (
+              tagList.map((tag) => (
+                <li key={tag.id}>
+                  <TagItem tag={tag} />
                 </li>
               ))
             ) : (

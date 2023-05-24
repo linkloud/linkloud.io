@@ -102,7 +102,7 @@ const SearchPage = () => {
             <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
-        <TagItemContainer tags={popularityTagList} />
+        <TagItemContainer tagList={popularityTagList} />
       </div>
     </div>
   );
