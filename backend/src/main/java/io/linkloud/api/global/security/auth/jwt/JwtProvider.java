@@ -122,7 +122,7 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
-        } catch (IllegalArgumentException e) {
+        } catch (CustomException e) {
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
     }
