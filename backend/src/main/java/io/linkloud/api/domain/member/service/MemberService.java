@@ -6,11 +6,9 @@ import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.repository.MemberRepository;
-import io.linkloud.api.global.exception.ExceptionCode.ExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
-import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,27 +64,31 @@ public class MemberService {
         return splitEmail[0] + "_" + userInfo.getSocialType().name();
     }
 
-    public MemberLoginResponse fetchPrincipal(SecurityMember principalMember) {
-        Member member = fetchMemberById(principalMember.getId());
+    public MemberLoginResponse fetchPrincipal(Long memberId) {
+        Member member = fetchMemberById(memberId);
         return new MemberLoginResponse(member);
     }
 
+    /**
+     * Member 객체 리턴(주의 Member 엔티티 자체를 리턴함)
+     * @param id memberId
+     * @return Member
+     */
     public Member fetchMemberById(Long id) {
         return memberRepository.findById(id)
             .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
     }
 
+
     /**
-     * 회원 닉네임 변경
-     * 현재 닉네임과 변경하려는 닉네임이 같다면 실행 X
-     * 중복된 닉네임이 있다면 예외처리
-     * @param principalMember 인증요청한 회원
-     * @param nicknameRequestDto 회원 요청 닉네임
+     *
+     * @param memberId 회원 ID
+     * @param nicknameRequestDto 닉네임 Dto
      */
     @Transactional
-    public void updateNickname(SecurityMember principalMember, MemberNicknameRequestDto nicknameRequestDto) {
+    public void updateNickname(Long memberId, MemberNicknameRequestDto nicknameRequestDto) {
         String requestNickname = nicknameRequestDto.getNickname();
-        Member member = fetchMemberById(principalMember.getId());
+        Member member = fetchMemberById(memberId);
         if (!member.getNickname().equals(requestNickname)) {
             isNicknameDuplicated(requestNickname);
             member.updateNickname(requestNickname);
