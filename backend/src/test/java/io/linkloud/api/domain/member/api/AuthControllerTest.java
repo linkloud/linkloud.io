@@ -93,8 +93,6 @@ class AuthControllerTest {
         String socialType = "INVALID_SOCIAL_TYPE";
         String content = gson.toJson(authRequest);
 
-
-
         // when
         when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
 
@@ -102,7 +100,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
                 .andExpect(status().isNotFound())
-                .andDo(document("auth/authenticate_failure",
+                .andDo(document("auth/authenticate_fail/implementation",
                         pathParameters(
                                 parameterWithName("socialType").description("소셜 타입 (google 등)")
                         ),
