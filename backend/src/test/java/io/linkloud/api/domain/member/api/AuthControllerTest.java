@@ -20,6 +20,7 @@ import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
@@ -92,9 +94,10 @@ class AuthControllerTest {
         String content = gson.toJson(authRequest);
 
 
-        when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
 
         // when
+        when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
+
         mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
@@ -114,5 +117,60 @@ class AuthControllerTest {
                                 fieldWithPath("violationErrors").ignored()
                         )));
     }
+    @Test
+    @DisplayName("authenticate 실패 - OAuth 서버 액세스 토큰 요청 에러")
+    void authenticate_fail_oauth_accessToken_request() throws Exception {
+        // given
+        String socialType = "REQUEST_FAIL_OAUTH_ACCESS_TOKEN";
+        String content = gson.toJson(authRequest);
+
+        when(authService.authenticate(any())).thenThrow(new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
+
+
+        // when
+        ResultActions actions = mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isUnauthorized());
+
+        actions.andDo(document("auth/authenticate_fail/accesstoken",
+            pathParameters(
+                parameterWithName("socialType").description("소셜 타입 (google 등)")
+            ),
+            responseFields(
+                fieldWithPath("status").description("HTTP status 상태 코드"),
+                fieldWithPath("message").description("에러 메시지"),
+                fieldWithPath("fieldErrors").ignored(),
+                fieldWithPath("violationErrors").ignored()
+            )));
+    }
+
+    @Test
+    @DisplayName("authenticate 실패 - OAuth 서버 사용자 정보 요청 에러")
+    void authenticate_fail_userinfo_request() throws Exception {
+        // given
+        String socialType = "REQUEST_FAIL_USERINFO";
+        String content = gson.toJson(authRequest);
+
+        when(authService.authenticate(any())).thenThrow(new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
+
+        // when
+        ResultActions actions = mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isUnauthorized());
+
+        actions.andDo(document("auth/authenticate_fail/userinfo",
+            pathParameters(
+                parameterWithName("socialType").description("소셜 타입 (google 등)")
+            ),
+            responseFields(
+                fieldWithPath("status").description("HTTP status 상태 코드"),
+                fieldWithPath("message").description("에러 메시지"),
+                fieldWithPath("fieldErrors").ignored(),
+                fieldWithPath("violationErrors").ignored()
+            )));
+    }
+
 
 }
