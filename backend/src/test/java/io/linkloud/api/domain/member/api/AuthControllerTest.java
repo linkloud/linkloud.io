@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.global.exception.CustomException;
@@ -42,44 +43,44 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Autowired
-    private ObjectMapper objectMapper;
-
+    private Gson gson;
 
     @MockBean
     private AuthService authService;
+
+    AuthRequestDto authRequest = new AuthRequestDto("google", "code1234");
+    AuthResponseDto authResponse = new AuthResponseDto("access_token","refresh_token");
 
     @DisplayName("소셜 로그인 API 호출 성공")
     @Test
     void authenticate_success() throws Exception {
         // given
-        AuthRequestDto requestDto = new AuthRequestDto("google", "code1234");
-        AuthResponseDto responseDto = new AuthResponseDto("access_token","refresh_token");
 
-        given(authService.authenticate(any(AuthRequestDto.class))).willReturn(responseDto);
+        String content = gson.toJson(authRequest);
+        given(authService.authenticate(any(AuthRequestDto.class))).willReturn(authResponse);
 
         // when
         mockMvc.perform(post("/api/v1/auth/{socialType}", "google")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("auth/authenticate_success",
-                        pathParameters(
-                                parameterWithName("socialType").description("소셜 타입 (google 등)")
-                        ),
-                        requestFields(
-                                fieldWithPath("socialType").description("소셜 타입 (google 등)"),
-                                fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
-                        ),
-                        responseFields(
-                                fieldWithPath("data.accessToken").description("Access Token"),
-                                fieldWithPath("data.refreshToken").description("Refresh Token")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("auth/authenticate_success",
+                pathParameters(
+                    parameterWithName("socialType").description("소셜 타입 (google 등)")
+                ),
+                requestFields(
+                    fieldWithPath("socialType").description("소셜 타입 (google 등)"),
+                    fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
+                ),
+                responseFields(
+                    fieldWithPath("data.accessToken").description("Access Token"),
+                    fieldWithPath("data.refreshToken").description("Refresh Token")
+                )
+            ));
 
-        // then
+
         verify(authService).authenticate(any());
     }
 
@@ -88,14 +89,15 @@ class AuthControllerTest {
     void authenticate_fail_invalid_social_type() throws Exception {
         // given
         String socialType = "INVALID_SOCIAL_TYPE";
-        AuthRequestDto requestDto = new AuthRequestDto(socialType, "code");
+        String content = gson.toJson(authRequest);
+
 
         when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
 
         // when
         mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(content))
                 .andExpect(status().isNotFound())
                 .andDo(document("auth/authenticate_failure",
                         pathParameters(
