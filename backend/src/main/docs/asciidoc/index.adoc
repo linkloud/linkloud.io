@@ -35,29 +35,69 @@ include::{snippets}/auth/authenticate_success/response-body.adoc[]
 
 ==== 실패, 잘못된 소셜타입 요청
 .path-parameters
-include::{snippets}/auth/authenticate_failure/path-parameters.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/path-parameters.adoc[]
 
 .curl-request
-include::{snippets}/auth/authenticate_failure/curl-request.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/curl-request.adoc[]
 
 .http-request
-include::{snippets}/auth/authenticate_failure/http-request.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/http-request.adoc[]
 
 .http-response
-include::{snippets}/auth/authenticate_failure/http-response.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/http-response.adoc[]
 
 .request-body
-include::{snippets}/auth/authenticate_failure/request-body.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/request-body.adoc[]
 
 .response-fields
-include::{snippets}/auth/authenticate_failure/response-fields.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/response-fields.adoc[]
 
 .response-body
-include::{snippets}/auth/authenticate_failure/response-body.adoc[]
+include::{snippets}/auth/authenticate_fail/implementation/response-body.adoc[]
 
-==== 실패, OAuth 액세스 토큰 잘못된 요청(작성중)
+==== 실패, OAuth 액세스 토큰 요청 실패
+.path-parameters
+include::{snippets}/auth/authenticate_fail/accesstoken/path-parameters.adoc[]
 
-==== 실패, OAuth 사용자 정보 잘못된 요청(작성중)
+.curl-request
+include::{snippets}/auth/authenticate_fail/accesstoken/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/authenticate_fail/accesstoken/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/authenticate_fail/accesstoken/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/authenticate_fail/accesstoken/request-body.adoc[]
+
+.response-fields
+include::{snippets}/auth/authenticate_fail/accesstoken/response-fields.adoc[]
+
+.response-body
+include::{snippets}/auth/authenticate_fail/accesstoken/response-body.adoc[]
+
+==== 실패, OAuth 사용자 정보 요청 실패
+.path-parameters
+include::{snippets}/auth/authenticate_fail/userinfo/path-parameters.adoc[]
+
+.curl-request
+include::{snippets}/auth/authenticate_fail/userinfo/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/authenticate_fail/userinfo/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/authenticate_fail/userinfo/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/authenticate_fail/userinfo/request-body.adoc[]
+
+.response-fields
+include::{snippets}/auth/authenticate_fail/userinfo/response-fields.adoc[]
+
+.response-body
+include::{snippets}/auth/authenticate_fail/userinfo/response-body.adoc[]
 
 == 회원
 

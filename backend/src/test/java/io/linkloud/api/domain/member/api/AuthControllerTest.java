@@ -15,10 +15,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
@@ -42,44 +45,44 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Autowired
-    private ObjectMapper objectMapper;
-
+    private Gson gson;
 
     @MockBean
     private AuthService authService;
+
+    AuthRequestDto authRequest = new AuthRequestDto("google", "code1234");
+    AuthResponseDto authResponse = new AuthResponseDto("access_token","refresh_token");
 
     @DisplayName("소셜 로그인 API 호출 성공")
     @Test
     void authenticate_success() throws Exception {
         // given
-        AuthRequestDto requestDto = new AuthRequestDto("google", "code1234");
-        AuthResponseDto responseDto = new AuthResponseDto("access_token","refresh_token");
 
-        given(authService.authenticate(any(AuthRequestDto.class))).willReturn(responseDto);
+        String content = gson.toJson(authRequest);
+        given(authService.authenticate(any(AuthRequestDto.class))).willReturn(authResponse);
 
         // when
         mockMvc.perform(post("/api/v1/auth/{socialType}", "google")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("auth/authenticate_success",
-                        pathParameters(
-                                parameterWithName("socialType").description("소셜 타입 (google 등)")
-                        ),
-                        requestFields(
-                                fieldWithPath("socialType").description("소셜 타입 (google 등)"),
-                                fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
-                        ),
-                        responseFields(
-                                fieldWithPath("data.accessToken").description("Access Token"),
-                                fieldWithPath("data.refreshToken").description("Refresh Token")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("auth/authenticate_success",
+                pathParameters(
+                    parameterWithName("socialType").description("소셜 타입 (google 등)")
+                ),
+                requestFields(
+                    fieldWithPath("socialType").description("소셜 타입 (google 등)"),
+                    fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
+                ),
+                responseFields(
+                    fieldWithPath("data.accessToken").description("Access Token"),
+                    fieldWithPath("data.refreshToken").description("Refresh Token")
+                )
+            ));
 
-        // then
+
         verify(authService).authenticate(any());
     }
 
@@ -88,16 +91,16 @@ class AuthControllerTest {
     void authenticate_fail_invalid_social_type() throws Exception {
         // given
         String socialType = "INVALID_SOCIAL_TYPE";
-        AuthRequestDto requestDto = new AuthRequestDto(socialType, "code");
-
-        when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
+        String content = gson.toJson(authRequest);
 
         // when
+        when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
+
         mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(content))
                 .andExpect(status().isNotFound())
-                .andDo(document("auth/authenticate_failure",
+                .andDo(document("auth/authenticate_fail/implementation",
                         pathParameters(
                                 parameterWithName("socialType").description("소셜 타입 (google 등)")
                         ),
@@ -112,5 +115,60 @@ class AuthControllerTest {
                                 fieldWithPath("violationErrors").ignored()
                         )));
     }
+    @Test
+    @DisplayName("authenticate 실패 - OAuth 서버 액세스 토큰 요청 에러")
+    void authenticate_fail_oauth_accessToken_request() throws Exception {
+        // given
+        String socialType = "REQUEST_FAIL_OAUTH_ACCESS_TOKEN";
+        String content = gson.toJson(authRequest);
+
+        when(authService.authenticate(any())).thenThrow(new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
+
+
+        // when
+        ResultActions actions = mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isUnauthorized());
+
+        actions.andDo(document("auth/authenticate_fail/accesstoken",
+            pathParameters(
+                parameterWithName("socialType").description("소셜 타입 (google 등)")
+            ),
+            responseFields(
+                fieldWithPath("status").description("HTTP status 상태 코드"),
+                fieldWithPath("message").description("에러 메시지"),
+                fieldWithPath("fieldErrors").ignored(),
+                fieldWithPath("violationErrors").ignored()
+            )));
+    }
+
+    @Test
+    @DisplayName("authenticate 실패 - OAuth 서버 사용자 정보 요청 에러")
+    void authenticate_fail_userinfo_request() throws Exception {
+        // given
+        String socialType = "REQUEST_FAIL_USERINFO";
+        String content = gson.toJson(authRequest);
+
+        when(authService.authenticate(any())).thenThrow(new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
+
+        // when
+        ResultActions actions = mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isUnauthorized());
+
+        actions.andDo(document("auth/authenticate_fail/userinfo",
+            pathParameters(
+                parameterWithName("socialType").description("소셜 타입 (google 등)")
+            ),
+            responseFields(
+                fieldWithPath("status").description("HTTP status 상태 코드"),
+                fieldWithPath("message").description("에러 메시지"),
+                fieldWithPath("fieldErrors").ignored(),
+                fieldWithPath("violationErrors").ignored()
+            )));
+    }
+
 
 }
