@@ -244,7 +244,7 @@ class AuthControllerTest {
 
     @Test
     @DisplayName("refreshToken 요청 실패 - refreshToken 이 유효하지 않음  ")
-    public void refreshToken_fail_() throws Exception {
+    public void refreshToken_fail_invalid_refreshToken() throws Exception {
 
         // given
         RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("INVALID_REFRESH_TOKEN","Bearer ");
