@@ -14,13 +14,12 @@ const useAuthStore = create((set, get) => ({
   },
   // TODO: error handling
   socialLogin: async (socialType, code) => {
-    const { accessToken: token } = await socialLogin(socialType, code);
-    get().setToken(token);
+    const { data } = await socialLogin(socialType, code);
+    const { accessToken } = data;
+    get().setToken(accessToken);
     get().fetchUserInfo();
   },
   logout: () => {
-    console.log("call");
-    console.log(get());
     set(initialState);
   },
   setToken: (token) => set({ token }),
