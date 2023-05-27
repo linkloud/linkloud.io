@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import useModal from "@/hooks/useModal";
-import useTags from "@/hooks/tag/useTags";
+import useTagList from "@/hooks/tag/useTagList";
 
 import ArticleRegConfirmModal from "./components/ArticleRegConfirmModal";
 import InputText from "@/common/components/input/InputText";
@@ -17,9 +17,8 @@ const LinksRegPage = () => {
     tags: [],
   });
 
-  const { isOpened: isArticleRegConfirmModalOpened, toggle: toggleModal } =
-    useModal();
-  const { tags } = useTags({ page: 1, size: 10, sortBy: "popularity" });
+  const { isOpened: isArticleRegConfirmModalOpened, toggleModal } = useModal();
+  const { tags } = useTagList({ page: 1, size: 10, sortBy: "popularity" });
 
   const handleInputData = (input) => (e) => {
     const { value } = e.target;
@@ -52,7 +51,7 @@ const LinksRegPage = () => {
       </section>
       <ArticleRegConfirmModal
         isOpened={isArticleRegConfirmModalOpened}
-        onCloseArticleRegConfirmModal={toggleModal}
+        onClose={toggleModal}
         tags={tags}
       ></ArticleRegConfirmModal>
     </>
