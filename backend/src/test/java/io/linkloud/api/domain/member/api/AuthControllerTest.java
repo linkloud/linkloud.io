@@ -130,10 +130,12 @@ class AuthControllerTest {
         String socialType = "REQUEST_FAIL_OAUTH_ACCESS_TOKEN";
         String content = gson.toJson(authRequest);
 
+
+
+        // when
         when(authService.authenticate(any())).thenThrow(
             new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
 
-        // when
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
@@ -158,10 +160,12 @@ class AuthControllerTest {
         String socialType = "REQUEST_FAIL_USERINFO";
         String content = gson.toJson(authRequest);
 
+
+
+        // when
         when(authService.authenticate(any())).thenThrow(
             new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
 
-        // when
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
@@ -204,18 +208,36 @@ class AuthControllerTest {
             )
         );
     }
+
+    @Test
+    @DisplayName("refreshToken 요청 실패 - 토큰 타입(Bearer) 예외 ")
+    public void refreshToken_fail_tokenType() throws Exception {
+        // given
+        String content = gson.toJson(refreshTokenRequest);
+
+        when(authService.refreshTokenAndAccessToken(anyString(), anyString())).thenThrow(
+            new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
+
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isForbidden());
+
+
+        actions.andDo(print())
+            .andDo(document("auth/refreshToken_fail/tokenType",
+                    requestFields(
+                        fieldWithPath("refreshToken").description("리프레시 토큰"),
+                        fieldWithPath("tokenType").description("토큰 타입(Bearer )")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").description("HTTP status 상태 코드"),
+                        fieldWithPath("message").description("에러 메시지"),
+                        fieldWithPath("fieldErrors").ignored(),
+                        fieldWithPath("violationErrors").ignored()
+                    )
+                )
+            );
+    }
 }
 
-//   .andDo(document("auth/authenticate_fail/implementation",
-//                pathParameters(
-//                    parameterWithName("socialType").description("소셜 타입 (google 등)")
-//                ),
-//                requestFields(
-//                    fieldWithPath("socialType").description("소셜 타입 (google 등)"),
-//                    fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
-//                ),
-//                responseFields(
-//                    fieldWithPath("data.accessToken").description("Access Token"),
-//                    fieldWithPath("data.refreshToken").description("Refresh Token")
-//                )
-//            ));
