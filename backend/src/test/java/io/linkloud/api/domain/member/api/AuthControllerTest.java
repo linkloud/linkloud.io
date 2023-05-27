@@ -15,7 +15,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
@@ -212,8 +211,11 @@ class AuthControllerTest {
     @Test
     @DisplayName("refreshToken 요청 실패 - 토큰 타입(Bearer) 예외 ")
     public void refreshToken_fail_tokenType() throws Exception {
+
         // given
-        String content = gson.toJson(refreshTokenRequest);
+        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("refreshToken_value","INVALID_TOKEN_TYPE ");
+
+        String content = gson.toJson(invalidRequestToken);
 
         when(authService.refreshTokenAndAccessToken(anyString(), anyString())).thenThrow(
             new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
@@ -239,5 +241,41 @@ class AuthControllerTest {
                 )
             );
     }
+
+    @Test
+    @DisplayName("refreshToken 요청 실패 - refreshToken 이 유효하지 않음  ")
+    public void refreshToken_fail_() throws Exception {
+
+        // given
+        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("INVALID_REFRESH_TOKEN","Bearer ");
+
+        String content = gson.toJson(invalidRequestToken);
+
+        when(authService.refreshTokenAndAccessToken(anyString(), anyString())).thenThrow(
+            new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
+
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isForbidden());
+
+
+        actions.andDo(print())
+            .andDo(document("auth/refreshToken_fail/refreshToken",
+                    requestFields(
+                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰"),
+                        fieldWithPath("tokenType").description("토큰 타입(Bearer )")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").description("HTTP status 상태 코드"),
+                        fieldWithPath("message").description("에러 메시지"),
+                        fieldWithPath("fieldErrors").ignored(),
+                        fieldWithPath("violationErrors").ignored()
+                    )
+                )
+            );
+    }
+
+
 }
 
