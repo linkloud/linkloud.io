@@ -182,8 +182,40 @@ class AuthControllerTest {
     @Test
     @DisplayName("refreshToken 요청 - 성공")
     public void refreshToken() throws Exception {
+        // given
+        String content = gson.toJson(refreshTokenRequest);
+        given(authService.refreshTokenAndAccessToken(anyString(), anyString())).willReturn(newTokenAuthResponse);
 
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isOk());
+
+        actions.andDo(print())
+            .andDo(document("auth/refreshToken_success",
+                requestFields(
+                    fieldWithPath("refreshToken").description("리프레시 토큰"),
+                    fieldWithPath("tokenType").description("토큰 타입(Bearer )")
+                    ),
+                responseFields(
+                    fieldWithPath("accessToken").description("새로 발급된 액세스 토큰"),
+                    fieldWithPath("refreshToken").description("새로 발급된 리프레시 토큰")
+                )
+            )
+        );
     }
-
-
 }
+
+//   .andDo(document("auth/authenticate_fail/implementation",
+//                pathParameters(
+//                    parameterWithName("socialType").description("소셜 타입 (google 등)")
+//                ),
+//                requestFields(
+//                    fieldWithPath("socialType").description("소셜 타입 (google 등)"),
+//                    fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
+//                ),
+//                responseFields(
+//                    fieldWithPath("data.accessToken").description("Access Token"),
+//                    fieldWithPath("data.refreshToken").description("Refresh Token")
+//                )
+//            ));
