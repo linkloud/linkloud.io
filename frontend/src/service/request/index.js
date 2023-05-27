@@ -16,29 +16,28 @@ class Request {
 
   setInterceptor() {
     /** request */
-    this.instance.interceptors.request.use((req) => {
-      log("🚀 request ---------------- ");
-      log(req);
-
-      return req;
+    this.instance.interceptors.request.use((request) => {
+      this.logRequest(request);
+      return request;
     });
 
     /** response */
     this.instance.interceptors.response.use(
       // 성공 응답 처리
       (response) => {
+        this.logResponse(response);
+
         const { data } = response;
 
-        if (data && data.data) {
-          log("📦 data ----------------");
-          log(data.data);
-          return data.data;
+        if (data) {
+          return data;
         }
+
         return response;
       },
       // 실패 응답 처리
       (error) => {
-        log("🚨 api error ----------------");
+        log("[            🚨 error              ]");
         log(error);
 
         if (error.response && error.response.data) {
@@ -68,6 +67,40 @@ class Request {
 
   delete(url, config) {
     return this.instance.delete(url, config);
+  }
+
+  logRequest(request) {
+    if (!import.meta.env.DEV) return;
+
+    log("[            🚀 request            ]");
+    const { method, url, params, data } = request;
+
+    let queryParams = "";
+    if (params) {
+      queryParams = Object.keys(params)
+        .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+        .join("&");
+      queryParams = "?" + queryParams;
+    }
+
+    log(`[${method.toUpperCase()}] ${url}${queryParams}`);
+
+    if (data) {
+      log("[request data]");
+      log(data);
+    }
+  }
+
+  logResponse(response) {
+    if (!import.meta.env.DEV) return;
+
+    log("[            📦 response           ]");
+    const { data } = response;
+
+    if (data) {
+      log("[response data]");
+      log(data);
+    }
   }
 }
 
