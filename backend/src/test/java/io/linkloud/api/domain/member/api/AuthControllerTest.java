@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.member.api;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
+import io.linkloud.api.domain.member.dto.RefreshAccessTokenRequest;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
@@ -51,8 +53,13 @@ class AuthControllerTest {
     @MockBean
     private AuthService authService;
 
+    final String BASE_URL = "/api/v1/auth";
+
     AuthRequestDto authRequest = new AuthRequestDto("google", "code1234");
-    AuthResponseDto authResponse = new AuthResponseDto("access_token","refresh_token");
+    AuthResponseDto authResponse = new AuthResponseDto("access_token", "refresh_token");
+    RefreshAccessTokenRequest refreshTokenRequest = new RefreshAccessTokenRequest("refreshToken","Bearer ");
+    AuthResponseDto newTokenAuthResponse = new AuthResponseDto("new_access_token", "new_refresh_token");
+
 
     @DisplayName("소셜 로그인 API 호출 성공")
     @Test
@@ -63,7 +70,7 @@ class AuthControllerTest {
         given(authService.authenticate(any(AuthRequestDto.class))).willReturn(authResponse);
 
         // when
-        mockMvc.perform(post("/api/v1/auth/{socialType}", "google")
+        mockMvc.perform(post(BASE_URL + "/{socialType}", "google")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
             .andExpect(status().isOk())
@@ -82,7 +89,6 @@ class AuthControllerTest {
                 )
             ));
 
-
         verify(authService).authenticate(any());
     }
 
@@ -94,27 +100,29 @@ class AuthControllerTest {
         String content = gson.toJson(authRequest);
 
         // when
-        when(authService.authenticate(any())).thenThrow(new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
+        when(authService.authenticate(any())).thenThrow(
+            new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
 
-        mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isNotFound())
-                .andDo(document("auth/authenticate_fail/implementation",
-                        pathParameters(
-                                parameterWithName("socialType").description("소셜 타입 (google 등)")
-                        ),
-                        requestFields(
-                                fieldWithPath("socialType").description("소셜 로그인 타입"),
-                                fieldWithPath("code").description("소셜 로그인 후 발급받은 코드")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description("HTTP status 상태 코드"),
-                                fieldWithPath("message").description("에러 메시지"),
-                                fieldWithPath("fieldErrors").ignored(),
-                                fieldWithPath("violationErrors").ignored()
-                        )));
+        mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isNotFound())
+            .andDo(document("auth/authenticate_fail/implementation",
+                pathParameters(
+                    parameterWithName("socialType").description("소셜 타입 (google 등)")
+                ),
+                requestFields(
+                    fieldWithPath("socialType").description("소셜 로그인 타입"),
+                    fieldWithPath("code").description("소셜 로그인 후 발급받은 코드")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("HTTP status 상태 코드"),
+                    fieldWithPath("message").description("에러 메시지"),
+                    fieldWithPath("fieldErrors").ignored(),
+                    fieldWithPath("violationErrors").ignored()
+                )));
     }
+
     @Test
     @DisplayName("authenticate 실패 - OAuth 서버 액세스 토큰 요청 에러")
     void authenticate_fail_oauth_accessToken_request() throws Exception {
@@ -122,11 +130,11 @@ class AuthControllerTest {
         String socialType = "REQUEST_FAIL_OAUTH_ACCESS_TOKEN";
         String content = gson.toJson(authRequest);
 
-        when(authService.authenticate(any())).thenThrow(new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
-
+        when(authService.authenticate(any())).thenThrow(
+            new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
 
         // when
-        ResultActions actions = mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
             .andExpect(status().isUnauthorized());
@@ -150,10 +158,11 @@ class AuthControllerTest {
         String socialType = "REQUEST_FAIL_USERINFO";
         String content = gson.toJson(authRequest);
 
-        when(authService.authenticate(any())).thenThrow(new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
+        when(authService.authenticate(any())).thenThrow(
+            new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
 
         // when
-        ResultActions actions = mockMvc.perform(post("/api/v1/auth/{socialType}", socialType)
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
             .andExpect(status().isUnauthorized());
@@ -168,6 +177,12 @@ class AuthControllerTest {
                 fieldWithPath("fieldErrors").ignored(),
                 fieldWithPath("violationErrors").ignored()
             )));
+    }
+
+    @Test
+    @DisplayName("refreshToken 요청 - 성공")
+    public void refreshToken() throws Exception {
+
     }
 
 
