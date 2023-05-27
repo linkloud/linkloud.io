@@ -3,10 +3,12 @@ package io.linkloud.api.global.security.auth.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -72,12 +74,12 @@ public class JwtProvider {
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
     }
+
     /**
-     * access 토큰 검증
-     * @param accessToken 액세스 토큰
-     * @return 정상적인 토큰 true 리턴
+     * 클라이언트에게 너무 자세한 정보를 보여줘서 더 이상 사용하지 않음
      */
-    public boolean validateAccessToken(String accessToken) {
+    @Deprecated
+    public boolean validateAccessToken_deprecated(String accessToken) {
         try {
             Jws<Claims> claims = Jwts
                 .parserBuilder()
@@ -99,6 +101,30 @@ public class JwtProvider {
         } catch (IllegalArgumentException e) {
             log.error("JWT 토큰이 null 이거나 빈 문자열입니다: {}", e.getMessage());
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
+        } catch (SignatureException e) {
+            log.error("유효하지않은 토큰입니다: {}", e.getMessage());
+            throw new CustomException(AuthExceptionCode.USER_UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * token 토큰 검증
+     * @param token 액세스 토큰
+     * @return 정상적인 토큰 true 리턴
+     */
+    public boolean validateAccessToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts
+                .parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+            Instant now = Instant.now();
+            Date expiration = claims.getBody().getExpiration();
+            return expiration.toInstant().isAfter(now);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT 토큰 검증 중 오류 발생: {}", e.getMessage());
+            throw new CustomException(AuthExceptionCode.USER_UNAUTHORIZED);
         }
     }
 
@@ -115,15 +141,15 @@ public class JwtProvider {
         return claimsResolver.apply(claims);
     }
 
-    private Claims parseClaimsJwt(final String accessToken) {
-        try {
-            return Jwts.parserBuilder()
+    private Claims parseClaimsJwt(final String token) {
+        if (validateAccessToken(token)) {
+            return Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
-                .parseClaimsJws(accessToken)
+                .parseClaimsJws(token)
                 .getBody();
-        } catch (CustomException e) {
-            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
+        throw new CustomException(AuthExceptionCode.USER_UNAUTHORIZED);
     }
 }
