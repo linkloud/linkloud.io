@@ -228,7 +228,7 @@ class AuthControllerTest {
             .andDo(document("auth/refreshToken_fail/tokenType",
                     requestFields(
                         fieldWithPath("refreshToken").description("리프레시 토큰"),
-                        fieldWithPath("tokenType").description("토큰 타입(Bearer )")
+                        fieldWithPath("tokenType").description("잘못된 토큰 타입(INVALID_TOKEN_TYPE)")
                     ),
                     responseFields(
                         fieldWithPath("status").description("HTTP status 상태 코드"),
