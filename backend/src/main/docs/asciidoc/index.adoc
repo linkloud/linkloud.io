@@ -117,18 +117,42 @@ include::{snippets}/auth/refreshToken_success/request-body.adoc[]
 .response-body
 include::{snippets}/auth/refreshToken_success/response-body.adoc[]
 
+.request-fields
+include::{snippets}/auth/refreshToken_success/request-fields.adoc[]
+
 .response-fields
 include::{snippets}/auth/refreshToken_success/response-fields.adoc[]
 
 
-==== 실패, 토큰 검증 실패
+==== 실패, 잘못된 토큰 타입(Bearer)
 
+.curl-request
+include::{snippets}/auth/refreshToken_fail/tokenType/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/refreshToken_fail/tokenType/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/refreshToken_fail/tokenType/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/refreshToken_fail/tokenType/request-body.adoc[]
+
+.response-body
+include::{snippets}/auth/refreshToken_fail/tokenType/response-body.adoc[]
+
+.request-fields
+include::{snippets}/auth/refreshToken_fail/tokenType/request-fields.adoc[]
+
+.response-fields
+include::{snippets}/auth/refreshToken_fail/tokenType/response-fields.adoc[]
 
 == 회원
 
 === 회원 정보 조회
 
 ==== 성공
+
 .curl-request
 include::{snippets}/member/me/success/curl-request.adoc[]
 
@@ -145,6 +169,7 @@ include::{snippets}/member/me/success/response-fields.adoc[]
 include::{snippets}/member/me/success/response-body.adoc[]
 
 ==== 실패, 회원이 존재하지 않음
+
 .curl-request
 include::{snippets}/member/me/fail/curl-request.adoc[]
 
