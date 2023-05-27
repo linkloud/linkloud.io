@@ -17,20 +17,13 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
     };
   }, [isOpened]);
 
-  const responsiveClass =
-    type === "xs"
-      ? "w-full h-full"
-      : "flex items-center justify-center  max-w-6xl";
-
-  const className = `flex flex-col items-center pt-4 pb-7 px-7 max-w-6xl rounded-lg bg-white shadow-md `;
-
   return (
     <Portal elementId="modal-wrap">
       {isOpened && (
         <>
           <Dimmed />
           <div className="fixed flex justify-center items-center inset-0 z-[999]">
-            <section className="flex flex-col items-center pt-4 pb-10 px-7 max-w-xl rounded-lg bg-white shadow-md">
+            <section className="flex flex-col items-center pt-4 pb-10 px-7 w-full max-w-xl rounded-lg bg-white shadow-md">
               {/* header */}
               <div className="flex justify-end w-full">
                 <button
