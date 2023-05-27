@@ -99,11 +99,83 @@ include::{snippets}/auth/authenticate_fail/userinfo/response-fields.adoc[]
 .response-body
 include::{snippets}/auth/authenticate_fail/userinfo/response-body.adoc[]
 
+=== 리프레시토큰
+==== 성공
+
+.curl-request
+include::{snippets}/auth/refreshToken_success/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/refreshToken_success/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/refreshToken_success/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/refreshToken_success/request-body.adoc[]
+
+.response-body
+include::{snippets}/auth/refreshToken_success/response-body.adoc[]
+
+.request-fields
+include::{snippets}/auth/refreshToken_success/request-fields.adoc[]
+
+.response-fields
+include::{snippets}/auth/refreshToken_success/response-fields.adoc[]
+
+
+==== 실패, 잘못된 토큰 타입(Bearer)
+
+.curl-request
+include::{snippets}/auth/refreshToken_fail/tokenType/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/refreshToken_fail/tokenType/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/refreshToken_fail/tokenType/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/refreshToken_fail/tokenType/request-body.adoc[]
+
+.response-body
+include::{snippets}/auth/refreshToken_fail/tokenType/response-body.adoc[]
+
+.request-fields
+include::{snippets}/auth/refreshToken_fail/tokenType/request-fields.adoc[]
+
+.response-fields
+include::{snippets}/auth/refreshToken_fail/tokenType/response-fields.adoc[]
+
+==== 실패, 유효하지 않은 리프레시 토큰
+
+.curl-request
+include::{snippets}/auth/refreshToken_fail/refreshToken/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/refreshToken_fail/refreshToken/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/refreshToken_fail/refreshToken/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/refreshToken_fail/refreshToken/request-body.adoc[]
+
+.response-body
+include::{snippets}/auth/refreshToken_fail/refreshToken/response-body.adoc[]
+
+.request-fields
+include::{snippets}/auth/refreshToken_fail/refreshToken/request-fields.adoc[]
+
+.response-fields
+include::{snippets}/auth/refreshToken_fail/refreshToken/response-fields.adoc[]
+
 == 회원
 
 === 회원 정보 조회
 
 ==== 성공
+
 .curl-request
 include::{snippets}/member/me/success/curl-request.adoc[]
 
@@ -120,6 +192,7 @@ include::{snippets}/member/me/success/response-fields.adoc[]
 include::{snippets}/member/me/success/response-body.adoc[]
 
 ==== 실패, 회원이 존재하지 않음
+
 .curl-request
 include::{snippets}/member/me/fail/curl-request.adoc[]
 
