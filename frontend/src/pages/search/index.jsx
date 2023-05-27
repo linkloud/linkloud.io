@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
-import useTags from "@/hooks/tag/useTags";
+import useTagList from "@/hooks/tag/useTagList";
 
 import Search from "@/common/components/search";
 import SearchValidationErrorModal from "@/common/components/search/SearchValidationErrorModal";
@@ -38,7 +38,7 @@ const SearchPage = () => {
   } = useArticleSearch();
 
   //TODO: 예외처리
-  const { tagList: popularityTagList, error: getTagsError } = useTags({
+  const { tagList: popularityTagList, error: getTagsError } = useTagList({
     page: 1,
     size: 15,
     sortBy: "popularity",

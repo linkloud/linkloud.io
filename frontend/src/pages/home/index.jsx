@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
-import useTags from "@/hooks/tag/useTags";
+import useTagList from "@/hooks/tag/useTagList";
 
 import Banner from "./components/Banner";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
@@ -23,7 +23,7 @@ const HomePage = () => {
   } = useArticleSearch();
 
   //TODO: 예외처리
-  const { tagList, error: getTagListError } = useTags({
+  const { tagList, error: getTagListError } = useTagList({
     page: 1,
     size: 15,
     sortBy: "popularity",

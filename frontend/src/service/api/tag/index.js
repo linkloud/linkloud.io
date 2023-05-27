@@ -1,5 +1,5 @@
 import request from "@/service/request";
 
-export const getTags = ({ page, size, sortBy }) => {
+export const getTagList = ({ page, size, sortBy }) => {
   return request.get("/tags", { params: { page, size, sortBy } });
 };
