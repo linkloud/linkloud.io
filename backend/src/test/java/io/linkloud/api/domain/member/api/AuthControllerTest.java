@@ -57,7 +57,7 @@ class AuthControllerTest {
 
     AuthRequestDto authRequest = new AuthRequestDto("google", "code1234");
     AuthResponseDto authResponse = new AuthResponseDto("access_token", "refresh_token");
-    RefreshAccessTokenRequest refreshTokenRequest = new RefreshAccessTokenRequest("refreshToken","Bearer ");
+    RefreshAccessTokenRequest refreshTokenRequest = new RefreshAccessTokenRequest("refreshToken_value","Bearer ");
     AuthResponseDto newTokenAuthResponse = new AuthResponseDto("new_access_token", "new_refresh_token");
 
 
