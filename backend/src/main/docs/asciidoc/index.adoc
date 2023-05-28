@@ -194,19 +194,19 @@ include::{snippets}/member/me/success/response-body.adoc[]
 ==== 실패, 회원이 존재하지 않음
 
 .curl-request
-include::{snippets}/member/me/fail/curl-request.adoc[]
+include::{snippets}/member/me/fail/notfound/curl-request.adoc[]
 
 .http-request
-include::{snippets}/member/me/fail/http-request.adoc[]
+include::{snippets}/member/me/fail/notfound/http-request.adoc[]
 
 .http-response
-include::{snippets}/member/me/fail/http-response.adoc[]
+include::{snippets}/member/me/fail/notfound/http-response.adoc[]
 
 .response-fields
-include::{snippets}/member/me/fail/response-fields.adoc[]
+include::{snippets}/member/me/fail/notfound/response-fields.adoc[]
 
 .response-body
-include::{snippets}/member/me/fail/response-body.adoc[]
+include::{snippets}/member/me/fail/notfound/response-body.adoc[]
 
 
 === 회원 닉네임 변경
