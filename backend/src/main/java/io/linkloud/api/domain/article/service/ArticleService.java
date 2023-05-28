@@ -38,11 +38,13 @@ public class ArticleService {
     /** 아티클 한 개 반환 */
     @Transactional
     public ArticleResponseDto fetchArticleById(Long id) {
-        Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
+        Article foundedArticle = fetchArticleEntityById(id);
         foundedArticle.articleViewIncrease(foundedArticle.getViews() + 1);  // 조회수 증가
 
         return new ArticleResponseDto(foundedArticle);
     }
+
+
 
     /**
      * 게시글 생성
@@ -74,7 +76,7 @@ public class ArticleService {
     @Transactional
     public ArticleResponseDto updateArticle(Long articleId,Long memberId,ArticleUpdateDto updateDto) {
         Member member = fetchMemberById(memberId);
-        Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));   // 수정할 아티클 조회
+        Article article = fetchArticleEntityById(articleId);
 
         // 요청한 회원ID, 수정하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
@@ -88,8 +90,7 @@ public class ArticleService {
     @Transactional
     public void removeArticle(Long memberId,Long articleId) {
         Member member = fetchMemberById(memberId);
-        Article article = articleRepository.findById(articleId)
-            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
+        Article article = fetchArticleEntityById(articleId);
 
         // 요청한 회원ID, 삭제하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
@@ -98,6 +99,9 @@ public class ArticleService {
         articleRepository.delete(article);
     }
 
+    private Article fetchArticleEntityById(Long id) {
+        return articleRepository.findById(id).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
+    }
 
     /**
      * memberId 로 member 찾기
