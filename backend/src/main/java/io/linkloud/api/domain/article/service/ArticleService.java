@@ -76,30 +76,26 @@ public class ArticleService {
         Member member = fetchMemberById(memberId);
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));   // 수정할 아티클 조회
 
-        // 요청한 회원, 수정하려는 게시글의 회원 비교
+        // 요청한 회원ID, 수정하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
         article.articleUpdate(updateDto);
 
         return new ArticleResponseDto(article);
     }
 
-    /**
-     * principal memberId 와 수정하려는 게시글을 작성한 memberId 가 같은지 비교
-     * @param member principal's memberId
-     * @param article 수정하려는 게시글
-     */
-    private void validateMemberArticleMatch(Member member, Article article) {
-        if (!article.getMember().getId().equals(member.getId())) {
-            throw new CustomException(MEMBER_NOT_MATCH);
-        }
-    }
-
 
     /** 아티클 삭제 */
     @Transactional
-    public void removeArticle(Long id) {
-        Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
-        articleRepository.delete(foundedArticle);
+    public void removeArticle(Long memberId,Long articleId) {
+        Member member = fetchMemberById(memberId);
+        Article article = articleRepository.findById(articleId)
+            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
+
+        // 요청한 회원ID, 삭제하려는 게시글의 회원ID 비교
+        validateMemberArticleMatch(member, article);
+
+
+        articleRepository.delete(article);
     }
 
 
@@ -112,6 +108,17 @@ public class ArticleService {
     private Member fetchMemberById(Long memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+    }
+
+    /**
+     * principal memberId 와 수정하려는 게시글을 작성한 memberId 가 같은지 비교
+     * @param member principal's memberId
+     * @param article 수정하려는 게시글
+     */
+    private void validateMemberArticleMatch(Member member, Article article) {
+        if (!article.getMember().getId().equals(member.getId())) {
+            throw new CustomException(MEMBER_NOT_MATCH);
+        }
     }
 
 }

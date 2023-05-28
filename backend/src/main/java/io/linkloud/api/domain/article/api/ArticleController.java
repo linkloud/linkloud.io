@@ -61,16 +61,16 @@ public class ArticleController {
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
     @PatchMapping("/{articleId}")
-    public ResponseEntity<ArticleResponseDto> patchArticle(@PathVariable Long articleId,@LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
+    public ResponseEntity<ArticleResponseDto> patchArticle(@PathVariable Long articleId,@NonNull @LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
         ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId,memberId,articleUpdateDto);
 
         return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
     }
 
     /** 아티클 삭제 */
-    @DeleteMapping("{id}")
-    public ResponseEntity<ArticleResponseDto> deleteArticle(@PathVariable @Valid Long id) {
-        articleService.removeArticle(id);
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<ArticleResponseDto> deleteArticle(@NonNull @LoginMemberId Long memberId,@PathVariable @Valid Long articleId) {
+        articleService.removeArticle(memberId,articleId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
