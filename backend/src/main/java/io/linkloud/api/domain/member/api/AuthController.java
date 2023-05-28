@@ -33,13 +33,13 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponseDto> refreshAccessToken(@RequestBody
+    public ResponseEntity<SingleDataResponse<AuthResponseDto>> refreshAccessToken(@RequestBody
     RefreshAccessTokenRequest dto) {
         AuthResponseDto responseDto = authService.refreshTokenAndAccessToken(dto.getRefreshToken(),
             dto.getTokenType());
         log.info("토큰 재생성");
         log.info("AccessToken={} ",responseDto.getAccessToken());
         log.info("RefreshToken={} ",responseDto.getRefreshToken());
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(new SingleDataResponse<>(responseDto));
     }
 }

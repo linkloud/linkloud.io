@@ -9,13 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 05-28 Long memberId 삭제 (@LoginMemberID 어노테이션으로 memberId 를 받아옴)
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class ArticleRequestDto {
-
-    @NotNull
-    private Long member_id;
 
     @NotBlank(message = "제목은 빈칸으로 둘 수 없습니다.")
     @Size(min = 1, max = 50, message = "제목은 한 글자 이상, 50자 이하로 작성해야 합니다.")
