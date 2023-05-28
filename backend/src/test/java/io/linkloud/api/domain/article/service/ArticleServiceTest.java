@@ -2,6 +2,7 @@ package io.linkloud.api.domain.article.service;
 
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_MATCH;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -37,6 +38,8 @@ class ArticleServiceTest {
     ArticleService articleService;
     Member fisrtMockMember = mock(Member.class);
     Member secondMockMember = mock(Member.class);
+
+    Article firstMockArticle = mock(Article.class);
     private final Article article = Article.builder()
         .id(1L)
         .member(fisrtMockMember)
@@ -98,7 +101,7 @@ class ArticleServiceTest {
 
 
         // when
-        CustomException exception = Assertions.assertThrows(CustomException.class,
+        CustomException exception = assertThrows(CustomException.class,
             () -> articleService.addArticle(fisrtMockMember.getId(), articleRequestDto));
 
         // then
@@ -142,5 +145,33 @@ class ArticleServiceTest {
     }
 
 
+    @Test
+    @DisplayName("게시글 수정 실패 - 요청한 회원과 게시글 작성 회원이 일치하지 않음")
+    public void updateArticleFail_memberMismatch() {
+
+        // ID 가 다른 회원2명
+        when(fisrtMockMember.getId()).thenReturn(1L);
+        when(secondMockMember.getId()).thenReturn(9999L);
+
+        // 첫 번째 게시글의 작성자 객체는 1L 회원의 게시글
+        when(firstMockArticle.getMember()).thenReturn(fisrtMockMember);
+
+        // given
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(secondMockMember));
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(firstMockArticle));
+
+        // when
+        // 9999L 회원이 첫 번째 게시글을 수정 요청
+        CustomException exception = assertThrows(CustomException.class,
+            () -> articleService.updateArticle(
+                secondMockMember.getId(),
+                firstMockArticle.getId(),
+                articleUpdateRequestDto)
+        );
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_MATCH.getMessage());
+        assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_MATCH.getStatus());
+    }
 
 }
