@@ -7,8 +7,8 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
-import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.security.resolver.LoginMemberId;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,13 +44,18 @@ public class ArticleService {
         return new ArticleResponseDto(foundedArticle);
     }
 
-    /** 아티클 생성 */
+    /**
+     * 05-28 Long memberId 파라매터 추가됨
+     * @param memberId principal's member Id
+     * @param requestDto 게시글 내용 요청 dto
+     * @return 게시글 정보
+     */
     @Transactional
-    public ArticleResponseDto addArticle(ArticleRequestDto requestDto) {
-        Member foundedMember = memberRepository.findById(requestDto.getMember_id()).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+    public ArticleResponseDto addArticle(Long memberId,ArticleRequestDto requestDto) {
+        Member foundedMember = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         LocalDate joinDate = foundedMember.getCreatedAt().toLocalDate();                             // 가져온 멤버의 가입일을 저장.
-        if(joinDate.compareTo(LocalDate.now()) > -3) throw new CustomException(MEMBER_NOT_MATCH);    // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
+        if(joinDate.compareTo(LocalDate.now()) >-3) throw new CustomException(MEMBER_NOT_MATCH);    // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
 
         Article createdArticle = articleRepository.save(requestDto.toArticleEntity(foundedMember));  // requestDto를 엔티티로 변환.
 

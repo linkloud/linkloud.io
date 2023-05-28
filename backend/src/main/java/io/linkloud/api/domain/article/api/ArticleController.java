@@ -7,8 +7,10 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.service.ArticleService;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
+import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -50,8 +52,8 @@ public class ArticleController {
 
     /** 아티클 작성 */
     @PostMapping
-    public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody @Valid ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto createdArticleDto = articleService.addArticle(articleRequestDto);
+    public ResponseEntity<ArticleResponseDto> createArticle(@NonNull @LoginMemberId Long memberId, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
+        ArticleResponseDto createdArticleDto = articleService.addArticle(memberId,articleRequestDto);
 
         return new ResponseEntity<>(createdArticleDto, HttpStatus.OK);
     }
