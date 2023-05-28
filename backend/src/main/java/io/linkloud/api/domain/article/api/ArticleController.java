@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,44 +34,46 @@ public class ArticleController {
 
     /** 아티클 모두 조회 */
     @GetMapping
-    public ResponseEntity<MultiDataResponse> getAllArticle(@Positive @RequestParam int page) {
+    public ResponseEntity<MultiDataResponse<ArticleResponseDto>> getAllArticle(@Positive @RequestParam int page) {
         Page<ArticleResponseDto> getAllArticleDto = articleService.fetchAllArticle(page);
 
-        return ResponseEntity.ok().body(new MultiDataResponse(getAllArticleDto));
+        return ResponseEntity.ok(new MultiDataResponse<>(getAllArticleDto));
     }
 
     /** 아티클 한 개 조회 */
     @GetMapping("/{id}")
-    public ResponseEntity<SingleDataResponse> getOneArticle(@PathVariable @Valid Long id) {
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> getOneArticle(@PathVariable @Valid Long id) {
         ArticleResponseDto getOneArticleDto = articleService.fetchArticleById(id);
 
-        return ResponseEntity.ok().body(new SingleDataResponse<>(getOneArticleDto));
+        return ResponseEntity.ok(new SingleDataResponse<>(getOneArticleDto));
     }
 
     /** 아티클 작성 */
     @PostMapping
-    public ResponseEntity<ArticleResponseDto> createArticle(@NonNull @LoginMemberId Long memberId, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> createArticle(@LoginMemberId Long memberId, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
         ArticleResponseDto createdArticleDto = articleService.addArticle(memberId,articleRequestDto);
 
-        return new ResponseEntity<>(createdArticleDto, HttpStatus.OK);
+        return ResponseEntity.ok(new SingleDataResponse<>(createdArticleDto));
+
     }
 
     /** 아티클 수정 */
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
     @PatchMapping("/{articleId}")
-    public ResponseEntity<ArticleResponseDto> patchArticle(@PathVariable Long articleId,@NonNull @LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> patchArticle(@PathVariable Long articleId,@LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
         ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId,memberId,articleUpdateDto);
 
-        return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
+        return ResponseEntity.ok(new SingleDataResponse<>(updatedArticleDto));
+
     }
 
     /** 아티클 삭제 */
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<ArticleResponseDto> deleteArticle(@PathVariable @Valid Long articleId ,@NonNull @LoginMemberId Long memberId) {
+    public ResponseEntity<Void>deleteArticle(@PathVariable @Valid Long articleId ,@LoginMemberId Long memberId) {
         articleService.removeArticle(articleId,memberId);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
 }
