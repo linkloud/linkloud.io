@@ -2,11 +2,14 @@ package io.linkloud.api.domain.article.service;
 
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_MATCH;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDto;
@@ -172,6 +175,27 @@ class ArticleServiceTest {
         // then
         assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_MATCH.getMessage());
         assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_MATCH.getStatus());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 정상적으로 실행됨")
+    public void removeArticleSuccess() {
+
+        when(fisrtMockMember.getId()).thenReturn(1L);
+        // 게시글의 작성자 객체는 1L 회원의 게시글
+        when(firstMockArticle.getMember()).thenReturn(fisrtMockMember);
+
+        // given
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(fisrtMockMember));
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(firstMockArticle));
+
+        // when
+        // removeArticle 실행 (예외가 발생하지 않아야 함)
+        assertDoesNotThrow(() -> articleService.removeArticle(fisrtMockMember.getId(), firstMockArticle.getId()));
+
+        // then
+        // delete 메서드가 한 번 실행되었는지 확인
+        verify(articleRepository, times(1)).delete(firstMockArticle);
     }
 
 }
