@@ -3,7 +3,6 @@ package io.linkloud.api.domain.article.api;
 import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
-import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.service.ArticleService;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
@@ -61,9 +60,9 @@ public class ArticleController {
     /** 아티클 수정 */
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
-    @PatchMapping("{id}")
-    public ResponseEntity<ArticleResponseDto> patchArticle(@PathVariable Long id, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
-        ArticleResponseDto updatedArticleDto = articleService.updateArticle(id, articleUpdateDto);
+    @PatchMapping("/{articleId}")
+    public ResponseEntity<ArticleResponseDto> patchArticle(@PathVariable Long articleId,@LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
+        ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId,memberId,articleUpdateDto);
 
         return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
     }

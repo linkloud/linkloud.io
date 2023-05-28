@@ -45,6 +45,7 @@ public class ArticleService {
     }
 
     /**
+     * 게시글 생성
      * 05-28 Long memberId 파라매터 추가됨
      * @param memberId principal's member Id
      * @param requestDto 게시글 내용 요청 dto
@@ -52,7 +53,7 @@ public class ArticleService {
      */
     @Transactional
     public ArticleResponseDto addArticle(Long memberId,ArticleRequestDto requestDto) {
-        Member foundedMember = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        Member foundedMember = fetchMemberById(memberId);
 
         LocalDate joinDate = foundedMember.getCreatedAt().toLocalDate();                             // 가져온 멤버의 가입일을 저장.
         if(joinDate.compareTo(LocalDate.now()) >-3) throw new CustomException(MEMBER_NOT_MATCH);    // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
@@ -62,20 +63,55 @@ public class ArticleService {
         return new ArticleResponseDto(createdArticle);
     }
 
-    /** 아티클 수정 */
+    /**
+     * 게시글 수정
+     * 05-28 Long memberId 파라매터 추가됨
+     * @param articleId 게시글 ID
+     * @param memberId  작성자 ID
+     * @param updateDto 수정내용 DTO
+     * @return 수정된 게시글 DTO
+     */
     @Transactional
-    public ArticleResponseDto updateArticle(Long id, ArticleUpdateDto updateDto) {
-        Article updatedArticle = articleRepository.findById(id).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));   // 수정할 아티클 조회
-        updatedArticle.articleUpdate(updateDto);
+    public ArticleResponseDto updateArticle(Long articleId,Long memberId,ArticleUpdateDto updateDto) {
+        Member member = fetchMemberById(memberId);
+        Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));   // 수정할 아티클 조회
 
-        return new ArticleResponseDto(updatedArticle);
+        // 요청한 회원, 수정하려는 게시글의 회원 비교
+        validateMemberArticleMatch(member, article);
+        article.articleUpdate(updateDto);
+
+        return new ArticleResponseDto(article);
     }
+
+    /**
+     * principal memberId 와 수정하려는 게시글을 작성한 memberId 가 같은지 비교
+     * @param member principal's memberId
+     * @param article 수정하려는 게시글
+     */
+    private void validateMemberArticleMatch(Member member, Article article) {
+        if (!article.getMember().getId().equals(member.getId())) {
+            throw new CustomException(MEMBER_NOT_MATCH);
+        }
+    }
+
 
     /** 아티클 삭제 */
     @Transactional
     public void removeArticle(Long id) {
         Article foundedArticle = articleRepository.findById(id).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
         articleRepository.delete(foundedArticle);
+    }
+
+
+    /**
+     * memberId 로 member 찾기
+     * service 에서 service 호출보다 repository 를 호출하는게 더 빠름
+     * @param memberId principal's memberId
+     * @return Member
+     */
+    private Member fetchMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
     }
 
 }
