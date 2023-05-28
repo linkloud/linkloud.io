@@ -69,8 +69,8 @@ public class ArticleController {
 
     /** 아티클 삭제 */
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<ArticleResponseDto> deleteArticle(@NonNull @LoginMemberId Long memberId,@PathVariable @Valid Long articleId) {
-        articleService.removeArticle(memberId,articleId);
+    public ResponseEntity<ArticleResponseDto> deleteArticle(@PathVariable @Valid Long articleId ,@NonNull @LoginMemberId Long memberId) {
+        articleService.removeArticle(articleId,memberId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
