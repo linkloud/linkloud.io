@@ -201,8 +201,8 @@ class AuthControllerTest {
                     fieldWithPath("tokenType").description("토큰 타입(Bearer )")
                     ),
                 responseFields(
-                    fieldWithPath("accessToken").description("새로 발급된 액세스 토큰"),
-                    fieldWithPath("refreshToken").description("새로 발급된 리프레시 토큰")
+                    fieldWithPath("data.accessToken").description("새로 발급된 액세스 토큰"),
+                    fieldWithPath("data.refreshToken").description("새로 발급된 리프레시 토큰")
                 )
             )
         );
