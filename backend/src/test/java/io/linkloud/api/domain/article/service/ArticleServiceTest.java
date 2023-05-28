@@ -39,13 +39,13 @@ class ArticleServiceTest {
     ArticleRepository articleRepository;
     @InjectMocks
     ArticleService articleService;
-    Member fisrtMockMember = mock(Member.class);
+    Member firstMockMember = mock(Member.class);
     Member secondMockMember = mock(Member.class);
 
     Article firstMockArticle = mock(Article.class);
     private final Article article = Article.builder()
         .id(1L)
-        .member(fisrtMockMember)
+        .member(firstMockMember)
         .title("title")
         .url("url")
         .description("desc")
@@ -64,10 +64,10 @@ class ArticleServiceTest {
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3); // 3일 전 생성된 가입일로 설정
 
         // firstMockMember 가짜 객체의 값 설정
-        when(fisrtMockMember.getId()).thenReturn(1L);
-        when(fisrtMockMember.getEmail()).thenReturn("KIM@google.com");
-        when(fisrtMockMember.getNickname()).thenReturn("KIM");
-        when(fisrtMockMember.getCreatedAt()).thenReturn(threeDaysAgo);
+        when(firstMockMember.getId()).thenReturn(1L);
+        when(firstMockMember.getEmail()).thenReturn("KIM@google.com");
+        when(firstMockMember.getNickname()).thenReturn("KIM");
+        when(firstMockMember.getCreatedAt()).thenReturn(threeDaysAgo);
 
         // secondMockMember 가짜 객체의 값 설정
         when(secondMockMember.getId()).thenReturn(2L);
@@ -77,16 +77,16 @@ class ArticleServiceTest {
 
 
         // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(fisrtMockMember));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(firstMockMember));
         given(articleRepository.save(any())).willReturn(article);
 
         // when
-        ArticleResponseDto result = articleService.addArticle(fisrtMockMember.getId(), articleRequestDto);
+        ArticleResponseDto result = articleService.addArticle(firstMockMember.getId(), articleRequestDto);
 
         Assertions.assertNotNull(result);
         assertThat(article.getId()).isEqualTo(result.getId());
-        assertThat(article.getMember()).isEqualTo(fisrtMockMember); // 게시글 작성자의 맴버 객체와 작성자 맴버 객체가 같은지
-        assertThat(article.getMember().getNickname()).isEqualTo(fisrtMockMember.getNickname());
+        assertThat(article.getMember()).isEqualTo(firstMockMember); // 게시글 작성자의 맴버 객체와 작성자 맴버 객체가 같은지
+        assertThat(article.getMember().getNickname()).isEqualTo(firstMockMember.getNickname());
         assertThat(article.getMember().getId()).isNotEqualTo(secondMockMember.getId()); // 게시글 작성자의 맴버 객체와 다른 맴버 ID 가 다른지
 
     }
@@ -96,16 +96,16 @@ class ArticleServiceTest {
         LocalDateTime aDayAgo = LocalDateTime.now().minusDays(1); // 1일 전 생성된 가입일로 설정
 
         // firstMockMember 가짜 객체의 값 설정
-        when(fisrtMockMember.getId()).thenReturn(1L);
-        when(fisrtMockMember.getCreatedAt()).thenReturn(aDayAgo);
+        when(firstMockMember.getId()).thenReturn(1L);
+        when(firstMockMember.getCreatedAt()).thenReturn(aDayAgo);
 
         // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(fisrtMockMember));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(firstMockMember));
 
 
         // when
         CustomException exception = assertThrows(CustomException.class,
-            () -> articleService.addArticle(fisrtMockMember.getId(), articleRequestDto));
+            () -> articleService.addArticle(firstMockMember.getId(), articleRequestDto));
 
         // then
         assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_MATCH.getMessage());
@@ -120,19 +120,19 @@ class ArticleServiceTest {
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3); // 3일 전 생성된 가입일로 설정
 
         // firstMockMember 가짜 객체의 값 설정
-        when(fisrtMockMember.getId()).thenReturn(1L);
-        when(fisrtMockMember.getNickname()).thenReturn("KIM");
-        when(fisrtMockMember.getCreatedAt()).thenReturn(threeDaysAgo);
+        when(firstMockMember.getId()).thenReturn(1L);
+        when(firstMockMember.getNickname()).thenReturn("KIM");
+        when(firstMockMember.getCreatedAt()).thenReturn(threeDaysAgo);
 
 
         // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(fisrtMockMember));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(firstMockMember));
 
         when(articleRepository.findById(anyLong())).thenReturn(Optional.of(article));
 
         // when
         ArticleResponseDto articleResponseDto = articleService.updateArticle(article.getId(),
-            fisrtMockMember.getId(),
+            firstMockMember.getId(),
             articleUpdateRequestDto);
 
         // then
@@ -143,8 +143,8 @@ class ArticleServiceTest {
         assertThat(articleUpdateRequestDto.getDescription()).isEqualTo(articleResponseDto.getDescription());
 
         // 게시글 수정된 응답 dto 의 memberId 와 작성자의 memberId 같은지 테스트
-        assertThat(articleResponseDto.getMember_id()).isEqualTo(fisrtMockMember.getId());
-        assertThat(articleResponseDto.getMember_nickname()).isEqualTo(fisrtMockMember.getNickname());
+        assertThat(articleResponseDto.getMember_id()).isEqualTo(firstMockMember.getId());
+        assertThat(articleResponseDto.getMember_nickname()).isEqualTo(firstMockMember.getNickname());
     }
 
 
@@ -153,18 +153,18 @@ class ArticleServiceTest {
     public void updateArticleFail_memberMismatch() {
 
         // ID 가 다른 회원2명
-        when(fisrtMockMember.getId()).thenReturn(1L);
+        when(firstMockMember.getId()).thenReturn(1L);
         when(secondMockMember.getId()).thenReturn(9999L);
 
         // 첫 번째 게시글의 작성자 객체는 1L 회원의 게시글
-        when(firstMockArticle.getMember()).thenReturn(fisrtMockMember);
+        when(firstMockArticle.getMember()).thenReturn(firstMockMember);
 
         // given
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(secondMockMember));
         given(articleRepository.findById(anyLong())).willReturn(Optional.of(firstMockArticle));
 
         // when
-        // 9999L 회원이 첫 번째 게시글을 수정 요청
+        // 9999L 회원이 첫 번째 게시글 수정 요청
         CustomException exception = assertThrows(CustomException.class,
             () -> articleService.updateArticle(
                 secondMockMember.getId(),
@@ -178,24 +178,50 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제 - 정상적으로 실행됨")
+    @DisplayName("게시글 삭제")
     public void removeArticleSuccess() {
 
-        when(fisrtMockMember.getId()).thenReturn(1L);
+        when(firstMockMember.getId()).thenReturn(1L);
         // 게시글의 작성자 객체는 1L 회원의 게시글
-        when(firstMockArticle.getMember()).thenReturn(fisrtMockMember);
+        when(firstMockArticle.getMember()).thenReturn(firstMockMember);
 
         // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(fisrtMockMember));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(firstMockMember));
         given(articleRepository.findById(anyLong())).willReturn(Optional.of(firstMockArticle));
 
         // when
         // removeArticle 실행 (예외가 발생하지 않아야 함)
-        assertDoesNotThrow(() -> articleService.removeArticle(fisrtMockMember.getId(), firstMockArticle.getId()));
+        assertDoesNotThrow(() -> articleService.removeArticle(firstMockMember.getId(), firstMockArticle.getId()));
 
         // then
         // delete 메서드가 한 번 실행되었는지 확인
         verify(articleRepository, times(1)).delete(firstMockArticle);
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 실패- 요청한 회원과 게시글 작성 회원이 일치하지 않음")
+    public void removeArticleFail_memberMismatch() {
+
+        // ID 가 다른 회원2명
+        when(firstMockMember.getId()).thenReturn(1L);
+        when(secondMockMember.getId()).thenReturn(9999L);
+
+        // 첫 번째 게시글의 작성자 객체는 1L 회원의 게시글
+        when(firstMockArticle.getMember()).thenReturn(firstMockMember);
+
+
+        // given
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(secondMockMember));
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(firstMockArticle));
+
+        // when
+        // 첫 번째 게시글의 요청에 memberID 가 9999L인 memberId 요청이 오면
+        CustomException exception = assertThrows(CustomException.class,
+            () -> articleService.removeArticle(secondMockMember.getId(), firstMockArticle.getId()));
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_MATCH.getMessage());
+        assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_MATCH.getStatus());
     }
 
 }
