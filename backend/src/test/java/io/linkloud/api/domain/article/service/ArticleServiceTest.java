@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
@@ -37,7 +38,7 @@ class ArticleServiceTest {
     Member fisrtMockMember = mock(Member.class);
     Member secondMockMember = mock(Member.class);
     private final Article article = Article.builder()
-        .id(fisrtMockMember.getId())
+        .id(1L)
         .member(fisrtMockMember)
         .title("title")
         .url("url")
@@ -48,6 +49,8 @@ class ArticleServiceTest {
 
     ArticleRequestDto articleRequestDto = new ArticleRequestDto("title","url","desc");
 
+    ArticleUpdateDto articleUpdateRequestDto = new ArticleUpdateDto("updateTitle", "updateURL",
+        "updateDesc");
     @Test
     @DisplayName("게시글 생성 성공")
     public void addArticleSuccess() {
@@ -103,4 +106,41 @@ class ArticleServiceTest {
         assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_MATCH.getStatus());
 
     }
+
+    @Test
+    @DisplayName("게시글 수정 성공")
+    public void updateArticleSuccess() {
+
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3); // 3일 전 생성된 가입일로 설정
+
+        // firstMockMember 가짜 객체의 값 설정
+        when(fisrtMockMember.getId()).thenReturn(1L);
+        when(fisrtMockMember.getNickname()).thenReturn("KIM");
+        when(fisrtMockMember.getCreatedAt()).thenReturn(threeDaysAgo);
+
+
+        // given
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(fisrtMockMember));
+
+        when(articleRepository.findById(anyLong())).thenReturn(Optional.of(article));
+
+        // when
+        ArticleResponseDto articleResponseDto = articleService.updateArticle(article.getId(),
+            fisrtMockMember.getId(),
+            articleUpdateRequestDto);
+
+        // then
+
+        // 게시글 수정 내용 dto 와 게시글 업데이트 후 응답하는 게시글 수정내용 dto 값이 같은지 테스트
+        assertThat(articleUpdateRequestDto.getTitle()).isEqualTo(articleResponseDto.getTitle());
+        assertThat(articleUpdateRequestDto.getUrl()).isEqualTo(articleResponseDto.getUrl());
+        assertThat(articleUpdateRequestDto.getDescription()).isEqualTo(articleResponseDto.getDescription());
+
+        // 게시글 수정된 응답 dto 의 memberId 와 작성자의 memberId 같은지 테스트
+        assertThat(articleResponseDto.getMember_id()).isEqualTo(fisrtMockMember.getId());
+        assertThat(articleResponseDto.getMember_nickname()).isEqualTo(fisrtMockMember.getNickname());
+    }
+
+
+
 }
