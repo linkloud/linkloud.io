@@ -91,7 +91,7 @@ const TagsPage = () => {
                 </li>
               ))}
             </ul>
-            <div className="flex mt-5">
+            <div className="flex mt-5 mb-24">
               {prevButtonVisible && (
                 <Button size="sm" styleType="lined" onClick={handlePrevTagList}>
                   이전

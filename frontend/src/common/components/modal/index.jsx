@@ -22,7 +22,7 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
       {isOpened && (
         <>
           <Dimmed />
-          <div className="fixed flex justify-center items-center inset-0 z-[999]">
+          <div className="fixed flex justify-center items-center inset-0 z-[999] px-6">
             <section className="flex flex-col items-center pt-4 pb-10 px-7 w-full max-w-xl rounded-lg bg-white shadow-md">
               {/* header */}
               <div className="flex justify-end w-full">

@@ -1,18 +1,16 @@
 import { useGoogleLogin } from "@react-oauth/google";
 
 import useAuthStore from "@/stores/useAuthStore";
-import useModalStore from "@/stores/useModalStore";
 
 import { GoogleIcon } from "@/static/svg";
 
-const GoogleLoginButton = () => {
+const GoogleLoginButton = ({ onCloseLoginModal }) => {
   const { socialLogin } = useAuthStore();
-  const { closeModal } = useModalStore();
 
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       await socialLogin("google", codeResponse.code);
-      closeModal("login");
+      onCloseLoginModal();
     },
     flow: "auth-code",
   });

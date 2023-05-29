@@ -5,7 +5,8 @@ import useHeader from "./hooks/useHeader";
 import HeaderActionMenu from "./HeaderActionMenu";
 import Button from "../button";
 import UserProfile from "../user/UserProfile";
-import { LogoLabel, Logo } from "@/static/svg";
+import AuthLoginModal from "../auth/AuthLoginModal";
+import { Logo } from "@/static/svg";
 
 import { ROLE } from "@/common/constants";
 
@@ -14,7 +15,9 @@ const Header = () => {
     userInfo,
     isScrollTop,
     isActionMenuVisible,
+    isLoginModalOpened,
     handleOpenLoginModal,
+    handleCloseLoginModal,
     handleRegisterLink,
     handleClickProfile,
     handleLeaveProfile,
@@ -45,7 +48,7 @@ const Header = () => {
                 size="md"
                 styleType="subtle"
                 aria-haspopup="dialog"
-                onClick={console.log("공지사항")}
+                onClick={() => {}}
               >
                 공지사항
               </Button>
@@ -84,9 +87,13 @@ const Header = () => {
                 >
                   로그인
                 </Button>
+                <AuthLoginModal
+                  isOpened={isLoginModalOpened}
+                  onCloseLoginModal={handleCloseLoginModal}
+                />
               </li>
             ) : (
-              <li className="relative px-2">
+              <li className="relative px-4">
                 <UserProfile
                   name={nickname}
                   profileImage={picture}
