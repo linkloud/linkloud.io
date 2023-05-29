@@ -1,31 +1,49 @@
 import { create } from "zustand";
+import Cookies from "js-cookie";
 
-import { socialLogin, me } from "@/service/api";
+import { socialLogin, me, refresh } from "@/service/api";
 
 import { ROLE } from "@/common/constants";
+
+const initialState = {
+  nickname: "",
+  picture: "",
+  role: ROLE.GUEST,
+};
 
 const useAuthStore = create((set, get) => ({
   token: "",
   userInfo: {
-    id: 0,
-    nickname: "",
-    role: ROLE.GUEST,
-    picture: "",
+    ...initialState,
   },
-  // TODO: error handling
   socialLogin: async (socialType, code) => {
     const { data } = await socialLogin(socialType, code);
-    const { accessToken } = data;
+    const { accessToken, refreshToken } = data;
     get().setToken(accessToken);
     get().fetchUserInfo();
+    Cookies.set("refreshToken", refreshToken);
   },
   logout: () => {
-    set(initialState);
+    set({ token: "", userInfo: { ...initialState } });
+    Cookies.remove("refreshToken");
   },
   setToken: (token) => set({ token }),
+  initUserInfo: async () => {
+    const refreshToken = Cookies.get("refreshToken");
+    if (!refreshToken) return;
+
+    const { data } = await refresh(refreshToken);
+    const { accessToken, refreshToken: newRefreshToken } = data;
+
+    get().setToken(accessToken);
+    Cookies.set("refreshToken", newRefreshToken);
+
+    await get().fetchUserInfo();
+  },
   fetchUserInfo: async () => {
-    const userInfo = await me(get().token);
-    set((state) => ({ ...state, userInfo: userInfo }));
+    const token = get().token;
+    const { data } = await me(token);
+    set((state) => ({ ...state, userInfo: { ...data } }));
   },
 }));
 
