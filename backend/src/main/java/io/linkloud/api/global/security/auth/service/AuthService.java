@@ -43,10 +43,10 @@ public class AuthService {
             throw new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE);
         }
         // 1
-        String accessToken = oAuthClient.getAccessToken(dto.getCode());
+        String oAuthAccessToken = oAuthClient.getAccessToken(dto.getCode());
 
         // 2
-        OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
+        OAuthAttributes userInfo = oAuthClient.getUserInfo(oAuthAccessToken);
 
         // 3
         MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
