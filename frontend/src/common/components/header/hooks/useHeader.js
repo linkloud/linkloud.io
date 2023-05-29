@@ -23,7 +23,7 @@ const useHeader = () => {
 
   useEffect(() => {
     initUserInfo();
-  }, [navigate]);
+  }, []);
 
   // 링크 등록
   const handleRegisterLink = () => {
