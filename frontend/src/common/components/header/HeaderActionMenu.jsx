@@ -1,20 +1,23 @@
+import { useNavigate } from "react-router-dom";
+
+import useAuthStore from "@/stores/useAuthStore";
+
 import ActionMenu from "../action-menu/ActionMenu";
 import ActionMenuItem from "../action-menu/ActionMenuItem";
 
-import useAuthStore from "@/stores/useAuthStore";
-import useModalStore from "@/stores/useModalStore";
-
 const HeaderActionMenu = ({ nickname, handleMouseLeave }) => {
+  const navigate = useNavigate();
   const { logout } = useAuthStore();
-  // 태그 요청 모달
-  const { openModal } = useModalStore();
-  const handleOpenReqTagModal = () => openModal("requestTag");
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
 
   return (
     <ActionMenu onMouseLeave={handleMouseLeave}>
       <ActionMenuItem to={`/members/${nickname}`}>내 정보</ActionMenuItem>
-      <ActionMenuItem onClick={handleOpenReqTagModal}>태그요청</ActionMenuItem>
-      <ActionMenuItem onClick={logout}>로그아웃</ActionMenuItem>
+      <ActionMenuItem onClick={handleLogout}>로그아웃</ActionMenuItem>
     </ActionMenu>
   );
 };

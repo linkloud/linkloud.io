@@ -1,28 +1,41 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
+
 import Layout from "@/pages/Layout";
-import NotFoundPage from "@/pages/error/404";
-import HomePage from "@/pages/home";
-import SearchPage from "@/pages/search";
-import members from "./member";
-import links from "./links";
-import tags from "./tags";
+const NotFoundPage = lazy(() => import("@/pages/error/404"));
+const HomePage = lazy(() => import("@/pages/home"));
+const SearchPage = lazy(() => import("@/pages/search"));
+const MemberProfilePage = lazy(() => import("@/pages/members/name"));
+const LinkRegPage = lazy(() => import("@/pages/links/reg"));
+const TagListPage = lazy(() => import("@/pages/tags"));
+
+import { ROUTES_PATH } from "@/common/constants";
 
 const router = createBrowserRouter([
   {
-    path: "",
     element: <Layout />,
     children: [
       {
-        path: "/",
+        path: ROUTES_PATH.HOME,
+        index: true,
         element: <HomePage />,
       },
       {
-        path: "/search",
+        path: ROUTES_PATH.SEARCH,
         element: <SearchPage />,
       },
-      members,
-      links,
-      tags,
+      {
+        path: ROUTES_PATH.MEMBER_PROFILE,
+        element: <MemberProfilePage />,
+      },
+      {
+        path: ROUTES_PATH.LINK_REG,
+        element: <LinkRegPage />,
+      },
+      {
+        path: ROUTES_PATH.TAGS_LIST,
+        element: <TagListPage />,
+      },
     ],
   },
   { path: "*", element: <NotFoundPage /> },
