@@ -38,12 +38,12 @@ class Request {
       // 실패 응답 처리
       (error) => {
         log("[            🚨 error              ]");
-        log(error);
 
         if (error.response && error.response.data) {
+          log(error.response.data);
           return Promise.reject(error.response.data);
         }
-
+        log(error);
         return Promise.reject(error.message);
       }
     );
@@ -93,7 +93,6 @@ class Request {
 
   logResponse(response) {
     if (!import.meta.env.DEV) return;
-
     log("[            📦 response           ]");
     const { data } = response;
 
