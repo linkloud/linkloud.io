@@ -6,62 +6,69 @@
   *,
   *::before,
   *::after {
-    box-sizing: border-box;
     @apply text-gray-800;
-    font-family: "SUIT-Variable", -apple-system, BlinkMacSystemFont, system-ui,
-      Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
-      "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol", sans-serif;
   }
+}
 
-  body,
-  h1,
-  h2,
-  h3,
-  h4,
-  p,
-  figure,
-  blockquote,
-  dl,
-  dd,
-  ul,
-  ol {
-    margin: 0;
-    padding: 0;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: "SUIT-Variable", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
+}
 
-  ul {
-    list-style: none;
-  }
+html,
+body,
+#app,
+#app > div {
+  height: 100%;
+}
 
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
 
-  input,
-  button,
-  textarea,
-  select {
-    font: inherit;
-  }
+ul {
+  list-style: none;
+}
 
-  body,
-  #root {
-    height: 100vh;
-  }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
-  /* input search remove x mark */
-  input::-ms-clear,
-  input::-ms-reveal {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-  input::-webkit-search-decoration,
-  input::-webkit-search-cancel-button,
-  input::-webkit-search-results-button,
-  input::-webkit-search-results-decoration {
-    display: none;
-  }
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* input search remove x mark */
+input::-ms-clear,
+input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration {
+  display: none;
 }

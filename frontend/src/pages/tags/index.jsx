@@ -28,7 +28,7 @@ const TAG_SORT_LIST = [
   },
 ];
 
-const TagsPage = () => {
+const TagListPage = () => {
   const [tagSortOption, setTagSortOption] = useState(
     TAG_SORT_OPTIONS.POPULARITY
   );
@@ -115,4 +115,4 @@ const TagsPage = () => {
   );
 };
 
-export default TagsPage;
+export default TagListPage;
