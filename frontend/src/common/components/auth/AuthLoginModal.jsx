@@ -1,4 +1,4 @@
-import SocialButtonContainer from "./SocialButtonContainer";
+import GoogleLoginButton from "./GoogleLoginButton";
 import Modal from "../modal";
 
 import { Logo } from "@/static/svg";
@@ -13,7 +13,9 @@ const AuthLoginModal = ({ isOpened, onCloseLoginModal }) => {
       <p className="py-5 text-lg text-gray-400">오신 것을 환영합니다.</p>
       <div className="flex flex-col items-center md:justify-between w-full">
         <h2 className="sr-only">소셜 계정으로 시작하기</h2>
-        <SocialButtonContainer />
+        <div className="flex flex-col w-full mt-auto">
+          <GoogleLoginButton onCloseLoginModal={onCloseLoginModal} />
+        </div>
       </div>
     </Modal>
   );
