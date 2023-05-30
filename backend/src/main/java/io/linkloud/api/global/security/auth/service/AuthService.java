@@ -71,10 +71,9 @@ public class AuthService {
 
         // 4
         // TODO : refreshToken 리턴 안해도 됨. 쿠키에 refreshToken 보냄
-        return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
+        return new AuthResponseDto(jwtAccessToken);
     }
 
-    // todo : HttpServletRequest 를 받아 쿠키 추출 후 검증한다음에 토큰 재생성
     public AuthResponseDto refreshTokenAndAccessToken(String refreshToken) {
 
 
@@ -103,9 +102,6 @@ public class AuthService {
             newJwtRefreshToken
         ));
 
-        // todo : return 에 더 이상 refreshToken 을 할 필요 없음
-        return new AuthResponseDto(newJwtAccessToken, newJwtRefreshToken);
+        return new AuthResponseDto(newJwtAccessToken);
     }
-
-
 }
