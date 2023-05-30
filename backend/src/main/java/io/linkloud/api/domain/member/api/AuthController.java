@@ -2,12 +2,9 @@ package io.linkloud.api.domain.member.api;
 
 import io.linkloud.api.domain.member.dto.AuthRequestDto;
 import io.linkloud.api.domain.member.dto.AuthResponseDto;
-import io.linkloud.api.domain.member.dto.RefreshAccessTokenRequest;
 import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.auth.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +29,6 @@ public class AuthController {
         AuthResponseDto responseDto = authService.authenticate(dto,response);
         log.info("첫 토큰 생성");
         log.info("AccessToken={}",responseDto.getAccessToken());
-        log.info("RefreshToken={}",responseDto.getRefreshToken());
         return ResponseEntity.ok(new SingleDataResponse<>(responseDto));
     }
 
@@ -42,7 +38,6 @@ public class AuthController {
         AuthResponseDto responseDto = authService.refreshTokenAndAccessToken(refreshToken);
         log.info("토큰 재생성");
         log.info("AccessToken={} ", responseDto.getAccessToken());
-        log.info("RefreshToken={} ", responseDto.getRefreshToken());
         return ResponseEntity.ok(new SingleDataResponse<>(responseDto));
     }
 }
