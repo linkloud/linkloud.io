@@ -9,6 +9,7 @@ public enum LogicExceptionCode implements ExceptionCode {
     TEMPORARY_ERROR(400, "Temporary ERROR"),
     MEMBER_NOT_FOUND(404, "Member Not Found"),
     MEMBER_NOT_MATCH(403, "Member Not Matched"),
+    MEMBER_NOT_AUTHORIZED(403, "Member Not Authorized"),
     MEMBER_ALREADY_EXISTS(409, "Member Already Exist."),
     ARTICLE_NOT_FOUND(404, "Article not found"),
     BOOKMARK_NOT_FOUND(404, "Bookmark not found"),
