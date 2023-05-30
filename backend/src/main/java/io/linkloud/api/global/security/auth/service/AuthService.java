@@ -13,7 +13,8 @@ import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
-import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,7 +38,7 @@ public class AuthService {
      * 3. DB에 사용자 정보 없으면 저장, 있으면 사용자 바로 리턴
      * 4. JWT 토큰 발급 후 반환
      */
-    public AuthResponseDto authenticate(AuthRequestDto dto) {
+    public AuthResponseDto authenticate(AuthRequestDto dto,HttpServletResponse response) {
         OAuthClient oAuthClient = oAuthClients.get(dto.getSocialType() + "OAuthClientImpl");
         if (oAuthClient == null) {
             throw new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE);
@@ -55,36 +56,56 @@ public class AuthService {
         String jwtAccessToken = jwtProvider.generateAccessToken(memberId,memberDto.getSocialType());
         String jwtRefreshToken = jwtProvider.generateRefreshToken(memberId);
 
+        Cookie cookie = new Cookie("refreshToken",jwtRefreshToken);
+        cookie.setMaxAge(1000); // todo: 쿠키 만료시간 변경
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             memberId,
             jwtRefreshToken
         ));
 
         // 4
+        // TODO : refreshToken 리턴 안해도 됨. 쿠키에 refreshToken 보냄
         return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
     }
 
-    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken, String tokenType) {
-        HeaderUtil.checkTokenType(tokenType);
+    // todo : HttpServletRequest 를 받아 쿠키 추출 후 검증한다음에 토큰 재생성
+    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken) {
+
 
         Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, Claims::getId));
 
         try {
-            refreshTokenService.validateRefreshToken(memberId,refreshToken);
+            refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
             refreshTokenService.removeRefreshToken(memberId);
             throw new CustomException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
 
         Member member = memberService.fetchMemberById(memberId);
-        String newJwtAccessToken = jwtProvider.generateAccessToken(member.getId(), member.getSocialType());
+        String newJwtAccessToken = jwtProvider.generateAccessToken(member.getId(),
+            member.getSocialType());
         String newJwtRefreshToken = jwtProvider.generateRefreshToken(member.getId());
+
+        Cookie cookie = new Cookie("refreshToken",newJwtRefreshToken);
+        cookie.setMaxAge(1000); // todo: 쿠키 만료시간 변경
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             member.getId(),
             newJwtRefreshToken
         ));
 
-        return new AuthResponseDto(newJwtAccessToken,newJwtRefreshToken);
+        // todo : return 에 더 이상 refreshToken 을 할 필요 없음
+        return new AuthResponseDto(newJwtAccessToken, newJwtRefreshToken);
     }
+
+
 }
