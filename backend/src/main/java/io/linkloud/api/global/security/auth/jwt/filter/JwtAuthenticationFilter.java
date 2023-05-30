@@ -40,6 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     private final MemberRepository memberRepository;
+    private static final String REFRESH_TOKEN_URI = "/api/v1/auth/refresh";
+
 
     @Override
     protected void doFilterInternal(
@@ -47,6 +49,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+
+
+       if (requestURI.equals(REFRESH_TOKEN_URI)) {
+            log.info("리프레시토큰요청");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // 1. Header 검증 후 Jwt Token 추출
         log.info("JWT 인증 필터 실행 = {}", HeaderUtil.getAccessToken(request));
