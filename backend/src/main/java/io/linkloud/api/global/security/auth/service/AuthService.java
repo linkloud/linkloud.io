@@ -31,6 +31,8 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
 
 
+
+
     /**
      * 사용자 인증하고 JWT 토큰 발급
      * 1. 인증 코드(code)를 이용해 access token 받기
@@ -56,11 +58,7 @@ public class AuthService {
         String jwtAccessToken = jwtProvider.generateAccessToken(memberId,memberDto.getSocialType());
         String jwtRefreshToken = jwtProvider.generateRefreshToken(memberId);
 
-        Cookie cookie = new Cookie("refreshToken",jwtRefreshToken);
-        cookie.setMaxAge(1000); // todo: 쿠키 만료시간 변경
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+        Cookie cookie = createCookieByRefreshToken(jwtRefreshToken);
 
         response.addCookie(cookie);
 
@@ -70,7 +68,6 @@ public class AuthService {
         ));
 
         // 4
-        // TODO : refreshToken 리턴 안해도 됨. 쿠키에 refreshToken 보냄
         return new AuthResponseDto(jwtAccessToken);
     }
 
@@ -91,18 +88,24 @@ public class AuthService {
             member.getSocialType());
         String newJwtRefreshToken = jwtProvider.generateRefreshToken(member.getId());
 
-        Cookie cookie = new Cookie("refreshToken",newJwtRefreshToken);
-        cookie.setMaxAge(1000); // todo: 쿠키 만료시간 변경
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+        Cookie cookie = createCookieByRefreshToken(newJwtRefreshToken);
         response.addCookie(cookie);
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             member.getId(),
             newJwtRefreshToken
         ));
-
         return new AuthResponseDto(newJwtAccessToken);
+    }
+    private Cookie createCookieByRefreshToken(String jwtRefreshToken) {
+        log.info("쿠키를 생성합니다.");
+        // 리프레시 토큰 만료시간 가져오기
+        int refreshTokenExpiration = (int)jwtProvider.getJwtProperties().getRefreshTokenExpiration();
+        Cookie cookie = new Cookie("refreshToken", jwtRefreshToken);
+        cookie.setMaxAge(refreshTokenExpiration);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        return cookie;
     }
 }
