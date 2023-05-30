@@ -1,5 +1,6 @@
 package io.linkloud.api.domain.article.service;
 
+import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_AUTHORIZED;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_MATCH;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -108,8 +109,8 @@ class ArticleServiceTest {
             () -> articleService.addArticle(firstMockMember.getId(), articleRequestDto));
 
         // then
-        assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_MATCH.getMessage());
-        assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_MATCH.getStatus());
+        assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_AUTHORIZED.getMessage());
+        assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_AUTHORIZED.getStatus());
 
     }
 
