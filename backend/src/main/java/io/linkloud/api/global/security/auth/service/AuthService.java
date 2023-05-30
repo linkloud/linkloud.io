@@ -74,7 +74,7 @@ public class AuthService {
         return new AuthResponseDto(jwtAccessToken);
     }
 
-    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken) {
+    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken,HttpServletResponse response) {
 
 
         Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, Claims::getId));
@@ -96,6 +96,7 @@ public class AuthService {
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        response.addCookie(cookie);
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             member.getId(),

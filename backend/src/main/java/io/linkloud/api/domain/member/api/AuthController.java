@@ -34,8 +34,9 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<SingleDataResponse<AuthResponseDto>> refreshAccessToken(
-        @CookieValue("refreshToken") String refreshToken) {
-        AuthResponseDto responseDto = authService.refreshTokenAndAccessToken(refreshToken);
+        @CookieValue("refreshToken") String refreshToken,
+        HttpServletResponse response) {
+        AuthResponseDto responseDto = authService.refreshTokenAndAccessToken(refreshToken,response);
         log.info("토큰 재생성");
         log.info("AccessToken={} ", responseDto.getAccessToken());
         return ResponseEntity.ok(new SingleDataResponse<>(responseDto));
