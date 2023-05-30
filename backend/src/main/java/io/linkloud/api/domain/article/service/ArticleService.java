@@ -44,8 +44,6 @@ public class ArticleService {
         return new ArticleResponseDto(foundedArticle);
     }
 
-
-
     /**
      * 게시글 생성
      * 05-28 Long memberId 파라매터 추가됨
@@ -54,13 +52,13 @@ public class ArticleService {
      * @return 게시글 정보
      */
     @Transactional
-    public ArticleResponseDto addArticle(Long memberId,ArticleRequestDto requestDto) {
+    public ArticleResponseDto addArticle(Long memberId, ArticleRequestDto requestDto) {
         Member member = fetchMemberById(memberId);
 
-        LocalDate joinDate = member.getCreatedAt().toLocalDate();                             // 가져온 멤버의 가입일을 저장.
-        if(joinDate.compareTo(LocalDate.now()) >-3) throw new CustomException(MEMBER_NOT_MATCH);    // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
+        LocalDate joinDate = member.getCreatedAt().toLocalDate();                                       // 가져온 멤버의 가입일을 저장.
+        if(joinDate.compareTo(LocalDate.now()) > -3) throw new CustomException(MEMBER_NOT_AUTHORIZED);  // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
 
-        Article createdArticle = articleRepository.save(requestDto.toArticleEntity(member));  // requestDto를 엔티티로 변환.
+        Article createdArticle = articleRepository.save(requestDto.toArticleEntity(member));            // requestDto를 엔티티로 변환.
 
         return new ArticleResponseDto(createdArticle);
     }
@@ -74,7 +72,7 @@ public class ArticleService {
      * @return 수정된 게시글 DTO
      */
     @Transactional
-    public ArticleResponseDto updateArticle(Long articleId,Long memberId,ArticleUpdateDto updateDto) {
+    public ArticleResponseDto updateArticle(Long articleId, Long memberId, ArticleUpdateDto updateDto) {
         Member member = fetchMemberById(memberId);
         Article article = fetchArticleEntityById(articleId);
 
@@ -85,7 +83,6 @@ public class ArticleService {
         return new ArticleResponseDto(article);
     }
 
-
     /**
      * 게시글 삭제
      * 05-28 Long memberId 파라미터 추가됨
@@ -93,7 +90,7 @@ public class ArticleService {
      * @param memberId  principal 회원 ID
      */
     @Transactional
-    public void removeArticle(Long articleId,Long memberId) {
+    public void removeArticle(Long articleId, Long memberId) {
         Member member = fetchMemberById(memberId);
         Article article = fetchArticleEntityById(articleId);
 
