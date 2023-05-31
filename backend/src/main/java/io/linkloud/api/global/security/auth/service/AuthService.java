@@ -80,7 +80,8 @@ public class AuthService {
             refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
             refreshTokenService.removeRefreshToken(memberId);
-            throw new CustomException(AuthExceptionCode.AUTHORIZED_FAIL);
+            log.error("리프레시 토큰이 변조되었습니다={}",e.getMessage());
+            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
 
         Member member = memberService.fetchMemberById(memberId);

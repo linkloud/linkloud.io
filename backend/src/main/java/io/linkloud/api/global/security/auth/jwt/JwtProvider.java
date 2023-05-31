@@ -95,7 +95,7 @@ public class JwtProvider {
             return expiration.toInstant().isAfter(now);
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 토큰 검증 중 오류 발생: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.USER_UNAUTHORIZED);
+            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
     }
 
@@ -121,6 +121,6 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
         }
-        throw new CustomException(AuthExceptionCode.USER_UNAUTHORIZED);
+        throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
     }
 }

@@ -216,13 +216,13 @@ class AuthControllerTest {
         String content = gson.toJson(invalidRequestToken);
 
         when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
-            new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
+            new CustomException(AuthExceptionCode.INVALID_TOKEN));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
                     .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(content))
-            .andExpect(status().isForbidden());
+            .andExpect(status().isUnauthorized());
 
 
         actions.andDo(print())
