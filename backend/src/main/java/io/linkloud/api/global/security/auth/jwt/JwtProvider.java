@@ -93,7 +93,12 @@ public class JwtProvider {
             Instant now = Instant.now();
             Date expiration = claims.getBody().getExpiration();
             return expiration.toInstant().isAfter(now);
-        } catch (JwtException | IllegalArgumentException e) {
+        }
+        catch (ExpiredJwtException e){
+            log.error("만료된 토큰 입니다 = {}",e.getMessage());
+            throw new CustomException(AuthExceptionCode.EXPIRED_TOKEN);
+        }
+        catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 토큰 검증 중 오류 발생: {}", e.getMessage());
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
