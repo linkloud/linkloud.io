@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.cookies.CookieDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -22,6 +23,7 @@ import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.service.AuthService;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,12 +65,12 @@ class AuthControllerTest {
     @Test
     void authenticate_success() throws Exception {
         // given
-
         String content = gson.toJson(authRequest);
+        String SocialType = "google";
         given(authService.authenticate(any(AuthRequestDto.class),any())).willReturn(authResponse);
 
         // when
-        mockMvc.perform(post(BASE_URL + "/{socialType}", "google")
+        mockMvc.perform(post(BASE_URL + "/{socialType}", SocialType)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
             .andExpect(status().isOk())
@@ -81,12 +83,10 @@ class AuthControllerTest {
                     fieldWithPath("socialType").description("소셜 타입 (google 등)"),
                     fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
                 ),
-                responseFields(
-                    fieldWithPath("data.accessToken").description("Access Token"),
-                    fieldWithPath("data.refreshToken").description("Refresh Token")
-                )
+                    responseFields(
+                            fieldWithPath("data.accessToken").description("Access Token")
+                    )
             ));
-
         verify(authService).authenticate(any(),any());
     }
 
