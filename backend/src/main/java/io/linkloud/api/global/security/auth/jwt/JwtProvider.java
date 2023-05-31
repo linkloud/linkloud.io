@@ -15,6 +15,7 @@ import io.linkloud.api.global.exception.CustomException;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 import java.util.function.Function;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.Getter;
@@ -65,47 +66,17 @@ public class JwtProvider {
     public String generateRefreshToken(Long memberId) {
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getRefreshTokenExpiration());
-
+        UUID uuid = UUID.randomUUID();
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
             .setId(String.valueOf(memberId))
+            .setSubject(uuid.toString())
             .setExpiration(Date.from(expiration))
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
     }
 
-    /**
-     * 클라이언트에게 너무 자세한 정보를 보여줘서 더 이상 사용하지 않음
-     */
-    @Deprecated
-    public boolean validateAccessToken_deprecated(String accessToken) {
-        try {
-            Jws<Claims> claims = Jwts
-                .parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(accessToken);
-            Instant now = Instant.now();
-            Date expiration = claims.getBody().getExpiration();
-            return expiration.toInstant().isAfter(now);
-        } catch (ExpiredJwtException e) {
-            log.error("만료된 JWT 토큰입니다: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            log.error("지원되지 않는 JWT 토큰입니다: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.UNSUPPORTED_TOKEN);
-        } catch (MalformedJwtException e) {
-            log.error("잘못된 형식의 JWT 토큰입니다: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.MALFORMED_TOKEN);
-        } catch (IllegalArgumentException e) {
-            log.error("JWT 토큰이 null 이거나 빈 문자열입니다: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
-        } catch (SignatureException e) {
-            log.error("유효하지않은 토큰입니다: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.USER_UNAUTHORIZED);
-        }
-    }
 
     /**
      * token 토큰 검증
