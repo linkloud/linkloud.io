@@ -123,30 +123,6 @@ include::{snippets}/auth/refreshToken_success/request-fields.adoc[]
 .response-fields
 include::{snippets}/auth/refreshToken_success/response-fields.adoc[]
 
-
-==== 실패, 잘못된 토큰 타입(Bearer)
-
-.curl-request
-include::{snippets}/auth/refreshToken_fail/tokenType/curl-request.adoc[]
-
-.http-request
-include::{snippets}/auth/refreshToken_fail/tokenType/http-request.adoc[]
-
-.http-response
-include::{snippets}/auth/refreshToken_fail/tokenType/http-response.adoc[]
-
-.request-body
-include::{snippets}/auth/refreshToken_fail/tokenType/request-body.adoc[]
-
-.response-body
-include::{snippets}/auth/refreshToken_fail/tokenType/response-body.adoc[]
-
-.request-fields
-include::{snippets}/auth/refreshToken_fail/tokenType/request-fields.adoc[]
-
-.response-fields
-include::{snippets}/auth/refreshToken_fail/tokenType/response-fields.adoc[]
-
 ==== 실패, 유효하지 않은 리프레시 토큰
 
 .curl-request
