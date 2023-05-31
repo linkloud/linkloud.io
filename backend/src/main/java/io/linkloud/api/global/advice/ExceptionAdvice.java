@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,7 +23,7 @@ public class ExceptionAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException e) {
+            MethodArgumentNotValidException e) {
 
         return ErrorResponse.of(e.getBindingResult());
     }
@@ -31,7 +32,7 @@ public class ExceptionAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleConstraintViolationException(
-        ConstraintViolationException e) {
+            ConstraintViolationException e) {
 
         return ErrorResponse.of(e.getConstraintViolations());
     }
@@ -40,7 +41,7 @@ public class ExceptionAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentTypeMismatchException(
-        MethodArgumentTypeMismatchException e) {
+            MethodArgumentTypeMismatchException e) {
 
         return ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getPropertyName() + " Type Mismatched");
     }
@@ -51,14 +52,14 @@ public class ExceptionAdvice {
         final ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
 
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode()
-            .getStatus()));
+                .getStatus()));
     }
 
     // url에 대해 지원하지 않는 http method 일 때 예외 처리
     @ExceptionHandler
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ErrorResponse handleHttpRequestMethodNotSupportedException(
-        HttpRequestMethodNotSupportedException e) {
+            HttpRequestMethodNotSupportedException e) {
 
         return ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED);
     }
@@ -67,20 +68,28 @@ public class ExceptionAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableException(
-        HttpMessageNotReadableException e) {
+            HttpMessageNotReadableException e) {
 
         return ErrorResponse.of(HttpStatus.BAD_REQUEST,
-            "Required request body is missing");
+                "Required request body is missing");
     }
 
     // 요청 시 쿼리 파라미터가 결여됐을 때 예외 처리
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMissingServletRequestParameterException(
-        MissingServletRequestParameterException e) {
+            MissingServletRequestParameterException e) {
 
         return ErrorResponse.of(HttpStatus.BAD_REQUEST,
-            e.getMessage());
+                e.getMessage());
+    }
+
+
+    // 요청 쿠키가 null 값이거나 빈 값일 경우
+    @ExceptionHandler(MissingRequestCookieException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleMissingRequestCookieException(MissingRequestCookieException e) {
+        return ErrorResponse.of(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     // 위에서 지정한 예외 외의 서버 로직 예외에 대한 예외 처리.

@@ -1,7 +1,6 @@
 package io.linkloud.api.domain.member.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,7 +65,7 @@ class AuthControllerTest {
         // given
 
         String content = gson.toJson(authRequest);
-        given(authService.authenticate(any(AuthRequestDto.class))).willReturn(authResponse);
+        given(authService.authenticate(any(AuthRequestDto.class),any())).willReturn(authResponse);
 
         // when
         mockMvc.perform(post(BASE_URL + "/{socialType}", "google")
@@ -88,7 +87,7 @@ class AuthControllerTest {
                 )
             ));
 
-        verify(authService).authenticate(any());
+        verify(authService).authenticate(any(),any());
     }
 
     @Test
@@ -99,7 +98,7 @@ class AuthControllerTest {
         String content = gson.toJson(authRequest);
 
         // when
-        when(authService.authenticate(any())).thenThrow(
+        when(authService.authenticate(any(),any())).thenThrow(
             new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE));
 
         mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
@@ -132,7 +131,7 @@ class AuthControllerTest {
 
 
         // when
-        when(authService.authenticate(any())).thenThrow(
+        when(authService.authenticate(any(),any())).thenThrow(
             new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
@@ -162,7 +161,7 @@ class AuthControllerTest {
 
 
         // when
-        when(authService.authenticate(any())).thenThrow(
+        when(authService.authenticate(any(),any())).thenThrow(
             new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/{socialType}", socialType)
@@ -187,7 +186,7 @@ class AuthControllerTest {
     public void refreshToken() throws Exception {
         // given
         String content = gson.toJson(refreshTokenRequest);
-        given(authService.refreshTokenAndAccessToken(anyString(), anyString())).willReturn(newTokenAuthResponse);
+        given(authService.refreshTokenAndAccessToken(any())).willReturn(newTokenAuthResponse);
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -217,7 +216,7 @@ class AuthControllerTest {
 
         String content = gson.toJson(invalidRequestToken);
 
-        when(authService.refreshTokenAndAccessToken(anyString(), anyString())).thenThrow(
+        when(authService.refreshTokenAndAccessToken(any())).thenThrow(
             new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
@@ -251,7 +250,7 @@ class AuthControllerTest {
 
         String content = gson.toJson(invalidRequestToken);
 
-        when(authService.refreshTokenAndAccessToken(anyString(), anyString())).thenThrow(
+        when(authService.refreshTokenAndAccessToken(any())).thenThrow(
             new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")

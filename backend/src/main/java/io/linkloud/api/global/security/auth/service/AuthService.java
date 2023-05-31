@@ -13,7 +13,8 @@ import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
-import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,6 +31,8 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
 
 
+
+
     /**
      * 사용자 인증하고 JWT 토큰 발급
      * 1. 인증 코드(code)를 이용해 access token 받기
@@ -37,16 +40,16 @@ public class AuthService {
      * 3. DB에 사용자 정보 없으면 저장, 있으면 사용자 바로 리턴
      * 4. JWT 토큰 발급 후 반환
      */
-    public AuthResponseDto authenticate(AuthRequestDto dto) {
+    public AuthResponseDto authenticate(AuthRequestDto dto,HttpServletResponse response) {
         OAuthClient oAuthClient = oAuthClients.get(dto.getSocialType() + "OAuthClientImpl");
         if (oAuthClient == null) {
             throw new CustomException(AuthExceptionCode.INVALID_SOCIAL_TYPE);
         }
         // 1
-        String accessToken = oAuthClient.getAccessToken(dto.getCode());
+        String oAuthAccessToken = oAuthClient.getAccessToken(dto.getCode());
 
         // 2
-        OAuthAttributes userInfo = oAuthClient.getUserInfo(accessToken);
+        OAuthAttributes userInfo = oAuthClient.getUserInfo(oAuthAccessToken);
 
         // 3
         MemberSignUpResponseDto memberDto = memberService.signUpIfNotExists(userInfo);
@@ -55,36 +58,54 @@ public class AuthService {
         String jwtAccessToken = jwtProvider.generateAccessToken(memberId,memberDto.getSocialType());
         String jwtRefreshToken = jwtProvider.generateRefreshToken(memberId);
 
+        Cookie cookie = createCookieByRefreshToken(jwtRefreshToken);
+
+        response.addCookie(cookie);
+
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             memberId,
             jwtRefreshToken
         ));
 
         // 4
-        return new AuthResponseDto(jwtAccessToken,jwtRefreshToken);
+        return new AuthResponseDto(jwtAccessToken);
     }
 
-    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken, String tokenType) {
-        HeaderUtil.checkTokenType(tokenType);
+    public AuthResponseDto refreshTokenAndAccessToken(String refreshToken,HttpServletResponse response) {
+
 
         Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, Claims::getId));
 
         try {
-            refreshTokenService.validateRefreshToken(memberId,refreshToken);
+            refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
             refreshTokenService.removeRefreshToken(memberId);
             throw new CustomException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
 
         Member member = memberService.fetchMemberById(memberId);
-        String newJwtAccessToken = jwtProvider.generateAccessToken(member.getId(), member.getSocialType());
+        String newJwtAccessToken = jwtProvider.generateAccessToken(member.getId(),
+            member.getSocialType());
         String newJwtRefreshToken = jwtProvider.generateRefreshToken(member.getId());
+
+        Cookie cookie = createCookieByRefreshToken(newJwtRefreshToken);
+        response.addCookie(cookie);
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             member.getId(),
             newJwtRefreshToken
         ));
-
-        return new AuthResponseDto(newJwtAccessToken,newJwtRefreshToken);
+        return new AuthResponseDto(newJwtAccessToken);
+    }
+    private Cookie createCookieByRefreshToken(String jwtRefreshToken) {
+        log.info("쿠키를 생성합니다.");
+        // 리프레시 토큰 만료시간 가져오기
+        int refreshTokenExpiration = (int)jwtProvider.getJwtProperties().getRefreshTokenExpiration();
+        Cookie cookie = new Cookie("refreshToken", jwtRefreshToken);
+        cookie.setMaxAge(refreshTokenExpiration);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        return cookie;
     }
 }

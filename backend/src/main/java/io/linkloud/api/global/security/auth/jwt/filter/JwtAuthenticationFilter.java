@@ -1,10 +1,8 @@
 package io.linkloud.api.global.security.auth.jwt.filter;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
-import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
@@ -44,6 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final MemberRepository memberRepository;
     private static final String REFRESH_TOKEN_URI = "/api/v1/auth/refresh";
 
+
     @Override
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,
@@ -51,11 +50,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if (requestURI.equals(REFRESH_TOKEN_URI)) {
+
+       if (requestURI.equals(REFRESH_TOKEN_URI)) {
             log.info("리프레시토큰요청");
             filterChain.doFilter(request, response);
             return;
         }
+
         // 1. Header 검증 후 Jwt Token 추출
         log.info("JWT 인증 필터 실행 = {}", HeaderUtil.getAccessToken(request));
         String accessToken = HeaderUtil.getAccessToken(request);
@@ -77,7 +78,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 log.info("Security Context 에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+
+
             }
+
         } catch (CustomException e) {
             log.error("JWT error: {}", e.getMessage());
             response.setStatus(e.getExceptionCode().getStatus());
