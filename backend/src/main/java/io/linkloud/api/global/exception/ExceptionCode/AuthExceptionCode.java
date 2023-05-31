@@ -8,6 +8,8 @@ public enum AuthExceptionCode implements ExceptionCode {
     BAD_REQUEST(400, "Bad Request"),
     TOKEN_NOT_FOUND(400, "Refresh token not found"),
     ACCESS_TOKEN_INVALID_01(401, "Invalid Access token"),
+
+    REQUIRED_COOKIE(401, "Required cookie"),
     REFRESH_TOKEN_INVALID(401, "Invalid Refresh token"),
     ACCESS_TOKEN_EXPIRED(401, "Access token expired"),
     REFRESH_TOKEN_EXPIRED(401, "Refresh token expired"),
