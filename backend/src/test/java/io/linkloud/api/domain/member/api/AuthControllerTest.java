@@ -219,16 +219,16 @@ class AuthControllerTest {
             new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
+                    .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(content))
             .andExpect(status().isForbidden());
 
 
         actions.andDo(print())
             .andDo(document("auth/refreshToken_fail/refreshToken",
                     requestFields(
-                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰"),
-                        fieldWithPath("tokenType").description("토큰 타입(Bearer )")
+                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰")
                     ),
                     responseFields(
                         fieldWithPath("status").description("HTTP status 상태 코드"),
