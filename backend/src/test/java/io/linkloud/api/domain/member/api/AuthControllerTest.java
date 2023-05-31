@@ -57,7 +57,7 @@ class AuthControllerTest {
 
     AuthRequestDto authRequest = new AuthRequestDto("google", "code1234");
     AuthResponseDto authResponse = new AuthResponseDto("access_token");
-    RefreshAccessTokenRequest refreshTokenRequest = new RefreshAccessTokenRequest("refreshToken_value","Bearer ");
+    RefreshAccessTokenRequest refreshTokenRequest = new RefreshAccessTokenRequest("refreshToken_value");
     AuthResponseDto newTokenAuthResponse = new AuthResponseDto("new_access_token");
 
 
@@ -189,22 +189,21 @@ class AuthControllerTest {
         given(authService.refreshTokenAndAccessToken(any(),any())).willReturn(newTokenAuthResponse);
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
-            .andExpect(status().isOk());
+                        .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk());
 
         actions.andDo(print())
-            .andDo(document("auth/refreshToken_success",
-                requestFields(
-                    fieldWithPath("refreshToken").description("리프레시 토큰"),
-                    fieldWithPath("tokenType").description("토큰 타입(Bearer )")
-                    ),
-                responseFields(
-                    fieldWithPath("data.accessToken").description("새로 발급된 액세스 토큰"),
-                    fieldWithPath("data.refreshToken").description("새로 발급된 리프레시 토큰")
-                )
-            )
-        );
+                .andDo(document("auth/refreshToken_success",
+                                requestFields(
+                                        fieldWithPath("refreshToken").description("리프레시 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("data.accessToken").description("새로 발급된 액세스 토큰")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -212,7 +211,7 @@ class AuthControllerTest {
     public void refreshToken_fail_tokenType() throws Exception {
 
         // given
-        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("refreshToken_value","INVALID_TOKEN_TYPE ");
+        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("refreshToken_value");
 
         String content = gson.toJson(invalidRequestToken);
 
@@ -246,7 +245,7 @@ class AuthControllerTest {
     public void refreshToken_fail_invalid_refreshToken() throws Exception {
 
         // given
-        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("INVALID_REFRESH_TOKEN","Bearer ");
+        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("INVALID_REFRESH_TOKEN");
 
         String content = gson.toJson(invalidRequestToken);
 
