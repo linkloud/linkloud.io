@@ -146,7 +146,7 @@ include::{snippets}/auth/refreshToken_fail/invalid/request-fields.adoc[]
 .response-fields
 include::{snippets}/auth/refreshToken_fail/invalid/response-fields.adoc[]
 
-==== 실패, 유효하지 않은 리프레시 토큰,액세스 토큰
+==== 실패, 리프레시 토큰 만료
 
 .curl-request
 include::{snippets}/auth/refreshToken_fail/expired/curl-request.adoc[]
@@ -189,6 +189,24 @@ include::{snippets}/member/me/success/response-fields.adoc[]
 
 .response-body
 include::{snippets}/member/me/success/response-body.adoc[]
+
+
+==== 실패, 액세스 토큰 만료
+
+.curl-request
+include::{snippets}/member/me/fail/accessToken/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/me/fail/accessToken/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/me/fail/accessToken/http-response.adoc[]
+
+.response-fields
+include::{snippets}/member/me/fail/accessToken/response-fields.adoc[]
+
+.response-body
+include::{snippets}/member/me/fail/accessToken/response-body.adoc[]
 
 ==== 실패, 회원이 존재하지 않음
 
