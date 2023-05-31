@@ -76,16 +76,16 @@ public class ArticleController {
     }
 
     /** 제목으로 검색 */
-    @GetMapping("search/title={title}")
-    public ResponseEntity<MultiDataResponse> getArticleByTitle(@PathVariable String title, @Positive @RequestParam int page) {
+    @GetMapping("search=title")
+    public ResponseEntity<MultiDataResponse> getArticleByTitle(@RequestParam String title, @Positive @RequestParam int page) {
         Page<ArticleResponseDto> getArticleByTitleDto = articleService.fetchArticleByTitle(title, page);
 
         return ResponseEntity.ok(new MultiDataResponse<>(getArticleByTitleDto));
     }
 
     /** 내용으로 검색 */
-    @GetMapping("search/description={description}")
-    public ResponseEntity<MultiDataResponse> getArticleByContent(@PathVariable String description, @Positive @RequestParam int page) {
+    @GetMapping("search=description")
+    public ResponseEntity<MultiDataResponse> getArticleByContent(@RequestParam String description, @Positive @RequestParam int page) {
         Page<ArticleResponseDto> getArticleByDescDto = articleService.fetchArticleByDescription(description, page);
 
         return ResponseEntity.ok(new MultiDataResponse<>(getArticleByDescDto));
