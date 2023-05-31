@@ -130,4 +130,20 @@ public class ArticleService {
         }
     }
 
+    /** 제목으로 검색 */
+    @Transactional
+    public Page<ArticleResponseDto> fetchArticleByTitle(String title, int page) {
+        Page<Article> articlesPage = articleRepository.findByTitleContainingIgnoreCase(title, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+
+        return articlesPage.map(article -> new ArticleResponseDto(article));
+    }
+
+    /** 내용으로 검색 */
+    @Transactional
+    public Page<ArticleResponseDto> fetchArticleByDescription(String description, int page) {
+        Page<Article> articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(description, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+
+        return articlesPage.map(article -> new ArticleResponseDto(article));
+    }
+
 }
