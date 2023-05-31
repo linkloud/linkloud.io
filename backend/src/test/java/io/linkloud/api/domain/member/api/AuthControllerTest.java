@@ -54,9 +54,9 @@ class AuthControllerTest {
     final String BASE_URL = "/api/v1/auth";
 
     AuthRequestDto authRequest = new AuthRequestDto("google", "code1234");
-    AuthResponseDto authResponse = new AuthResponseDto("access_token", "refresh_token");
+    AuthResponseDto authResponse = new AuthResponseDto("access_token");
     RefreshAccessTokenRequest refreshTokenRequest = new RefreshAccessTokenRequest("refreshToken_value","Bearer ");
-    AuthResponseDto newTokenAuthResponse = new AuthResponseDto("new_access_token", "new_refresh_token");
+    AuthResponseDto newTokenAuthResponse = new AuthResponseDto("new_access_token");
 
 
     @DisplayName("소셜 로그인 API 호출 성공")
@@ -186,7 +186,7 @@ class AuthControllerTest {
     public void refreshToken() throws Exception {
         // given
         String content = gson.toJson(refreshTokenRequest);
-        given(authService.refreshTokenAndAccessToken(any())).willReturn(newTokenAuthResponse);
+        given(authService.refreshTokenAndAccessToken(any(),any())).willReturn(newTokenAuthResponse);
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -216,7 +216,7 @@ class AuthControllerTest {
 
         String content = gson.toJson(invalidRequestToken);
 
-        when(authService.refreshTokenAndAccessToken(any())).thenThrow(
+        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
             new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
@@ -250,7 +250,7 @@ class AuthControllerTest {
 
         String content = gson.toJson(invalidRequestToken);
 
-        when(authService.refreshTokenAndAccessToken(any())).thenThrow(
+        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
             new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
