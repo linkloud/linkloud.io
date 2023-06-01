@@ -1,5 +1,6 @@
 package io.linkloud.api.global.security;
 
+import io.linkloud.api.global.security.auth.handler.MemberAccessDeniedHandler;
 import io.linkloud.api.global.security.auth.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ public class SecurityConfig {
             .formLogin().disable()
             .httpBasic().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling()
+            .accessDeniedHandler(new MemberAccessDeniedHandler())
             .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter 클래스를 먼저 실행하도록 설정
                 .authorizeHttpRequests(authorize -> authorize
