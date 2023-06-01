@@ -40,7 +40,7 @@ public class TagRepositoryTest {
     @Autowired
     ArticleRepository articleRepository;
 
-    Member member = Member.builder().email("sjdk0805@naver.com").role(Role.USER).build();
+    Member member = Member.builder().email("sjdk0805@naver.com").role(Role.MEMBER).build();
 
     char c = 'a';
 
