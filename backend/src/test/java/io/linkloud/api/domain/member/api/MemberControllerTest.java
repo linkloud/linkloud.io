@@ -129,6 +129,33 @@ class MemberControllerTest {
                         )));
     }
 
+    @DisplayName("회원정보 - 가입한지 3일지난 회원 MEMBER")
+    @Test
+    public void fineMe_success_member() throws Exception {
+
+        Member mockMember = mock(Member.class);
+        when(mockMember.getNickname()).thenReturn("Son");
+        when(mockMember.getPicture()).thenReturn("picture");
+        when(mockMember.getRole()).thenReturn(Role.MEMBER);
+
+        MemberLoginResponse mockResponse = new MemberLoginResponse(mockMember);
+        when(memberService.fetchPrincipal(anyLong())).thenReturn(mockResponse);
+
+        ResultActions actions = mockMvc.perform(
+                get(BASE_URL + "/me")
+                        .header("Authorization", "Bearer " + accessToken));
+
+        actions.andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("member/me/success/member",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("data.nickname").description("회원의 닉네임."),
+                                fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
+                                fieldWithPath("data.role").description("가입한지 3일 지난 회원의 권한")
+                        )));;
+    }
 
     @DisplayName("회원 조회 실패_만료된 액세스토큰")
     @Test
