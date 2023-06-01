@@ -173,23 +173,39 @@ include::{snippets}/auth/refreshToken_fail/expired/response-fields.adoc[]
 
 === 회원 정보 조회
 
-==== 성공
+==== 성공, 가입한지 3일 이내 회원
 
 .curl-request
-include::{snippets}/member/me/success/curl-request.adoc[]
+include::{snippets}/member/me/success/newMember/curl-request.adoc[]
 
 .http-request
-include::{snippets}/member/me/success/http-request.adoc[]
+include::{snippets}/member/me/success/newMember/http-request.adoc[]
 
 .http-response
-include::{snippets}/member/me/success/http-response.adoc[]
+include::{snippets}/member/me/success/newMember/http-response.adoc[]
 
 .response-fields
-include::{snippets}/member/me/success/response-fields.adoc[]
+include::{snippets}/member/me/success/newMember/response-fields.adoc[]
 
 .response-body
-include::{snippets}/member/me/success/response-body.adoc[]
+include::{snippets}/member/me/success/newMember/response-body.adoc[]
 
+==== 성공, 가입한지 3일이 지난 회원
+
+.curl-request
+include::{snippets}/member/me/success/member/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/me/success/member/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/me/success/member/http-response.adoc[]
+
+.response-fields
+include::{snippets}/member/me/success/member/response-fields.adoc[]
+
+.response-body
+include::{snippets}/member/me/success/member/response-body.adoc[]
 
 ==== 실패, 액세스 토큰 만료
 
