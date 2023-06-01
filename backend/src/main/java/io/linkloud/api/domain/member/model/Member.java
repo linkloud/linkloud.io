@@ -60,7 +60,10 @@ public class Member extends Auditable {
         this.nickname = nickname;
     }
 
-
+    // 권한 변경
+    public void updateRoleToMember(Role role) {
+        this.role = role;
+    }
 }
 
 
