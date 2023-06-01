@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import Layout from "@/pages/Layout";
+
 const NotFoundPage = lazy(() => import("@/pages/error/404"));
 const HomePage = lazy(() => import("@/pages/home"));
 const SearchPage = lazy(() => import("@/pages/search"));

@@ -8,7 +8,7 @@ import { ROLE } from "@/common/constants";
 const initialState = {
   nickname: "",
   picture: "",
-  role: ROLE.GUEST,
+  role: ROLE.ANONYMOUS,
 };
 
 const useAuthStore = create((set, get) => ({
@@ -29,16 +29,15 @@ const useAuthStore = create((set, get) => ({
   },
   setToken: (token) => set({ token }),
   initUserInfo: async () => {
-    const refreshToken = Cookies.get("refreshToken");
-    if (!refreshToken) return;
+    try {
+      const { data } = await refresh();
+      const { accessToken, refreshToken: newRefreshToken } = data;
 
-    const { data } = await refresh(refreshToken);
-    const { accessToken, refreshToken: newRefreshToken } = data;
+      get().setToken(accessToken);
+      Cookies.set("refreshToken", newRefreshToken);
 
-    get().setToken(accessToken);
-    Cookies.set("refreshToken", newRefreshToken);
-
-    await get().fetchUserInfo();
+      await get().fetchUserInfo();
+    } catch (e) {}
   },
   fetchUserInfo: async () => {
     const token = get().token;
