@@ -49,22 +49,18 @@ public class Member extends Auditable {
     @Column
     private String picture;
 
-    // jwt 리프레시 토큰
-    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "member_role", nullable = false)
     private Role role;
 
-    // 리프레시 토큰 업데이트
-    public void updateRefreshToken(String updateRefreshToken) {
-        this.refreshToken = updateRefreshToken;
-    }
 
     // 닉네임 변경
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+
 }
 
 
