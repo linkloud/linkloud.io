@@ -3,7 +3,8 @@ package io.linkloud.api.domain.member.api;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -68,7 +69,6 @@ class MemberControllerTest {
     @Autowired
     Gson gson;
     Member member;
-    MemberLoginResponse memberLoginResponse;
     MemberNicknameRequestDto memberNicknameRequest;
     String accessToken;
     @BeforeEach
@@ -81,11 +81,9 @@ class MemberControllerTest {
                 .role(Role.MEMBER)
                 .picture("picture1")
                 .socialId("socialId1")
-                .refreshToken("refreshToken1")
                 .build();
         memberRepository.save(member);
         accessToken = jwtProvider.generateAccessToken(member.getId(), member.getSocialType());
-        memberLoginResponse = new MemberLoginResponse(member);
         memberNicknameRequest = new MemberNicknameRequestDto("new_nickname");
     }
 
@@ -99,30 +97,36 @@ class MemberControllerTest {
     String BASE_URL = "/api/v1/member";
 
 
+    @DisplayName("회원정보 - 가입한지3일이 안지난 회원 NEW_MEMBER")
     @Test
-    public void fineMe_success() throws Exception {
+    public void fineMe_success_new_member() throws Exception {
 
-        given(memberService.fetchPrincipal(anyLong())).willReturn(memberLoginResponse);
+        Member mockMember = mock(Member.class);
+        when(mockMember.getNickname()).thenReturn("KimMinJae");
+        when(mockMember.getPicture()).thenReturn("picture");
+        when(mockMember.getRole()).thenReturn(Role.NEW_MEMBER);
 
+        MemberLoginResponse mockResponse = new MemberLoginResponse(mockMember);
+        when(memberService.fetchPrincipal(anyLong())).thenReturn(mockResponse);
 
         ResultActions actions = mockMvc.perform(
             get(BASE_URL + "/me")
                 .header("Authorization", "Bearer " + accessToken));
 
         actions
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.nickname").value(member.getNickname()))
-            .andExpect(jsonPath("$.data.picture").value(member.getPicture()))
-            .andExpect(jsonPath("$.data.role").value(member.getRole().name()))
-            .andDo(document("member/me/success",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                responseFields(
-                    fieldWithPath("data.nickname").description("회원의 닉네임."),
-                    fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
-                    fieldWithPath("data.role").description("회원의 권한")
-                )));
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.nickname").value(mockMember.getNickname()))
+                .andExpect(jsonPath("$.data.picture").value(mockMember.getPicture()))
+                .andExpect(jsonPath("$.data.role").value(mockMember.getRole().name()))
+                .andDo(document("member/me/success/newMember",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("data.nickname").description("회원의 닉네임."),
+                                fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
+                                fieldWithPath("data.role").description("가입한지 3일 이내 회원의 권한")
+                        )));
     }
 
 
