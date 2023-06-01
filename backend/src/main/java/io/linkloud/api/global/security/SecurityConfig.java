@@ -26,13 +26,15 @@ public class SecurityConfig {
             .httpBasic().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter 클래스를 먼저 실행하도록 설정
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/v1/user/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/user").hasRole("USER")
-                .anyRequest().permitAll()
-            )
-            .build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter 클래스를 먼저 실행하도록 설정
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasAuthority("ADMIN") // 어드민
+                        .requestMatchers(HttpMethod.POST, "/api/v1/article/**").hasAnyAuthority("MEMBER", "ADMIN") // 게시글 작성
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/article/**").hasAnyAuthority("MEMBER", "ADMIN") // 게시글 수정
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/article/**").hasAnyAuthority("MEMBER", "ADMIN") // 게시글 삭제
+                        .requestMatchers(HttpMethod.GET, "/api/v1/article/**").permitAll()    // 게시글 조회 모두 허용
+                        .anyRequest().permitAll() // todo : 일단 전부 허용 나중에 변경
+                )
+                .build();
     }
 }
