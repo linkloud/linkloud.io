@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
 import useTagList from "@/hooks/tag/useTagList";
+import { getArticleList } from "@/service/api";
 
 import Banner from "./components/Banner";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
@@ -10,9 +12,14 @@ import SearchValidationErrorModal from "@/common/components/search/SearchValidat
 import ArticleItem from "@/common/components/article/ArticleItem";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
 
-import { fakeArticleList } from "@/common/utils/fakedata";
-
 const HomePage = () => {
+  const [articleList, setArticleList] = useState([]);
+  const [articlePageInfo, setArticlePageInfo] = useState({
+    page: 1,
+    size: 10,
+    totalElements: 0,
+    totalPages: 0,
+  });
   const [searchParams] = useSearchParams();
 
   const {
@@ -58,9 +65,25 @@ const HomePage = () => {
     },
   ];
 
+  useEffect(() => {
+    fetchArticleList(1);
+  }, []);
+
+  const fetchArticleList = async (page) => {
+    try {
+      const { data, pageInfo } = await getArticleList({ page });
+      setArticleList(data);
+      setArticlePageInfo(pageInfo);
+    } catch (err) {
+      // setError(err);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
   return (
     <>
-      <Banner />
+      <Banner articleCounts={articlePageInfo.totalElements} />
       <section className="px-5 md:px-0 w-full max-w-xl translate-y-[-50%]">
         <h1 className="sr-only">search section</h1>
         <Search onSearch={handleSearch} />
@@ -90,8 +113,8 @@ const HomePage = () => {
               </ul>
             </nav>
           </div>
-          {fakeArticleList.map((a) => (
-            <ArticleItem article={a} key={a.id}></ArticleItem>
+          {articleList.map((article) => (
+            <ArticleItem article={article} key={article.id}></ArticleItem>
           ))}
         </section>
         <TagItemContainer tagList={tagList} />
