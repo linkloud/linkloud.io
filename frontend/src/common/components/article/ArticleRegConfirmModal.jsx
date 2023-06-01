@@ -2,7 +2,7 @@ import Modal from "@/common/components/modal";
 import InputText from "@/common/components/input/InputText";
 import Button from "@/common/components/button";
 
-const ArticleRegConfirmModal = ({ isOpened, onClose, tagList }) => {
+const ArticleRegConfirmModal = ({ tagList, isOpened, onRegister, onClose }) => {
   return (
     <Modal isOpened={isOpened} onCloseModal={onClose}>
       <h1 className="sr-only">register tag in article modal</h1>
@@ -27,7 +27,7 @@ const ArticleRegConfirmModal = ({ isOpened, onClose, tagList }) => {
         <Button onClick={onClose} size="md" styleType="lined" className="mr-3">
           닫기
         </Button>
-        <Button size="md" styleType="fill">
+        <Button size="md" styleType="fill" onClick={onRegister}>
           등록하기
         </Button>
       </div>

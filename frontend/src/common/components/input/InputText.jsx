@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const InputText = ({ labelText, className }) => {
+const InputText = ({ labelText, className, onChange }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [text, setText] = useState("");
 
@@ -10,8 +10,9 @@ const InputText = ({ labelText, className }) => {
       ? "-top-[12px] text-xs text-blue-400"
       : "top-1 text-gray-300";
 
-  const onChange = (e) => {
+  const handleTextChange = (e) => {
     setText(e.target.value);
+    onChange(e);
   };
 
   return (
@@ -20,9 +21,10 @@ const InputText = ({ labelText, className }) => {
         type="text"
         id={labelText}
         required
+        autoComplete="off"
         onFocus={() => setIsInputFocused(true)}
         onBlur={() => setIsInputFocused(false)}
-        onChange={onChange}
+        onChange={handleTextChange}
         className="w-full py-1 bg-transparent border-b-2 outline-none"
       />
       <label

@@ -53,19 +53,7 @@ const Header = () => {
                 공지사항
               </Button>
             </li>
-            {role === ROLE.ADMIN && (
-              <li className="ml-2">
-                <Button
-                  size="md"
-                  styleType="inverted"
-                  aria-haspopup="dialog"
-                  onClick={console.log("태그등록")}
-                >
-                  태그 등록
-                </Button>
-              </li>
-            )}
-            {role !== ROLE.GUEST && (
+            {role !== ROLE.ANONYMOUS && (
               <li className="ml-2">
                 <Button
                   size="md"
@@ -77,7 +65,7 @@ const Header = () => {
                 </Button>
               </li>
             )}
-            {role === ROLE.GUEST ? (
+            {role === ROLE.ANONYMOUS ? (
               <li className="ml-2">
                 <Button
                   size="md"

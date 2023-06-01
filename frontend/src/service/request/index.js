@@ -1,5 +1,6 @@
 import axios from "axios";
 import { log } from "@/common/utils/";
+import useAuthStore from "@/stores/useAuthStore";
 
 const config = {
   baseURL: import.meta.env.VITE_API,
@@ -18,6 +19,8 @@ class Request {
     /** request */
     this.instance.interceptors.request.use((request) => {
       this.logRequest(request);
+      const token = useAuthStore.getState().token;
+      if (token) request.headers.Authorization = `Bearer ${token}`;
       return request;
     });
 

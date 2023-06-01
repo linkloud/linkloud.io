@@ -1,4 +1,5 @@
 export const ROLE = {
+  ANONYMOUS: "ANONYMOUS",
   GUEST: "GUEST",
   USER: "USER",
   ADMIN: "ADMIN",
@@ -19,4 +20,8 @@ export const ROUTES_PATH = {
   LINK_REG: "/links/reg",
 
   TAGS_LIST: "/tags",
+};
+
+export const ERROR_CODE = {
+  UNAUTH: "User unauthorized",
 };
