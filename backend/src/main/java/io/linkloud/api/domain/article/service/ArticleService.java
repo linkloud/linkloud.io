@@ -55,9 +55,6 @@ public class ArticleService {
     public ArticleResponseDto addArticle(Long memberId, ArticleRequestDto requestDto) {
         Member member = fetchMemberById(memberId);
 
-        LocalDate joinDate = member.getCreatedAt().toLocalDate();                                       // 가져온 멤버의 가입일을 저장.
-        if(joinDate.compareTo(LocalDate.now()) > -3) throw new CustomException(MEMBER_NOT_AUTHORIZED);  // 가입일을 오늘과 비교했을때 -3보다 크다면(3일이 지나지 않았다면), 403(권한)에러.
-
         Article createdArticle = articleRepository.save(requestDto.toArticleEntity(member));            // requestDto를 엔티티로 변환.
 
         return new ArticleResponseDto(createdArticle);
