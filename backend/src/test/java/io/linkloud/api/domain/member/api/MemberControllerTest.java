@@ -78,7 +78,7 @@ class MemberControllerTest {
                 .nickname("member1_google")
                 .email("member1@email.com")
                 .socialType(SocialType.google)
-                .role(Role.USER)
+                .role(Role.MEMBER)
                 .picture("picture1")
                 .socialId("socialId1")
                 .refreshToken("refreshToken1")
