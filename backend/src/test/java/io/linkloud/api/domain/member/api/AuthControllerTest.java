@@ -216,19 +216,19 @@ class AuthControllerTest {
         String content = gson.toJson(invalidRequestToken);
 
         when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
-            new CustomException(AuthExceptionCode.AUTHORIZED_FAIL));
+            new CustomException(AuthExceptionCode.INVALID_TOKEN));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
                     .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(content))
-            .andExpect(status().isForbidden());
+            .andExpect(status().isUnauthorized());
 
 
         actions.andDo(print())
-            .andDo(document("auth/refreshToken_fail/refreshToken",
+            .andDo(document("auth/refreshToken_fail/invalid",
                     requestFields(
-                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰")
+                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰(유효X,변조,null or empty)")
                     ),
                     responseFields(
                         fieldWithPath("status").description("HTTP status 상태 코드"),
@@ -239,6 +239,42 @@ class AuthControllerTest {
                 )
             );
     }
+
+    @Test
+    @DisplayName("refreshToken 요청 실패 - refreshToken 이 만료됨  ")
+    public void refreshToken_fail_expired_token() throws Exception {
+
+        // given
+        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("EXPIRED_TOKEN");
+
+        String content = gson.toJson(invalidRequestToken);
+
+        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
+            new CustomException(AuthExceptionCode.EXPIRED_TOKEN));
+
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+                .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+            .andExpect(status().isUnauthorized());
+
+
+        actions.andDo(print())
+            .andDo(document("auth/refreshToken_fail/expired",
+                    requestFields(
+                        fieldWithPath("refreshToken").description("만료된 리프레시 토큰")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").description("HTTP status 상태 코드"),
+                        fieldWithPath("message").description("에러 메시지"),
+                        fieldWithPath("fieldErrors").ignored(),
+                        fieldWithPath("violationErrors").ignored()
+                    )
+                )
+            );
+    }
+
+
 
 
 }

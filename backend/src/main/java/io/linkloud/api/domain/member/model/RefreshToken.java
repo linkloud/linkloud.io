@@ -24,7 +24,7 @@ public class RefreshToken {
 
     public void validateRefreshToken(String token) {
         if (!this.refreshToken.equals(token)) {
-            throw new CustomException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
+            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
     }
 }
