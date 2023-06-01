@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Role {
 
-    GUEST("ROLE_GUEST"),
-    USER("ROLE_USER"),
-    ADMIN("ROLE_ADMIN");
+    NEW_MEMBER("NEW_MEMBER"), // 가입한지 3일이 안지난 유저
+    MEMBER("MEMBER"),         // 가입한지 3일이 지난 유저
+    ADMIN("ADMIN");      // 관리자
 
     private final String key;
 
