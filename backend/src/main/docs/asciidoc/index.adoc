@@ -126,25 +126,48 @@ include::{snippets}/auth/refreshToken_success/response-fields.adoc[]
 ==== 실패, 유효하지 않은 리프레시 토큰
 
 .curl-request
-include::{snippets}/auth/refreshToken_fail/refreshToken/curl-request.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/curl-request.adoc[]
 
 .http-request
-include::{snippets}/auth/refreshToken_fail/refreshToken/http-request.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/http-request.adoc[]
 
 .http-response
-include::{snippets}/auth/refreshToken_fail/refreshToken/http-response.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/http-response.adoc[]
 
 .request-body
-include::{snippets}/auth/refreshToken_fail/refreshToken/request-body.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/request-body.adoc[]
 
 .response-body
-include::{snippets}/auth/refreshToken_fail/refreshToken/response-body.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/response-body.adoc[]
 
 .request-fields
-include::{snippets}/auth/refreshToken_fail/refreshToken/request-fields.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/request-fields.adoc[]
 
 .response-fields
-include::{snippets}/auth/refreshToken_fail/refreshToken/response-fields.adoc[]
+include::{snippets}/auth/refreshToken_fail/invalid/response-fields.adoc[]
+
+==== 실패, 리프레시 토큰 만료
+
+.curl-request
+include::{snippets}/auth/refreshToken_fail/expired/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/refreshToken_fail/expired/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/refreshToken_fail/expired/http-response.adoc[]
+
+.request-body
+include::{snippets}/auth/refreshToken_fail/expired/request-body.adoc[]
+
+.response-body
+include::{snippets}/auth/refreshToken_fail/expired/response-body.adoc[]
+
+.request-fields
+include::{snippets}/auth/refreshToken_fail/expired/request-fields.adoc[]
+
+.response-fields
+include::{snippets}/auth/refreshToken_fail/expired/response-fields.adoc[]
 
 == 회원
 
@@ -166,6 +189,24 @@ include::{snippets}/member/me/success/response-fields.adoc[]
 
 .response-body
 include::{snippets}/member/me/success/response-body.adoc[]
+
+
+==== 실패, 액세스 토큰 만료
+
+.curl-request
+include::{snippets}/member/me/fail/accessToken/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/me/fail/accessToken/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/me/fail/accessToken/http-response.adoc[]
+
+.response-fields
+include::{snippets}/member/me/fail/accessToken/response-fields.adoc[]
+
+.response-body
+include::{snippets}/member/me/fail/accessToken/response-body.adoc[]
 
 ==== 실패, 회원이 존재하지 않음
 

@@ -36,7 +36,7 @@ public class RefreshTokenService {
     public void validateRefreshToken(Long memberId, String refreshToken) {
         RefreshToken token = refreshTokenRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(
-                AuthExceptionCode.TOKEN_NOT_FOUND));
+                AuthExceptionCode.INVALID_TOKEN));
 
         token.validateRefreshToken(refreshToken);
     }
@@ -45,7 +45,7 @@ public class RefreshTokenService {
     public void removeRefreshToken(Long memberId) {
         RefreshToken refreshToken = refreshTokenRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(
-                AuthExceptionCode.TOKEN_NOT_FOUND));
+                AuthExceptionCode.INVALID_TOKEN));
         refreshTokenRepository.deleteById(refreshToken.getMemberId());
         log.info("리프레시 토큰 삭제");
     }

@@ -28,6 +28,7 @@ import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import org.junit.jupiter.api.AfterEach;
@@ -125,6 +126,31 @@ class MemberControllerTest {
     }
 
 
+    @DisplayName("회원 조회 실패_만료된 액세스토큰")
+    @Test
+    public void member_me_expired_accessToken() throws Exception {
+        // given
+        doThrow(new CustomException(AuthExceptionCode.EXPIRED_TOKEN))
+            .when(memberService).fetchPrincipal(any(Long.class));
+
+        ResultActions actions = mockMvc.perform(
+            get(BASE_URL + "/me")
+                .header("Authorization", "Bearer " + accessToken));
+
+        actions
+            .andDo(print())
+            .andExpect(status().isUnauthorized())
+            .andDo(document("member/me/fail/accessToken",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("status").description("에러 코드"),
+                    fieldWithPath("message").description("에러 메시지"),
+                    fieldWithPath("fieldErrors").description("필드 에러"),
+                    fieldWithPath("violationErrors").description("검증 에러")
+                )
+            ));
+    }
 
     @DisplayName("회원 조회 실패_없는 회원")
     @Test
