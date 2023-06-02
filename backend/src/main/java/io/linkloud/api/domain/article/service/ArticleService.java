@@ -130,18 +130,23 @@ public class ArticleService {
         }
     }
 
-    /** 제목으로 검색 */
+    /** 검색 */
     @Transactional
-    public Page<ArticleResponseDto> fetchArticleByTitle(String title, int page) {
-        Page<Article> articlesPage = articleRepository.findByTitleContainingIgnoreCase(title, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+    public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, String type, int page) {
+        Page<Article> articlesPage;
 
-        return articlesPage.map(article -> new ArticleResponseDto(article));
-    }
-
-    /** 내용으로 검색 */
-    @Transactional
-    public Page<ArticleResponseDto> fetchArticleByDescription(String description, int page) {
-        Page<Article> articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(description, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        // 제목으로 검색
+        if(type.equals("title")){
+            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        }
+        // 글 내용으로 검색
+        else if (type.equals("description")) {
+            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        }
+        // 검색 범주 미 설정시 예외 처리.
+        else {
+            throw new CustomException(BAD_REQUEST);  //TODO: 예외 처리 코드 정하기
+        }
 
         return articlesPage.map(article -> new ArticleResponseDto(article));
     }
