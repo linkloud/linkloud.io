@@ -1,7 +1,7 @@
 export const ROLE = {
-  ANONYMOUS: "ANONYMOUS",
-  GUEST: "GUEST",
   USER: "USER",
+  NEW_MEMBER: "NEW_MEMBER",
+  MEMBER: "MEMBER",
   ADMIN: "ADMIN",
 };
 
@@ -15,7 +15,7 @@ export const ROUTES_PATH = {
   HOME: "/",
   SEARCH: "/search",
 
-  MEMBER_PROFILE: "/members/:nickname",
+  MEMBER_PROFILE: "/profile",
 
   LINK_REG: "/links/reg",
 

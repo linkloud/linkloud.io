@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import useModal from "@/hooks/useModal";
 import useTagList from "@/hooks/tag/useTagList";
@@ -11,7 +11,7 @@ import { registerArticle } from "@/service/api";
 import ArticleRegConfirmModal from "@/common/components/article/ArticleRegConfirmModal";
 import InputText from "@/common/components/input/InputText";
 import Button from "@/common/components/button";
-import { ERROR_CODE, ROLE } from "@/common/constants";
+import { ROLE } from "@/common/constants";
 
 const LinksRegPage = () => {
   const [title, setTitle] = useState("");
@@ -29,8 +29,16 @@ const LinksRegPage = () => {
   const { userInfo } = useAuthStore();
 
   useEffect(() => {
-    if (userInfo.role === ROLE.ANONYMOUS || userInfo.role === ROLE.GUEST) {
+    if (userInfo.role === ROLE.NEW_MEMBER) {
       toast.error("가입후 3일이 지나야 링크를 등록할 수 있습니다.", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+      });
+      navigate("/");
+    }
+
+    if (userInfo.role === ROLE.USER) {
+      toast.error("로그인이 필요합니다.", {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       });

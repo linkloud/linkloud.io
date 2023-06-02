@@ -27,7 +27,7 @@ const useHeader = () => {
 
   // 링크 등록
   const handleRegisterLink = () => {
-    if (!userInfo.role || userInfo.info === ROLE.GUEST) {
+    if (!userInfo.role || userInfo.info === ROLE.USER) {
       setOpen("login");
       return;
     }

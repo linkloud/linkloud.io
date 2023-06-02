@@ -53,7 +53,7 @@ const Header = () => {
                 공지사항
               </Button>
             </li>
-            {role !== ROLE.ANONYMOUS && (
+            {role !== ROLE.USER && (
               <li className="ml-2">
                 <Button
                   size="md"
@@ -65,7 +65,7 @@ const Header = () => {
                 </Button>
               </li>
             )}
-            {role === ROLE.ANONYMOUS ? (
+            {role === ROLE.USER ? (
               <li className="ml-2">
                 <Button
                   size="md"

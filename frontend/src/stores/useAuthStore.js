@@ -8,7 +8,7 @@ import { ROLE } from "@/common/constants";
 const initialState = {
   nickname: "",
   picture: "",
-  role: ROLE.ANONYMOUS,
+  role: ROLE.USER,
 };
 
 const useAuthStore = create((set, get) => ({
