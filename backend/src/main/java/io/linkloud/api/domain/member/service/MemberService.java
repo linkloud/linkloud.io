@@ -42,8 +42,8 @@ public class MemberService {
             .orElseGet(() -> {
                 Member newMember = Member.builder()
                     .email(userInfo.getEmail())
-                    .role(Role.USER)
-                    .nickname(extractedName) // nickname 은 Not Null 이므로 임시 닉네임 설정
+                    .role(Role.NEW_MEMBER)
+                    .nickname(extractedName)
                     .socialType(userInfo.getSocialType())
                     .picture(userInfo.getPicture())
                     .socialId(userInfo.getSocialId())

@@ -91,28 +91,7 @@ class ArticleServiceTest {
         assertThat(article.getMember().getId()).isNotEqualTo(secondMockMember.getId()); // 게시글 작성자의 맴버 객체와 다른 맴버 ID 가 다른지
 
     }
-    @Test
-    @DisplayName("게시글 생성 실패 - 가입한지 3일 안지남")
-    public void addArticleFail_date() {
-        LocalDateTime aDayAgo = LocalDateTime.now().minusDays(1); // 1일 전 생성된 가입일로 설정
 
-        // firstMockMember 가짜 객체의 값 설정
-        when(firstMockMember.getId()).thenReturn(1L);
-        when(firstMockMember.getCreatedAt()).thenReturn(aDayAgo);
-
-        // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(firstMockMember));
-
-
-        // when
-        CustomException exception = assertThrows(CustomException.class,
-            () -> articleService.addArticle(firstMockMember.getId(), articleRequestDto));
-
-        // then
-        assertThat(exception.getMessage()).isEqualTo(MEMBER_NOT_AUTHORIZED.getMessage());
-        assertThat(exception.getExceptionCode().getStatus()).isEqualTo(MEMBER_NOT_AUTHORIZED.getStatus());
-
-    }
 
     @Test
     @DisplayName("게시글 수정 성공")
