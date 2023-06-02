@@ -75,20 +75,16 @@ public class ArticleController {
         return ResponseEntity.noContent().build();
     }
 
-    /** 제목으로 검색 */
-    @GetMapping("search=title")
-    public ResponseEntity<MultiDataResponse> getArticleByTitle(@RequestParam String title, @Positive @RequestParam int page) {
-        Page<ArticleResponseDto> getArticleByTitleDto = articleService.fetchArticleByTitle(title, page);
+    /** 검색 */
+    @GetMapping("search")
+    public ResponseEntity<MultiDataResponse> getArticleBySearch(
+        @RequestParam String keyword,
+        @RequestParam String type,
+        @Positive @RequestParam int page) {
 
-        return ResponseEntity.ok(new MultiDataResponse<>(getArticleByTitleDto));
-    }
+        Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, type, page);
 
-    /** 내용으로 검색 */
-    @GetMapping("search=description")
-    public ResponseEntity<MultiDataResponse> getArticleByContent(@RequestParam String description, @Positive @RequestParam int page) {
-        Page<ArticleResponseDto> getArticleByDescDto = articleService.fetchArticleByDescription(description, page);
-
-        return ResponseEntity.ok(new MultiDataResponse<>(getArticleByDescDto));
+        return ResponseEntity.ok(new MultiDataResponse<>(getArticleBySearchDto));
     }
 
 }
