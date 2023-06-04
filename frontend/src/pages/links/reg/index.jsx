@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import useArticleReg from "@/hooks/article/useArticleReg";
 import useModal from "@/hooks/useModal";
 import useTagList from "@/hooks/tag/useTagList";
 import useAuthStore from "@/stores/useAuthStore";
-
-import { registerArticle } from "@/service/api";
 
 import ArticleRegConfirmModal from "@/common/components/article/ArticleRegConfirmModal";
 import InputText from "@/common/components/input/InputText";
@@ -14,19 +13,16 @@ import Button from "@/common/components/button";
 import { ROLE } from "@/common/constants";
 
 const LinksRegPage = () => {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [description, setDescription] = useState("");
-
+  const { form, setForm, isValid, formErrorMessage, handleRegisterArticle } =
+    useArticleReg();
   const navigate = useNavigate();
-
-  const { isOpened: isArticleRegConfirmModalOpened, toggleModal } = useModal();
   const { tagList, fetchTagListError } = useTagList({
     page: 1,
     size: 10,
     sortBy: "popularity",
   });
   const { userInfo } = useAuthStore();
+  const { isOpened: isArticleRegConfirmModalOpened, toggleModal } = useModal();
 
   useEffect(() => {
     if (userInfo.role === ROLE.NEW_MEMBER) {
@@ -36,39 +32,7 @@ const LinksRegPage = () => {
       });
       navigate("/");
     }
-
-    if (userInfo.role === ROLE.USER) {
-      toast.error("로그인이 필요합니다.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
-      navigate("/");
-    }
   }, [userInfo]);
-
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
-
-  const handleUrlChange = (e) => {
-    setUrl(e.target.value);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
-  const handleRegisterArticle = async () => {
-    //TODO: 예외처리
-    //TODO: 유효성검사
-    const { data } = await registerArticle({ title, url, description }).catch(
-      (e) => {
-        console.log(e);
-      }
-    );
-    navigate("/");
-    toast.success("링크 등록이 완료되었습니다.", {});
-  };
 
   return (
     <>
@@ -76,28 +40,36 @@ const LinksRegPage = () => {
         <h1 className="sr-only">link article register section</h1>
         <form>
           <p className="text-xl md:text-2xl font-semibold">
-            게시하려는 링크의 이름과 주소를 작성해주세요.
+            게시하려는 링크의 이름과 주소를 작성해주세요.{" "}
           </p>
           <InputText
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
             labelText="이름"
+            validMessage={formErrorMessage.title}
             className="mt-8"
-            onChange={handleTitleChange}
           />
           <InputText
+            onChange={(e) => setForm({ ...form, url: e.target.value })}
             labelText="주소 URL"
+            validMessage={formErrorMessage.url}
             className="mt-8"
-            onChange={handleUrlChange}
           />
           <p className="my-8 text-xl md:text-2xl font-semibold">
             간단한 한 줄 설명을 작성해주세요.
           </p>
           <InputText
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
             labelText="설명"
+            validMessage={formErrorMessage.description}
             className="mt-8"
-            onChange={handleDescriptionChange}
           />
           <div className="mt-8 flex justify-end w-full">
-            <Button onClick={toggleModal} size="lg" styleType="fill">
+            <Button
+              onClick={toggleModal}
+              size="lg"
+              styleType="fill"
+              disabled={!isValid}
+            >
               계속
             </Button>
           </div>
