@@ -16,7 +16,7 @@ const HeaderActionMenu = ({ nickname, handleMouseLeave }) => {
 
   return (
     <ActionMenu onMouseLeave={handleMouseLeave}>
-      <ActionMenuItem to={"/profile"}>내 정보</ActionMenuItem>
+      {/* <ActionMenuItem to={"/profile"}>내 정보</ActionMenuItem> */}
       <ActionMenuItem onClick={handleLogout}>로그아웃</ActionMenuItem>
     </ActionMenu>
   );

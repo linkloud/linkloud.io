@@ -25,10 +25,10 @@ const router = createBrowserRouter([
         path: ROUTES_PATH.SEARCH,
         element: <SearchPage />,
       },
-      {
-        path: ROUTES_PATH.MEMBER_PROFILE,
-        element: <MemberProfilePage />,
-      },
+      // {
+      //   path: ROUTES_PATH.MEMBER_PROFILE,
+      //   element: <MemberProfilePage />,
+      // },
       {
         path: ROUTES_PATH.LINK_REG,
         element: <LinkRegPage />,
