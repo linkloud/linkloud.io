@@ -99,7 +99,7 @@ const HomePage = () => {
       <div className="flex w-full max-w-7xl">
         <section className="w-full p-6">
           <h1 className="hidden">link article list section</h1>
-          <div className="hidden md:block w-full mb-4">
+          {/* <div className="hidden md:block w-full mb-4">
             <nav>
               <h1 className="hidden">link article order option</h1>
               <ul className="flex py-3">
@@ -115,7 +115,7 @@ const HomePage = () => {
                 ))}
               </ul>
             </nav>
-          </div>
+          </div> */}
           {articleList.length > 0 ? (
             articleList.map((article) => (
               <ArticleItem
