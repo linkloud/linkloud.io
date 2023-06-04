@@ -5,10 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -65,7 +62,7 @@ public class JwtProvider {
      */
     public String generateRefreshToken(Long memberId) {
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(jwtProperties.getRefreshTokenExpiration());
+        Instant expiration = now.plusSeconds(getRefreshTokenExpiration());
         UUID uuid = UUID.randomUUID();
         return Jwts.builder()
             .setIssuer("linkloud")
@@ -96,7 +93,7 @@ public class JwtProvider {
         }
         catch (ExpiredJwtException e){
             log.error("만료된 토큰 입니다 = {}",e.getMessage());
-            throw new CustomException(AuthExceptionCode.EXPIRED_TOKEN);
+            throw new CustomException(AuthExceptionCode.EXPIRED_ACCESS_TOKEN);
         }
         catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 토큰 검증 중 오류 발생: {}", e.getMessage());
