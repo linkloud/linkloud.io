@@ -6,6 +6,7 @@ import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
+import io.linkloud.api.global.security.auth.jwt.JwtTokenType;
 import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
 import jakarta.servlet.FilterChain;
@@ -64,11 +65,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             // 2. 토큰이 유효한지 검증
-            if (accessToken != null && jwtProvider.validateAccessToken(accessToken)) {
+            if (accessToken != null && jwtProvider.validateToken(accessToken,JwtTokenType.ACCESS_TOKEN)) {
                 log.info("토근이 유효합니다.");
 
                 // 3. 사용자 정보 추출
-                String memberId = jwtProvider.getClaims(accessToken, Claims::getId);
+                String memberId = jwtProvider.getClaims(accessToken, JwtTokenType.ACCESS_TOKEN, Claims::getId);
                 Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(
                     () -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND)
                 );

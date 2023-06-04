@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
+import io.linkloud.api.global.security.auth.jwt.JwtTokenType;
 import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
@@ -35,11 +36,11 @@ public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResol
         WebDataBinderFactory binderFactory) {
 
         String accessToken = getTokenFromRequest(webRequest);
-        if (!jwtProvider.validateAccessToken(accessToken)) {
+        if (!jwtProvider.validateToken(accessToken,JwtTokenType.ACCESS_TOKEN)) {
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
 
-        return Long.valueOf(jwtProvider.getClaims(accessToken, Claims::getId));
+        return Long.valueOf(jwtProvider.getClaims(accessToken, JwtTokenType.REFRESH_TOKEN, Claims::getId));
     }
 
 
