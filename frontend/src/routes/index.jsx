@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import Layout from "@/pages/Layout";
+import PrivateRoute from "./PrivateRoute";
 
 const NotFoundPage = lazy(() => import("@/pages/error/404"));
 const HomePage = lazy(() => import("@/pages/home"));
@@ -14,32 +15,52 @@ import { ROUTES_PATH } from "@/common/constants";
 
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    element: <PrivateRoute />,
     children: [
       {
-        path: ROUTES_PATH.HOME,
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: ROUTES_PATH.SEARCH,
-        element: <SearchPage />,
+        path: ROUTES_PATH.LINK_REG,
+        element: (
+          <Layout>
+            <LinkRegPage />
+          </Layout>
+        ),
       },
       // {
       //   path: ROUTES_PATH.MEMBER_PROFILE,
       //   element: <MemberProfilePage />,
       // },
-      {
-        path: ROUTES_PATH.LINK_REG,
-        element: <LinkRegPage />,
-      },
-      {
-        path: ROUTES_PATH.TAGS_LIST,
-        element: <TagListPage />,
-      },
     ],
   },
-  { path: "*", element: <NotFoundPage /> },
+  {
+    path: ROUTES_PATH.HOME,
+    index: true,
+    element: (
+      <Layout>
+        <HomePage />
+      </Layout>
+    ),
+  },
+  {
+    path: ROUTES_PATH.SEARCH,
+    element: (
+      <Layout>
+        <SearchPage />
+      </Layout>
+    ),
+  },
+
+  {
+    path: ROUTES_PATH.TAGS_LIST,
+    element: (
+      <Layout>
+        <TagListPage />
+      </Layout>
+    ),
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
 ]);
 
 export default router;
