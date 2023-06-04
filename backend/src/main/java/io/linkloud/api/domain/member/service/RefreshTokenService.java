@@ -22,7 +22,10 @@ public class RefreshTokenService {
      * @param dto 요청회원_ID,요청회원_refreshToken
      */
     public void createRefreshToken(CreateRefreshTokenRequestDto dto) {
-        RefreshToken refreshToken = new RefreshToken(dto.getMemberId(), dto.getRefreshToken());
+        RefreshToken refreshToken = new RefreshToken(
+            dto.getMemberId(),
+            dto.getRefreshToken(),
+            dto.getRefreshTokenExpiration());
         refreshTokenRepository.save(refreshToken);
         log.info("refreshToken 토큰 저장완료");
     }

@@ -128,4 +128,9 @@ public class JwtProvider {
         }
         throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
     }
+
+    // 리프레시 토큰 만료시간 리턴
+    public long getRefreshTokenExpiration() {
+        return jwtProperties.getRefreshTokenExpiration();
+    }
 }

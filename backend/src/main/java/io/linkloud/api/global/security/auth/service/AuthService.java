@@ -64,7 +64,8 @@ public class AuthService {
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             memberId,
-            jwtRefreshToken
+            jwtRefreshToken,
+            jwtProvider.getRefreshTokenExpiration()
         ));
 
         // 4
@@ -94,7 +95,8 @@ public class AuthService {
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             member.getId(),
-            newJwtRefreshToken
+            newJwtRefreshToken,
+            jwtProvider.getRefreshTokenExpiration()
         ));
         return new AuthResponseDto(newJwtAccessToken);
     }

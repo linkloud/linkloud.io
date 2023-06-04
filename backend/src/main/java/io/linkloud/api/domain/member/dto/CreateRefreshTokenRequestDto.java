@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class CreateRefreshTokenRequestDto {
     private final Long memberId;
     private final String refreshToken;
-
+    private final long refreshTokenExpiration;
 }
 
