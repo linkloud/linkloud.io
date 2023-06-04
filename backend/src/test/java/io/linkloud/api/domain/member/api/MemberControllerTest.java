@@ -2,7 +2,6 @@ package io.linkloud.api.domain.member.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -154,14 +153,14 @@ class MemberControllerTest {
                                 fieldWithPath("data.nickname").description("회원의 닉네임."),
                                 fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
                                 fieldWithPath("data.role").description("가입한지 3일 지난 회원의 권한")
-                        )));;
+                        )));
     }
 
     @DisplayName("회원 조회 실패_만료된 액세스토큰")
     @Test
     public void member_me_expired_accessToken() throws Exception {
         // given
-        doThrow(new CustomException(AuthExceptionCode.EXPIRED_TOKEN))
+        doThrow(new CustomException(AuthExceptionCode.EXPIRED_ACCESS_TOKEN))
             .when(memberService).fetchPrincipal(any(Long.class));
 
         ResultActions actions = mockMvc.perform(
