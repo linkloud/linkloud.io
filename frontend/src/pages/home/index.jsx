@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
+import useArticleDetail from "@/hooks/article/useArticleDetail";
 import useTagList from "@/hooks/tag/useTagList";
 import { getArticleList } from "@/service/api";
 
@@ -11,6 +12,7 @@ import Search from "@/common/components/search";
 import SearchValidationErrorModal from "@/common/components/search/SearchValidationErrorModal";
 import ArticleItem from "@/common/components/article/ArticleItem";
 import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
+import ArticleNotFound from "@/common/components/article/ArtcleNotFound";
 
 const HomePage = () => {
   const [articleList, setArticleList] = useState([]);
@@ -28,6 +30,7 @@ const HomePage = () => {
     handleSearch,
     handleCloseSearchValidationModal,
   } = useArticleSearch();
+  const { handleArticleClick } = useArticleDetail();
 
   //TODO: 예외처리
   const { tagList, error: getTagListError } = useTagList({
@@ -113,9 +116,17 @@ const HomePage = () => {
               </ul>
             </nav>
           </div>
-          {articleList.map((article) => (
-            <ArticleItem article={article} key={article.id}></ArticleItem>
-          ))}
+          {articleList.length > 0 ? (
+            articleList.map((article) => (
+              <ArticleItem
+                onClickArticle={handleArticleClick}
+                article={article}
+                key={article.id}
+              ></ArticleItem>
+            ))
+          ) : (
+            <ArticleNotFound />
+          )}
         </section>
         <TagItemContainer tagList={tagList} />
       </div>

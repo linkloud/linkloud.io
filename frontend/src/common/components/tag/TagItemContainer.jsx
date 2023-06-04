@@ -15,14 +15,14 @@ const TagItemContainer = ({ tagList }) => {
         <nav className="flex items-center">
           <h1 className="hidden">tag list</h1>
           <ul className="flex flex-wrap gap-2.5 my-2">
-            {tagList ? (
+            {tagList.length > 0 ? (
               tagList.map((tag) => (
                 <li key={tag.id}>
                   <TagItem tag={tag} />
                 </li>
               ))
             ) : (
-              <span>아직 등록된 태그가 없어요!</span>
+              <span>등록된 태그가 없습니다.</span>
             )}
           </ul>
         </nav>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { getTagList } from "@/service/api/tag";
 import { TAG_SORT_OPTIONS } from "@/common/constants";
+import { toast } from "react-toastify";
 
 const useTagList = ({
   page = 1,
@@ -22,6 +23,11 @@ const useTagList = ({
 
   useEffect(() => {
     fetchTagList(tagPageInfo.page, tagPageInfo.size, sortBy);
+    if (error) {
+      toast.error(
+        "태그 조회 중 서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요."
+      );
+    }
   }, [tagPageInfo.page, tagPageInfo.size, sortBy]);
 
   const fetchTagList = async (page, size, sortBy) => {

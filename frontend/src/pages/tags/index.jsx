@@ -36,7 +36,6 @@ const TagListPage = () => {
   const {
     tagList,
     tagPageInfo,
-    fetchTagListError,
     handlePrevTagList,
     handleNextTagList,
     handleChangeSortOption,
@@ -80,9 +79,7 @@ const TagListPage = () => {
 
       <section className="flex flex-col gap-y-4 gap-x-6 py-3">
         <h1 className="hidden">태그 목록</h1>
-        {fetchTagListError ? (
-          <TagNotFound />
-        ) : (
+        {tagList.length > 0 ? (
           <>
             <ul>
               {tagList.map((tag) => (
@@ -109,6 +106,8 @@ const TagListPage = () => {
               )}
             </div>
           </>
+        ) : (
+          <TagNotFound />
         )}
       </section>
     </div>
