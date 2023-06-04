@@ -29,7 +29,7 @@ class RefreshTokenServiceTest {
 
     @BeforeEach
     void setUp() {
-        refreshToken = new RefreshToken(1L, "refreshToken");
+        refreshToken = new RefreshToken(1L, "refreshToken", 10000L);
     }
 
     @AfterEach
@@ -44,7 +44,8 @@ class RefreshTokenServiceTest {
         // given
         CreateRefreshTokenRequestDto dto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            refreshToken.getRefreshToken()
+            refreshToken.getRefreshToken(),
+            refreshToken.getRefreshTokenExpiration()
         );
 
         refreshTokenService.createRefreshToken(dto);
@@ -67,14 +68,18 @@ class RefreshTokenServiceTest {
         String oldRefreshTokenValue = "oldRefreshToken";
         CreateRefreshTokenRequestDto oldRefreshTokenDto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            oldRefreshTokenValue
+            oldRefreshTokenValue,
+            refreshToken.getRefreshTokenExpiration()
+
         );
         refreshTokenService.createRefreshToken(oldRefreshTokenDto);
 
         String newRefreshTokenValue = "newRefreshToken";
         CreateRefreshTokenRequestDto newRefreshTokenDto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            newRefreshTokenValue
+            newRefreshTokenValue,
+            refreshToken.getRefreshTokenExpiration()
+
         );
 
         // when
@@ -98,7 +103,9 @@ class RefreshTokenServiceTest {
         // given
         CreateRefreshTokenRequestDto dto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            refreshToken.getRefreshToken()
+            refreshToken.getRefreshToken(),
+            refreshToken.getRefreshTokenExpiration()
+
         );
 
         refreshTokenService.createRefreshToken(dto);
@@ -116,14 +123,18 @@ class RefreshTokenServiceTest {
         String oldRefreshTokenValue = "oldRefreshToken";
         CreateRefreshTokenRequestDto oldRefreshTokenDto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            oldRefreshTokenValue
+            oldRefreshTokenValue,
+            refreshToken.getRefreshTokenExpiration()
+
         );
         refreshTokenService.createRefreshToken(oldRefreshTokenDto);
 
         String newRefreshTokenValue = "newRefreshToken";
         CreateRefreshTokenRequestDto newRefreshTokenDto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            newRefreshTokenValue
+            newRefreshTokenValue,
+            refreshToken.getRefreshTokenExpiration()
+
         );
         refreshTokenService.createRefreshToken(newRefreshTokenDto);
 
@@ -138,7 +149,9 @@ class RefreshTokenServiceTest {
         // given
         CreateRefreshTokenRequestDto dto = new CreateRefreshTokenRequestDto(
             refreshToken.getMemberId(),
-            refreshToken.getRefreshToken()
+            refreshToken.getRefreshToken(),
+            refreshToken.getRefreshTokenExpiration()
+
         );
         refreshTokenService.createRefreshToken(dto);
 
@@ -148,4 +161,5 @@ class RefreshTokenServiceTest {
         // then
         assertThat(refreshTokenRepository.findById(refreshToken.getMemberId())).isEmpty();
     }
+
 }
