@@ -41,7 +41,7 @@ public class JwtProvider {
      */
     public String generateAccessToken(Long memberID, SocialType socialType) {
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
+        Instant expiration = now.plusSeconds(getAccessTokenExpiration());
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
@@ -118,8 +118,14 @@ public class JwtProvider {
             .getBody();
     }
 
+    // 액세스 토큰 만료시간 리턴
+    public long getAccessTokenExpiration() {
+        return jwtProperties.getAccessTokenExpiration();
+    }
+
     // 리프레시 토큰 만료시간 리턴
     public long getRefreshTokenExpiration() {
         return jwtProperties.getRefreshTokenExpiration();
     }
+
 }
