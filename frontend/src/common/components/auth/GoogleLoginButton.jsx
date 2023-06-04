@@ -1,4 +1,5 @@
 import { useGoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/useAuthStore";
 
@@ -9,8 +10,13 @@ const GoogleLoginButton = ({ onCloseLoginModal }) => {
 
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {
-      await socialLogin("google", codeResponse.code);
-      onCloseLoginModal();
+      try {
+        await socialLogin("google", codeResponse.code);
+      } catch (e) {
+        toast.error("로그인에 실패했습니다. 잠시후에 다시 시도해주세요");
+      } finally {
+        onCloseLoginModal();
+      }
     },
     flow: "auth-code",
   });
