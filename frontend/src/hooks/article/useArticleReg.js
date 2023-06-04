@@ -82,6 +82,12 @@ const useArticleReg = () => {
       }));
       return;
     }
+
+    setFormErrorMessage((prev) => ({ ...prev, description: null }));
+
+    return () => {
+      setFormErrorMessage((prev) => ({ ...prev, description: null }));
+    };
   }, [form.description]);
 
   const handleRegisterArticle = async () => {
