@@ -40,7 +40,7 @@ class Request {
       },
       // 실패 응답 처리
       (error) => {
-        log("[            🚨 error              ]");
+        log("🚨  error");
 
         if (error.response && error.response.data) {
           log(error.response.data);
@@ -75,8 +75,8 @@ class Request {
   logRequest(request) {
     if (!import.meta.env.DEV) return;
 
-    log("[            🚀 request            ]");
     const { method, url, params, data } = request;
+    log("🚀 request");
 
     let queryParams = "";
     if (params) {
@@ -85,22 +85,25 @@ class Request {
         .join("&");
       queryParams = "?" + queryParams;
     }
-
-    log(`[${method.toUpperCase()}] ${url}${queryParams}`);
+    const requestUrl = `[${method.toUpperCase()}] ${url}${queryParams}`;
+    log(requestUrl);
 
     if (data) {
-      log("[request data]");
+      log("📦 request data ");
       log(data);
     }
   }
 
   logResponse(response) {
     if (!import.meta.env.DEV) return;
-    log("[            📦 response           ]");
+    const baseUrl = import.meta.env.VITE_API;
+    const requestUrl = response.request.responseURL.split(baseUrl)[1] ?? null;
+
     const { data } = response;
 
+    log(`📦 response : ${requestUrl}`);
+
     if (data) {
-      log("[response data]");
       log(data);
     }
   }
