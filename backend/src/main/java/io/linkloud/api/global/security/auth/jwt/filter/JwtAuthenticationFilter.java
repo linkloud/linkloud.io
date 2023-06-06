@@ -3,8 +3,10 @@ package io.linkloud.api.global.security.auth.jwt.filter;
 import io.jsonwebtoken.Claims;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.security.auth.handler.ErrorResponseUtil;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import io.linkloud.api.global.security.auth.jwt.JwtTokenType;
 import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
@@ -18,6 +20,7 @@ import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -85,8 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (CustomException e) {
             log.error("JWT error: {}", e.getMessage());
-            response.setStatus(e.getExceptionCode().getStatus());
-            response.getWriter().print(e.getMessage());
+            ErrorResponseUtil.sendErrorResponse(response, e);
             return;
         }
         log.info("JWT 인증 필터 종료");
