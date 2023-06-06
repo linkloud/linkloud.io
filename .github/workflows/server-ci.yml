@@ -33,8 +33,11 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
+      - name: List files in the repository
+        run: ls
+
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-          gradle-executable: gradle
+          gradle-executable: ./gradle/wrapper
