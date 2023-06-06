@@ -40,4 +40,4 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-          gradle-executable: ./gradle/wrapper
+          gradle-executable: ./gradlew
