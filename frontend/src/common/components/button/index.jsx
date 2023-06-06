@@ -2,7 +2,9 @@ const Button = ({
   children,
   size = "md",
   styleType = "fill",
-  className,
+  className = "",
+  disabled = false,
+  onClick,
   ...props
 }) => {
   const sizeTable = {
@@ -18,13 +20,30 @@ const Button = ({
     fill: "rounded text-white bg-primary-600 hover:bg-primary-500 transition-colors",
   };
 
-  const styleClassName = `${styleTable[styleType]} ${sizeTable[size]}`;
+  const classesName = `
+    ${sizeTable[size]} 
+    ${
+      disabled
+        ? "text-gray-400 bg-gray-200 cursor-not-allowed"
+        : styleTable[styleType]
+    }
+    rounded transition-colors
+    ${className}
+  `;
+
+  const handleClick = (e) => {
+    if (!disabled && onClick) {
+      onClick(e);
+    }
+  };
 
   return (
     <button
-      {...props}
+      disabled={disabled}
+      onClick={handleClick}
       type="button"
-      className={`${styleClassName} ${className ? className : ""}`}
+      {...props}
+      className={classesName}
     >
       {children}
     </button>

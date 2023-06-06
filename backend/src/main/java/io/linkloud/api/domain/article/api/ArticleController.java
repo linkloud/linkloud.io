@@ -9,7 +9,6 @@ import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,7 @@ public class ArticleController {
     /** 아티클 작성 */
     @PostMapping
     public ResponseEntity<SingleDataResponse<ArticleResponseDto>> createArticle(@LoginMemberId Long memberId, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto createdArticleDto = articleService.addArticle(memberId,articleRequestDto);
+        ArticleResponseDto createdArticleDto = articleService.addArticle(memberId, articleRequestDto);
 
         return ResponseEntity.ok(new SingleDataResponse<>(createdArticleDto));
 
@@ -61,8 +60,8 @@ public class ArticleController {
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
     @PatchMapping("/{articleId}")
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> patchArticle(@PathVariable Long articleId,@LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
-        ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId,memberId,articleUpdateDto);
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> patchArticle(@PathVariable Long articleId, @LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
+        ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId, memberId, articleUpdateDto);
 
         return ResponseEntity.ok(new SingleDataResponse<>(updatedArticleDto));
 
@@ -71,9 +70,21 @@ public class ArticleController {
     /** 아티클 삭제 */
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Void>deleteArticle(@PathVariable @Valid Long articleId ,@LoginMemberId Long memberId) {
-        articleService.removeArticle(articleId,memberId);
+        articleService.removeArticle(articleId, memberId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    /** 검색 */
+    @GetMapping("search")
+    public ResponseEntity<MultiDataResponse> getArticleBySearch(
+        @RequestParam String keyword,
+        @RequestParam String type,
+        @Positive @RequestParam int page) {
+
+        Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, type, page);
+
+        return ResponseEntity.ok(new MultiDataResponse<>(getArticleBySearchDto));
     }
 
 }

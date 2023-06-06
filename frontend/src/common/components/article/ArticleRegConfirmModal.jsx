@@ -28,7 +28,7 @@ const ArticleRegConfirmModal = ({ tagList, isOpened, onRegister, onClose }) => {
           닫기
         </Button>
         <Button size="md" styleType="fill" onClick={onRegister}>
-          등록하기
+          등록
         </Button>
       </div>
     </Modal>
