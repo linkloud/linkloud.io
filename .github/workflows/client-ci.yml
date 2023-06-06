@@ -5,14 +5,22 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - "frontend/**"
   pull_request:
     branches:
       - main
       - dev
+    paths:
+      - "/frontend/**"
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: "./frontend"
 
     strategy:
       matrix:
