@@ -3,6 +3,7 @@ package io.linkloud.api.domain.member.model;
 
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -17,7 +18,7 @@ public class RefreshToken {
 
     private final String refreshToken;
 
-    @TimeToLive
+    @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private final long refreshTokenExpiration;
 
 
