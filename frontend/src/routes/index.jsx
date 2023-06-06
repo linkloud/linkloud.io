@@ -37,7 +37,14 @@ const router = createBrowserRouter([
     index: true,
     element: (
       <Layout>
-        <Seo title={"Linkloud | 모두의 링크 라이브러리"} />
+        <Seo
+          title={"Linkloud | 모두의 링크 라이브러리"}
+          description={
+            "링클라우드는 개발, 디자인, 공부 등 관련된 유용한 링크를 찾고, 저장하고, 공유할 수 있는 서비스입니다."
+          }
+          type={"website"}
+          name={"summary"}
+        />
         <HomePage />
       </Layout>
     ),
