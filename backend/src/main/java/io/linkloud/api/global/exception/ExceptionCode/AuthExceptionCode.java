@@ -13,7 +13,8 @@ public enum AuthExceptionCode implements ExceptionCode {
     INVALID_TOKEN(401, "Invalid Token"),
 
     // 만료된 토큰
-    EXPIRED_TOKEN(401, "Expired token");
+    EXPIRED_ACCESS_TOKEN(401, "Expired access token"),
+    EXPIRED_REFRESH_TOKEN(401, "Expired refresh token");
 
     @Getter
     private int status;

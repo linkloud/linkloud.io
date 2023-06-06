@@ -13,6 +13,7 @@ import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
+import io.linkloud.api.global.security.auth.jwt.JwtTokenType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -64,7 +65,8 @@ public class AuthService {
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             memberId,
-            jwtRefreshToken
+            jwtRefreshToken,
+            jwtProvider.getRefreshTokenExpiration()
         ));
 
         // 4
@@ -74,13 +76,15 @@ public class AuthService {
     public AuthResponseDto refreshTokenAndAccessToken(String refreshToken,HttpServletResponse response) {
 
 
-        Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, Claims::getId));
+        Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, JwtTokenType.REFRESH_TOKEN, Claims::getId));
 
         try {
             refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
-            refreshTokenService.removeRefreshToken(memberId);
             log.error("리프레시 토큰이 변조되었습니다={}",e.getMessage());
+            refreshTokenService.removeRefreshToken(memberId);
+            Cookie removedCookie = removeRefreshCookie();
+            response.addCookie(removedCookie);
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
 
@@ -94,19 +98,27 @@ public class AuthService {
 
         refreshTokenService.createRefreshToken(new CreateRefreshTokenRequestDto(
             member.getId(),
-            newJwtRefreshToken
+            newJwtRefreshToken,
+            jwtProvider.getRefreshTokenExpiration()
         ));
         return new AuthResponseDto(newJwtAccessToken);
     }
     private Cookie createCookieByRefreshToken(String jwtRefreshToken) {
         log.info("쿠키를 생성합니다.");
         // 리프레시 토큰 만료시간 가져오기
-        int refreshTokenExpiration = (int)jwtProvider.getJwtProperties().getRefreshTokenExpiration();
+        int refreshTokenExpiration = (int)jwtProvider.getRefreshTokenExpiration();
         Cookie cookie = new Cookie("refreshToken", jwtRefreshToken);
         cookie.setMaxAge(refreshTokenExpiration);
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        return cookie;
+    }
+
+    private Cookie removeRefreshCookie() {
+        log.info("쿠키를 제거합니다");
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
         return cookie;
     }
 }

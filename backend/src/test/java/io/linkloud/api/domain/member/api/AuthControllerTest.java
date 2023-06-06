@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.cookies.CookieDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -250,7 +249,7 @@ class AuthControllerTest {
         String content = gson.toJson(invalidRequestToken);
 
         when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
-            new CustomException(AuthExceptionCode.EXPIRED_TOKEN));
+            new CustomException(AuthExceptionCode.EXPIRED_REFRESH_TOKEN));
 
         ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
                 .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))

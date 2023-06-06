@@ -22,11 +22,13 @@ public class RefreshTokenService {
      * @param dto 요청회원_ID,요청회원_refreshToken
      */
     public void createRefreshToken(CreateRefreshTokenRequestDto dto) {
-        RefreshToken refreshToken = new RefreshToken(dto.getMemberId(), dto.getRefreshToken());
+        RefreshToken refreshToken = new RefreshToken(
+            dto.getMemberId(),
+            dto.getRefreshToken(),
+            dto.getRefreshTokenExpiration());
         refreshTokenRepository.save(refreshToken);
         log.info("refreshToken 토큰 저장완료");
     }
-
 
     /**
      * 회원이 요청한 refreshToken 과 서버의 refreshToken 이 유효한지 검증하는 로직
@@ -34,20 +36,28 @@ public class RefreshTokenService {
      * @param refreshToken 회원 리프레시 토큰
      */
     public void validateRefreshToken(Long memberId, String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findById(memberId)
-            .orElseThrow(() -> new CustomException(
-                AuthExceptionCode.INVALID_TOKEN));
-
-        token.validateRefreshToken(refreshToken);
+        RefreshToken foundRefreshToken = findRefreshTokenByMemberId(memberId);
+        foundRefreshToken.validateRefreshToken(refreshToken);
     }
 
     /** refresh token 제거 */
     public void removeRefreshToken(Long memberId) {
-        RefreshToken refreshToken = refreshTokenRepository.findById(memberId)
-            .orElseThrow(() -> new CustomException(
-                AuthExceptionCode.INVALID_TOKEN));
-        refreshTokenRepository.deleteById(refreshToken.getMemberId());
+        RefreshToken foundRefreshToken = findRefreshTokenByMemberId(memberId);
+        refreshTokenRepository.deleteById(foundRefreshToken.getMemberId());
         log.info("리프레시 토큰 삭제");
+    }
+
+    /**
+     * 회원 ID 로 리프레시 토큰 찾기
+     * @param memberId 회원 ID
+     * @return 리프레시 토큰 객체
+     */
+    private RefreshToken findRefreshTokenByMemberId(Long memberId) {
+        return refreshTokenRepository.findById(memberId)
+            .orElseThrow(() -> {
+                log.error("해당{}의 리프레시토큰이 DB에 존재하지 않습니다.", memberId);
+                return new CustomException(AuthExceptionCode.INVALID_TOKEN);
+            });
     }
 
 }

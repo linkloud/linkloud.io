@@ -2,13 +2,9 @@ package io.linkloud.api.global.security.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -31,8 +27,6 @@ public class JwtProvider {
 
     private final Key secretKey;
 
-    private static final String MEMBER_ID_CLAIM = "memberId";
-
 
     public JwtProvider(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
@@ -42,12 +36,12 @@ public class JwtProvider {
     /**
      * access 토큰 생성
      * @param memberID (claim 에 담을 회원 정보)
-     * @param socialType
+     * @param socialType 회원 OAuth 소셜 타입
      * @return JwtAccessToken
      */
     public String generateAccessToken(Long memberID, SocialType socialType) {
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpiration());
+        Instant expiration = now.plusSeconds(getAccessTokenExpiration());
         return Jwts.builder()
             .setIssuer("linkloud")
             .setIssuedAt(Date.from(now))
@@ -58,14 +52,14 @@ public class JwtProvider {
             .compact();
     }
 
-    /** todo : refreshToken 정보에 memberId 가 들어감, 보안상 좋지않음
+    /**
      * refresh 토큰 생성
      * @param memberId (claim 에 담을 회원 정보)
      * @return JwtAccessToken
      */
     public String generateRefreshToken(Long memberId) {
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(jwtProperties.getRefreshTokenExpiration());
+        Instant expiration = now.plusSeconds(getRefreshTokenExpiration());
         UUID uuid = UUID.randomUUID();
         return Jwts.builder()
             .setIssuer("linkloud")
@@ -79,53 +73,59 @@ public class JwtProvider {
 
 
     /**
-     * token 토큰 검증
-     * @param token 액세스 토큰
-     * @return 정상적인 토큰 true 리턴
-     */
-    public boolean validateAccessToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts
-                .parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token);
-            Instant now = Instant.now();
-            Date expiration = claims.getBody().getExpiration();
-            return expiration.toInstant().isAfter(now);
-        }
-        catch (ExpiredJwtException e){
-            log.error("만료된 토큰 입니다 = {}",e.getMessage());
-            throw new CustomException(AuthExceptionCode.EXPIRED_TOKEN);
-        }
-        catch (JwtException | IllegalArgumentException e) {
-            log.error("JWT 토큰 검증 중 오류 발생: {}", e.getMessage());
-            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
-        }
-    }
-
-
-    /**
-     * 전달된 JWT 토큰을 파싱하여 Claims 객체를 얻고,
-     * Claims 객체를 함수형 인터페이스 Function<Claims, R>에 전달하여 R 타입의 값을 반환
-     * @param token 토큰
-     * @param <R> Claims 객체를 입력받아 'R' 타입의 결과값으로 반환
+     * token 을 검증하고, 정상적인 토큰일 경우에만 해당 클레임 리턴(ID,Expiration,,,)
+     * @param token 토큰 값(aaaa.bbbbb.ccccc)
+     * @param tokenType 액세스토큰,리프레시토큰
+     * @param <R> Claims 객체를 입력받아 'R' 타입의 결과값으로 반환 (ID면 Long 타입 반환)
      * @return Claims 에서 추출한 R 타입의 결과 값
      */
-    public <R> R getClaims(String token, Function<Claims, R> claimsResolver) {
-        final Claims claims = parseClaimsJwt(token);
+    public <R> R getClaims(String token, JwtTokenType tokenType, Function<Claims, R> claimsResolver) {
+        validateToken(token, tokenType);
+        final Claims claims = extractClaimsFromJwt(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims parseClaimsJwt(final String token) {
-        if (validateAccessToken(token)) {
-            return Jwts
-                .parserBuilder()
+    /**
+     * 토큰 검증
+     * @param token 토큰 값(aaaa.bbbbb.ccccc)
+     * @param tokenType 액세스토큰,리프레시토큰
+     * @return 정상적인 토큰 true, 비정상적인 토큰 예외처리 로직 실행
+     */
+    public boolean validateToken(String token, JwtTokenType tokenType) {
+        try {
+            Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        } catch (ExpiredJwtException e) {
+            log.error("이 토큰은({}) 만료된 토큰입니다={}", tokenType.name(), e.getMessage());
+            throw new CustomException(tokenType == JwtTokenType.ACCESS_TOKEN ?
+                AuthExceptionCode.EXPIRED_ACCESS_TOKEN : // JwtTokenType 이 액세스토큰 일경우(참)
+                AuthExceptionCode.EXPIRED_REFRESH_TOKEN); // JwtTokenType 이 액세스토큰이 아닐경우(거짓)
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("유효하지 않은 ({})토큰입니다={}",tokenType,e.getMessage());
+            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
-        throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
+        return true;
     }
+
+    private Claims extractClaimsFromJwt(String token) {
+        return Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+    }
+
+    // 액세스 토큰 만료시간 리턴
+    public long getAccessTokenExpiration() {
+        return jwtProperties.getAccessTokenExpiration();
+    }
+
+    // 리프레시 토큰 만료시간 리턴
+    public long getRefreshTokenExpiration() {
+        return jwtProperties.getRefreshTokenExpiration();
+    }
+
 }
