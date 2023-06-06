@@ -81,8 +81,10 @@ public class AuthService {
         try {
             refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
-            refreshTokenService.removeRefreshToken(memberId);
             log.error("리프레시 토큰이 변조되었습니다={}",e.getMessage());
+            refreshTokenService.removeRefreshToken(memberId);
+            Cookie removedCookie = removeRefreshCookie();
+            response.addCookie(removedCookie);
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
 
@@ -110,6 +112,13 @@ public class AuthService {
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        return cookie;
+    }
+
+    private Cookie removeRefreshCookie() {
+        log.info("쿠키를 제거합니다");
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
         return cookie;
     }
 }
