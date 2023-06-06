@@ -108,7 +108,7 @@ public class AuthService {
         // 리프레시 토큰 만료시간 가져오기
         int refreshTokenExpiration = (int)jwtProvider.getRefreshTokenExpiration();
         Cookie cookie = new Cookie("refreshToken", jwtRefreshToken);
-        cookie.setMaxAge(refreshTokenExpiration);
+        cookie.setMaxAge(refreshTokenExpiration + 1000);
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
