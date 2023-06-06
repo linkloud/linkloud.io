@@ -12,7 +12,7 @@ on:
       - main
       - dev
     paths:
-      - "/frontend/**"
+      - "frontend/**"
 
 jobs:
   build:

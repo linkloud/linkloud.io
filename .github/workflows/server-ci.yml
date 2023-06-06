@@ -5,10 +5,14 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - "backend/**"
   pull_request:
     branches:
       - main
       - dev
+    paths:
+      - "backend/**"
 
 permissions:
   contents: read
@@ -16,6 +20,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: "./backend"
 
     steps:
       - uses: actions/checkout@v3
