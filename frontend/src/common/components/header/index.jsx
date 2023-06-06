@@ -19,6 +19,7 @@ const Header = () => {
     handleOpenLoginModal,
     handleCloseLoginModal,
     handleRegisterLink,
+    handleClickNotice,
     handleClickProfile,
     handleLeaveProfile,
   } = useHeader();
@@ -48,7 +49,7 @@ const Header = () => {
                 size="md"
                 styleType="subtle"
                 aria-haspopup="dialog"
-                onClick={() => {}}
+                onClick={handleClickNotice}
               >
                 공지사항
               </Button>

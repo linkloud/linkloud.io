@@ -6,7 +6,7 @@ import useAuthStore from "@/stores/useAuthStore";
 import { GoogleIcon } from "@/static/svg";
 
 const GoogleLoginButton = ({ onCloseLoginModal }) => {
-  const { socialLogin } = useAuthStore();
+  const socialLogin = useAuthStore((state) => state.socialLogin);
 
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {

@@ -7,7 +7,7 @@ import ActionMenuItem from "../action-menu/ActionMenuItem";
 
 const HeaderActionMenu = ({ nickname, handleMouseLeave }) => {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = async () => {
     await logout();

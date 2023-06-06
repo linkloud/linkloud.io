@@ -1,11 +1,10 @@
 import { create } from "zustand";
-import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 import { socialLogin, me, refresh } from "@/service/api";
+import { ROLE, ERROR_CODE } from "@/common/constants";
 
-import { ROLE } from "@/common/constants";
-
-const initialState = {
+const initialUserInfo = {
   nickname: "",
   picture: "",
   role: ROLE.USER,
@@ -14,36 +13,63 @@ const initialState = {
 const useAuthStore = create((set, get) => ({
   token: "",
   userInfo: {
-    ...initialState,
+    ...initialUserInfo,
   },
-  socialLogin: async (socialType, code) => {
-    const { data } = await socialLogin(socialType, code);
-    const { accessToken, refreshToken } = data;
-    get().setToken(accessToken);
-    get().fetchUserInfo();
-    Cookies.set("refreshToken", refreshToken);
-  },
-  logout: () => {
-    set({ token: "", userInfo: { ...initialState } });
-    Cookies.remove("refreshToken");
-  },
-  setToken: (token) => set({ token }),
   initUserInfo: async () => {
     try {
       const { data } = await refresh();
-      const { accessToken, refreshToken: newRefreshToken } = data;
-
-      get().setToken(accessToken);
-      Cookies.set("refreshToken", newRefreshToken);
-
-      await get().fetchUserInfo();
-    } catch (e) {}
+      const { accessToken } = data;
+      get()._setToken(accessToken);
+      await get()._fetchUserInfo();
+    } catch {
+      // 만료
+    }
   },
-  fetchUserInfo: async () => {
+  initToken: () => {
+    get()._setToken("");
+  },
+  socialLogin: async (socialType, code) => {
+    try {
+      const { data } = await socialLogin(socialType, code);
+      const { accessToken } = data;
+      get()._setToken(accessToken);
+      get()._fetchUserInfo();
+    } catch (e) {
+      if (e.message === ERROR_CODE.SERVER_ERROR) {
+        toast.error("로그인에 실패했습니다. 잠시후에 다시 시도해주세요");
+      }
+    }
+  },
+  refresh: async () => {
+    try {
+      const { data } = await refresh();
+      const { accessToken } = data;
+
+      get()._setToken(accessToken);
+
+      await get()._fetchUserInfo();
+    } catch (e) {
+      const { message } = e;
+      if (
+        message === ERROR_CODE.REFRESH_EXPIRED_COOKIE ||
+        message === ERROR_CODE.REFRESH_EXPIRED_TOKEN
+      ) {
+        get().logout();
+        toast.error("세션이 만료되었습니다. 다시 로그인 해주세요.", {
+          toastId: "need login",
+        });
+      }
+    }
+  },
+  logout: () => {
+    set({ token: "", userInfo: { ...initialUserInfo } });
+  },
+  _fetchUserInfo: async () => {
     const token = get().token;
     const { data } = await me(token);
     set((state) => ({ ...state, userInfo: { ...data } }));
   },
+  _setToken: (token) => set((state) => ({ ...state, token })),
 }));
 
 export default useAuthStore;

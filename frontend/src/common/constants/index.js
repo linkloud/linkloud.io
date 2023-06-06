@@ -23,5 +23,13 @@ export const ROUTES_PATH = {
 };
 
 export const ERROR_CODE = {
+  // 인증
   UNAUTH: "User unauthorized",
+  REFRESH_EXPIRED_TOKEN: "Expired refresh token",
+  REFRESH_EXPIRED_COOKIE:
+    "Required cookie 'refreshToken' for method parameter type String is not present",
+  ACCESS_EXPIRED_TOKEN: "Expired access token",
+
+  // 서버
+  SERVER_ERROR: "Request failed with status code 500",
 };

@@ -21,7 +21,7 @@ const LinksRegPage = () => {
     size: 10,
     sortBy: "popularity",
   });
-  const { userInfo } = useAuthStore();
+  const userInfo = useAuthStore((state) => state.userInfo);
   const { isOpened: isArticleRegConfirmModalOpened, toggleModal } = useModal();
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import useAuthStore from "@/stores/useAuthStore";
 const MemberProfilePage = () => {
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
 
-  const { userInfo } = useAuthStore();
+  const userInfo = useAuthStore((state) => state.userInfo);
   const { nickname } = userInfo;
 
   const handleClickMoreButton = () => {
