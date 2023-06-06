@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+import Seo from "@/common/components/SEO";
 import Layout from "@/pages/Layout";
 import PrivateRoute from "./PrivateRoute";
 
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
     index: true,
     element: (
       <Layout>
+        <Seo title={"Linkloud | 모두의 링크 라이브러리"} />
         <HomePage />
       </Layout>
     ),
