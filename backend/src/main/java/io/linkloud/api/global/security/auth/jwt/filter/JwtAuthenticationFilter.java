@@ -86,6 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (CustomException e) {
             log.error("JWT error: {}", e.getMessage());
             response.setStatus(e.getExceptionCode().getStatus());
+            response.getWriter().print(e.getMessage());
             return;
         }
         log.info("JWT 인증 필터 종료");
