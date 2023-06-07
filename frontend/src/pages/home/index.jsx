@@ -86,9 +86,7 @@ const HomePage = () => {
 
   return (
     <>
-      {articlePageInfo?.totalElements && (
-        <Banner articleCounts={articlePageInfo.totalElements} />
-      )}
+      <Banner articleCounts={articlePageInfo.totalElements || 0} />
       <section className="px-5 md:px-0 w-full max-w-xl translate-y-[-50%]">
         <h1 className="sr-only">search section</h1>
         <Search onSearch={handleSearch} />
