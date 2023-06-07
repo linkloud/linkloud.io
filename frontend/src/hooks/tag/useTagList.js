@@ -23,12 +23,7 @@ const useTagList = ({
 
   useEffect(() => {
     fetchTagList(tagPageInfo.page, tagPageInfo.size, sortBy);
-    if (error) {
-      toast.error(
-        "태그 조회 중 서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요."
-      );
-    }
-  }, [tagPageInfo.page, tagPageInfo.size, sortBy]);
+  }, [page, size, sortBy]);
 
   const fetchTagList = async (page, size, sortBy) => {
     try {
@@ -38,6 +33,9 @@ const useTagList = ({
       setTagPageInfo(pageInfo);
     } catch (err) {
       setError(err);
+      toast.error(
+        "태그 조회 중 서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요."
+      );
     } finally {
       setLoading(false);
     }
