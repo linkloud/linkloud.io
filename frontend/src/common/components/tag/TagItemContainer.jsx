@@ -15,7 +15,7 @@ const TagItemContainer = ({ tagList }) => {
         <nav className="flex items-center">
           <h1 className="hidden">tag list</h1>
           <ul className="flex flex-wrap gap-2.5 my-2">
-            {tagList.length > 0 ? (
+            {tagList?.length > 0 ? (
               tagList.map((tag) => (
                 <li key={tag.id}>
                   <TagItem tag={tag} />
