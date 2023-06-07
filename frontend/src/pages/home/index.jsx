@@ -118,7 +118,7 @@ const HomePage = () => {
               </ul>
             </nav>
           </div> */}
-          {articleList.length > 0 ? (
+          {articleList?.length > 0 ? (
             articleList.map((article) => (
               <ArticleItem
                 onClickArticle={handleArticleClick}

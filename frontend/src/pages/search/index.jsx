@@ -98,7 +98,7 @@ const SearchPage = () => {
               </ul>
             </nav>
           </div>
-          {fakeArticleList.map((a) => (
+          {fakeArticleList?.map((a) => (
             <ArticleItem article={a} key={a.id}></ArticleItem>
           ))}
         </section>
