@@ -1,5 +1,6 @@
 package io.linkloud.api.global.security;
 
+import io.linkloud.api.global.security.auth.handler.LogoutSuccessHandler;
 import io.linkloud.api.global.security.auth.handler.MemberAccessDeniedHandler;
 import io.linkloud.api.global.security.auth.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,11 @@ public class SecurityConfig {
             .exceptionHandling()
             .accessDeniedHandler(new MemberAccessDeniedHandler())
             .and()
+            .logout(
+                logout -> logout
+                    .logoutUrl("/api/v1/auth/logout")
+                    .logoutSuccessHandler(new LogoutSuccessHandler())
+            )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter 클래스를 먼저 실행하도록 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasAuthority("ADMIN") // 어드민

@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -12,6 +13,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
@@ -272,7 +274,24 @@ class AuthControllerTest {
                 )
             );
     }
+    @Test
+    @DisplayName("로그아웃")
+    public void logout() throws Exception {
+        Cookie tempCookie = new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc");
+        tempCookie.setMaxAge(10000);
 
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/logout")
+                .cookie(tempCookie)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNoContent())
+            .andExpect(cookie().maxAge(tempCookie.getName(),0));
+
+        actions
+            .andDo(document("auth/logout")
+            );
+
+    }
 
 
 
