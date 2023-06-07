@@ -169,6 +169,17 @@ include::{snippets}/auth/refreshToken_fail/expired/request-fields.adoc[]
 .response-fields
 include::{snippets}/auth/refreshToken_fail/expired/response-fields.adoc[]
 
+
+=== 로그아웃
+.curl-request
+include::{snippets}/auth/logout/curl-request.adoc[]
+
+.http-request
+include::{snippets}/auth/logout/http-request.adoc[]
+
+.http-response
+include::{snippets}/auth/logout/http-response.adoc[]
+
 == 회원
 
 === 회원 정보 조회
