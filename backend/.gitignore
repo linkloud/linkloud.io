@@ -44,3 +44,4 @@ application.properties
 !**/test/resources/application-db.yml
 !**/test/resources/application-jwt.yml
 !**/test/resources/application-oauth2.yml
+
