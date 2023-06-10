@@ -31,11 +31,13 @@ import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -56,34 +58,31 @@ class MemberControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private JwtProvider jwtProvider;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
     @MockBean
     private MemberService memberService;
 
+    @MockBean
+    private MemberRepository memberRepository;
+    @Mock
+    private Member member;
+
     @Autowired
-    Gson gson;
-    Member member;
-    MemberNicknameRequestDto memberNicknameRequest;
-    String accessToken;
+    private JwtProvider jwtProvider;
+    private String accessToken;
+    private final String BASE_URL = "/api/v1/member";
+
+    @Autowired
+    private Gson gson;
     @BeforeEach
-    public void setUp() {
-        member = Member.builder()
-                .id(1L)
-                .nickname("member1_google")
-                .email("member1@email.com")
-                .socialType(SocialType.google)
-                .role(Role.MEMBER)
-                .picture("picture1")
-                .socialId("socialId1")
-                .build();
-        memberRepository.save(member);
+    void setUp() {
+        when(member.getId()).thenReturn(1L);
+        when(member.getNickname()).thenReturn("KimMinJae");
+        when(member.getPicture()).thenReturn("picture");
+        when(member.getRole()).thenReturn(Role.NEW_MEMBER);
+        when(member.getSocialType()).thenReturn(SocialType.google);
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+
         accessToken = jwtProvider.generateAccessToken(member.getId(), member.getSocialType());
-        memberNicknameRequest = new MemberNicknameRequestDto("new_nickname");
     }
 
     @AfterEach
@@ -92,20 +91,11 @@ class MemberControllerTest {
     }
 
 
-
-    String BASE_URL = "/api/v1/member";
-
-
     @DisplayName("회원정보 - 가입한지3일이 안지난 회원 NEW_MEMBER")
     @Test
     public void fineMe_success_new_member() throws Exception {
 
-        Member mockMember = mock(Member.class);
-        when(mockMember.getNickname()).thenReturn("KimMinJae");
-        when(mockMember.getPicture()).thenReturn("picture");
-        when(mockMember.getRole()).thenReturn(Role.NEW_MEMBER);
-
-        MemberLoginResponse mockResponse = new MemberLoginResponse(mockMember);
+        MemberLoginResponse mockResponse = new MemberLoginResponse(member);
         when(memberService.fetchPrincipal(anyLong())).thenReturn(mockResponse);
 
         ResultActions actions = mockMvc.perform(
@@ -113,47 +103,42 @@ class MemberControllerTest {
                 .header("Authorization", "Bearer " + accessToken));
 
         actions
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.nickname").value(mockMember.getNickname()))
-                .andExpect(jsonPath("$.data.picture").value(mockMember.getPicture()))
-                .andExpect(jsonPath("$.data.role").value(mockMember.getRole().name()))
-                .andDo(document("member/me/success/newMember",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("data.nickname").description("회원의 닉네임."),
-                                fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
-                                fieldWithPath("data.role").description("가입한지 3일 이내 회원의 권한")
-                        )));
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.nickname").value(member.getNickname()))
+            .andExpect(jsonPath("$.data.picture").value(member.getPicture()))
+            .andExpect(jsonPath("$.data.role").value(member.getRole().name()))
+            .andDo(document("member/me/success/newMember",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("data.nickname").description("회원의 닉네임."),
+                    fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
+                    fieldWithPath("data.role").description("가입한지 3일 이내 회원의 권한")
+                )));
     }
 
     @DisplayName("회원정보 - 가입한지 3일지난 회원 MEMBER")
     @Test
     public void fineMe_success_member() throws Exception {
 
-        Member mockMember = mock(Member.class);
-        when(mockMember.getNickname()).thenReturn("Son");
-        when(mockMember.getPicture()).thenReturn("picture");
-        when(mockMember.getRole()).thenReturn(Role.MEMBER);
-
-        MemberLoginResponse mockResponse = new MemberLoginResponse(mockMember);
+        MemberLoginResponse mockResponse = new MemberLoginResponse(member);
         when(memberService.fetchPrincipal(anyLong())).thenReturn(mockResponse);
 
         ResultActions actions = mockMvc.perform(
-                get(BASE_URL + "/me")
-                        .header("Authorization", "Bearer " + accessToken));
+            get(BASE_URL + "/me")
+                .header("Authorization", "Bearer " + accessToken));
 
         actions.andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("member/me/success/member",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("data.nickname").description("회원의 닉네임."),
-                                fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
-                                fieldWithPath("data.role").description("가입한지 3일 지난 회원의 권한")
-                        )));
+            .andExpect(status().isOk())
+            .andDo(document("member/me/success/member",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("data.nickname").description("회원의 닉네임."),
+                    fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
+                    fieldWithPath("data.role").description("가입한지 3일 지난 회원의 권한")
+                )));
     }
 
     @DisplayName("회원 조회 실패_만료된 액세스토큰")
@@ -213,9 +198,9 @@ class MemberControllerTest {
     @DisplayName("회원 닉네임 변경 성공")
     @Test
     public void updateNickname_success() throws Exception {
+        MemberNicknameRequestDto memberNicknameRequest = new MemberNicknameRequestDto("new_nickname");
 
         String content = gson.toJson(memberNicknameRequest);
-
 
         ResultActions actions = mockMvc.perform(patch(BASE_URL + "/nickname")
             .header("Authorization", "Bearer " + accessToken)
@@ -224,20 +209,20 @@ class MemberControllerTest {
             .content(content));
 
         actions
-                .andExpect(status().isNoContent())
-                .andDo(document("member/nickname/success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickname").description("수정할 닉네임")
-                        ),
-                        requestHeaders(
-                                headerWithName("Authorization").description("액세스 토큰")
-                        ),
-                        requestHeaders(
-                                headerWithName("Authorization").description("JWT 토큰")
-                        )
-                ));
+            .andExpect(status().isNoContent())
+            .andDo(document("member/nickname/success",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("nickname").description("수정할 닉네임")
+                ),
+                requestHeaders(
+                    headerWithName("Authorization").description("액세스 토큰")
+                ),
+                requestHeaders(
+                    headerWithName("Authorization").description("JWT 토큰")
+                )
+            ));
     }
 
 
@@ -245,6 +230,9 @@ class MemberControllerTest {
     @Test
     public void updateNickname_duplicated_nickname_throws() throws Exception {
         // given
+
+        MemberNicknameRequestDto memberNicknameRequest = new MemberNicknameRequestDto("new_nickname");
+
         String content = gson.toJson(memberNicknameRequest);
 
         doThrow(new CustomException(LogicExceptionCode.MEMBER_ALREADY_EXISTS))
@@ -258,20 +246,20 @@ class MemberControllerTest {
             .content(content));
 
         actions
-                .andDo(print())
-                .andExpect(status().isConflict())
-                .andDo(document("member/nickname/fail/duplicated",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickname").description("수정할 닉네임")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(
-                                        "HTTP 상태 코드. 중복된 닉네임일 경우 409 (Conflict)을 반환."),
-                                fieldWithPath("message").description("에러 메시지"),
-                                fieldWithPath("fieldErrors").description("필드 에러 리스트"),
-                                fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
-                        )));
+            .andDo(print())
+            .andExpect(status().isConflict())
+            .andDo(document("member/nickname/fail/duplicated",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("nickname").description("수정할 닉네임")
+                ),
+                responseFields(
+                    fieldWithPath("status").description(
+                        "HTTP 상태 코드. 중복된 닉네임일 경우 409 (Conflict)을 반환."),
+                    fieldWithPath("message").description("에러 메시지"),
+                    fieldWithPath("fieldErrors").description("필드 에러 리스트"),
+                    fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
+                )));
     }
 }
