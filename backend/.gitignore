@@ -40,3 +40,7 @@ out/
 ### yml ###
 *.yml
 application.properties
+!**/test/resources/application.yml
+!**/test/resources/application-db.yml
+!**/test/resources/application-jwt.yml
+!**/test/resources/application-oauth2.yml
