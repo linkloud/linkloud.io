@@ -1,0 +1,23 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: clientId
+            client-secret: clientSecret
+            redirect-uri: redirectUri
+            scope:
+              - profile
+              - email
+
+google:
+  user:
+    scope: scope
+    url: url
+  userinfo:
+    request:
+      url: url
+  token:
+    request:
+      url: token
