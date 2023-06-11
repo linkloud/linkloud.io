@@ -37,7 +37,8 @@ public class ArticleTag {
         this.tag = tag;
     }
 
-    public void mapArticle(Article article) {
+    // 연관 관계 매핑
+    public void addArticle(Article article) {
         this.article = article;
     }
 }
