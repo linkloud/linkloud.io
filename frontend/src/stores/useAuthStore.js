@@ -11,6 +11,7 @@ const initialUserInfo = {
 };
 
 const useAuthStore = create((set, get) => ({
+  isAuthLoading: true,
   token: "",
   userInfo: {
     ...initialUserInfo,
@@ -23,6 +24,8 @@ const useAuthStore = create((set, get) => ({
       await get()._fetchUserInfo();
     } catch {
       // 만료
+    } finally {
+      set({ isAuthLoading: false });
     }
   },
   initToken: () => {
