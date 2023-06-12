@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
 
-import { socialLogin, me, refresh } from "@/service/api";
+import { socialLogin, me, refresh, logout } from "@/service/api";
 import { ROLE, ERROR_CODE } from "@/common/constants";
 
 const initialUserInfo = {
@@ -61,7 +61,8 @@ const useAuthStore = create((set, get) => ({
       }
     }
   },
-  logout: () => {
+  logout: async () => {
+    await logout();
     set({ token: "", userInfo: { ...initialUserInfo } });
   },
   _fetchUserInfo: async () => {
