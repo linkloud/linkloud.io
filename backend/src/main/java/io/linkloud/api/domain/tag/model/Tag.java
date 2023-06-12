@@ -2,6 +2,7 @@ package io.linkloud.api.domain.tag.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,11 +13,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table
+@EntityListeners(AuditingEntityListener.class)
 public class Tag {
 
     @Id
@@ -27,7 +30,7 @@ public class Tag {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(length = 50)
+    @Column(length = 20, unique = true)
     private String name;
 
     @Builder

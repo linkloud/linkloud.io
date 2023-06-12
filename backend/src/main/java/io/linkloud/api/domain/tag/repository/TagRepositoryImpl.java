@@ -9,10 +9,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.tag.dto.TagDto;
-import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.global.Utils.QueryDslUtils;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,16 +21,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class TagRepositoryImpl implements TagRepositoryCustom {
     private final JPAQueryFactory query;
-
-    @Override
-    public Boolean existsByName(String name) {
-        return true;
-    }
-
-    @Override
-    public Optional<Tag> findTagByName(String name) {
-        return Optional.empty();
-    }
 
     // 정렬 옵션을 기준으로 태그 및 연관 갯수 조회
     @Override
