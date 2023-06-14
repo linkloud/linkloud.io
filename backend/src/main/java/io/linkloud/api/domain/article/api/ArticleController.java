@@ -85,6 +85,11 @@ public class ArticleController {
         @RequestParam String keywordType,
         @Positive @RequestParam int page) {
 
+        /* 키워드 목록
+         * title               : 제목
+         * description         : 내용
+         * titleAndDescription : 제목 + 내용
+         */
         Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, keywordType, page);
 
         return ResponseEntity.ok(new MultiDataResponse<>(getArticleBySearchDto));
