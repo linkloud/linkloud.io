@@ -134,6 +134,11 @@ public class ArticleService {
     /** 검색 */
     @Transactional
     public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, String keywordType, int page) {
+        /* 키워드 목록
+        * title               : 제목
+        * description         : 내용
+        * titleAndDescription : 제목 + 내용
+        */
         Page<Article> articlesPage;
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("createdAt").descending());
 
@@ -146,7 +151,7 @@ public class ArticleService {
             articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
         }
         // 제목 + 글 내용으로 검색
-        else if (keywordType.equals("all")) {
+        else if (keywordType.equals("titleAndDescription")) {
             // 제목 검색결과, 내용 검색 결과 저장
             Page<Article> page1 = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
             Page<Article> page2 = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
