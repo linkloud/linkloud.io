@@ -1,12 +1,7 @@
 package io.linkloud.api.domain.tag.service;
 
-import io.linkloud.api.domain.article.model.Article;
-import io.linkloud.api.domain.article.repository.ArticleRepository;
-import io.linkloud.api.domain.tag.dto.ArticleTagDto;
 import io.linkloud.api.domain.tag.dto.TagDto;
-import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
-import io.linkloud.api.domain.tag.repository.ArticleTagRepository;
 import io.linkloud.api.domain.tag.repository.TagRepository;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -26,41 +21,34 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TagService {
     private final TagRepository tagRepository;
-    private final ArticleTagRepository articleTagRepository;
-    private final ArticleRepository articleRepository;
 
-    // TODO : 아티클 기능 완성시 아티클 생성로직으로 편입될 예정.
-    public void addTag(Tag tag) {
-        verifyExistTag(tag.getName());
-        tagRepository.save(tag);
+    // 태그들 저장
+    public List<Tag> addTags(List<String> tagNames) {
+        List<Tag> tags = new ArrayList<>();
 
-        log.info("Tag 생성 완료.");
-    }
-
-    // 임시용임
-    // TODO : 아티클 기능 완성시 아티클 생성로직으로 편입될 예정.
-    public void addArticleTag(ArticleTagDto.Post post) {
-        // 태그들이 비어있을 경우 예외 발생.
-        if (post.getTags().isEmpty()) {
-            throw new CustomException(LogicExceptionCode.JSON_REQUEST_FAILED);
+        for (String tagName : tagNames) {
+            Tag tag = addtag(tagName);
+            tags.add(tag);
         }
 
-        Optional<Article> optionalArticle = articleRepository.findById(post.getArticleId());
+        return tags;
+    }
 
-        Article foundArticle = optionalArticle
-                .orElseThrow(() -> new CustomException(LogicExceptionCode.MEMBER_NOT_FOUND));
+    // 중복 Tag 조회 후 저장.
+    private Tag addtag(String tagName) {
+        // 동일한 태그가 존재하면 바로 반환.
+        Optional<Tag> findTag = tagRepository.findTagByName(tagName);
+        if (findTag.isPresent()) {
+            return findTag.get();
+        }
 
-        List<Tag> tags = new ArrayList<>();
-        List<ArticleTag> articleTags = new ArrayList<>();
+        Tag tag = Tag.builder()
+            .name(tagName)
+            .build();
 
-        // dto에서 태그를 확인 해 리스트에 추가.
-        post.getTags().forEach(t -> tags.add(fetchTagByName(t)));
-
-        // 연관 엔티티 생성해서 리스트에 추가 후 전부 저장.
-        tags.forEach(t -> articleTags.add(new ArticleTag(foundArticle, t)));
-        articleTagRepository.saveAll(articleTags);
-
-        log.info("아티클에 태그 추가.");
+        Tag adddTag = tagRepository.save(tag);
+        log.info("Tag 생성 완료. {}", adddTag.getName());
+        return adddTag;
     }
 
     public Page<TagDto.Response> fetchTags(int page, int size, String sortField) {

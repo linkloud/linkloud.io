@@ -7,6 +7,9 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.domain.tag.model.ArticleTag;
+import io.linkloud.api.domain.tag.model.Tag;
+import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,6 +32,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
+    private final TagService tagService;
 
 
     /** 아티클 모두 반환 */
@@ -59,7 +63,17 @@ public class ArticleService {
     public ArticleResponseDto addArticle(Long memberId, ArticleRequestDto requestDto) {
         Member member = fetchMemberById(memberId);
 
-        Article createdArticle = articleRepository.save(requestDto.toArticleEntity(member));            // requestDto를 엔티티로 변환.
+        // 태그 조회 및 저장
+        List<ArticleTag> articleTags = new ArrayList<>();
+        if (requestDto.getTags() != null && !requestDto.getTags().isEmpty()) {
+            articleTags = addArticleTagList(requestDto.getTags());
+        }
+
+        Article article = requestDto.toArticleEntity(member);
+        // 연관 관계 추가
+        article.addArticleTag(articleTags);
+
+        Article createdArticle = articleRepository.save(article);
 
         return new ArticleResponseDto(createdArticle);
     }
@@ -98,6 +112,24 @@ public class ArticleService {
         // 요청한 회원ID, 삭제하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
         articleRepository.delete(article);
+    }
+
+    // 태그 연관 관계 추가
+    private List<ArticleTag> addArticleTagList(List<String> tagNames) {
+        List<Tag> tags = addTags(tagNames);
+        // ArticleTag 설정
+        List<ArticleTag> articleTags = new ArrayList<>();
+
+        for (Tag tag : tags) {
+            articleTags.add(new ArticleTag(null, tag));
+        }
+
+        return articleTags;
+    }
+
+    // 태그들 저장
+    private List<Tag> addTags(List<String> tagNames) {
+        return tagService.addTags(tagNames);
     }
 
     /**

@@ -1,11 +1,11 @@
 package io.linkloud.api.domain.article.service;
 
-import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_AUTHORIZED;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_MATCH;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -20,8 +20,11 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.domain.tag.model.Tag;
+import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.exception.CustomException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +43,8 @@ class ArticleServiceTest {
     ArticleRepository articleRepository;
     @InjectMocks
     ArticleService articleService;
+    @Mock
+    TagService tagService;
     Member firstMockMember = mock(Member.class);
     Member secondMockMember = mock(Member.class);
 
@@ -54,7 +59,12 @@ class ArticleServiceTest {
         .bookmarks(1)
         .build();
 
-    ArticleRequestDto articleRequestDto = new ArticleRequestDto("title","url","desc");
+    ArticleRequestDto articleRequestDto = new ArticleRequestDto(
+        "title",
+        "url",
+        "desc",
+        List.of("spring", "spring-boot")
+    );
 
     ArticleUpdateDto articleUpdateRequestDto = new ArticleUpdateDto("updateTitle", "updateURL",
         "updateDesc");
@@ -80,6 +90,11 @@ class ArticleServiceTest {
         // given
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(firstMockMember));
         given(articleRepository.save(any())).willReturn(article);
+        given(tagService.addTags(anyList())).willReturn(
+            List.of(
+                Tag.builder().name("spring").build(),
+                Tag.builder().name("spring-boot").build()
+        ));
 
         // when
         ArticleResponseDto result = articleService.addArticle(firstMockMember.getId(), articleRequestDto);

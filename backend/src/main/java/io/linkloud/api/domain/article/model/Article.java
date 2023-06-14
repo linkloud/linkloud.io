@@ -2,7 +2,9 @@ package io.linkloud.api.domain.article.model;
 
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.member.model.Member;
+import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.global.audit.Auditable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +24,6 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Table(name = "article")
 @NoArgsConstructor
-@Builder
 @Getter
 public class Article extends Auditable {
 
@@ -46,6 +50,9 @@ public class Article extends Auditable {
     @ColumnDefault("0")
     private Integer bookmarks;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
+    private List<ArticleTag> articleTags = new ArrayList<>();
+
 
     /** 생성자 */
     @Builder
@@ -71,4 +78,13 @@ public class Article extends Auditable {
         this.views = views;
     }
 
+    // 연관 관계 양방향 매핑
+    public void addArticleTag(List<ArticleTag> articleTags) {
+        if (articleTags != null && articleTags.size() != 0) {
+            for (ArticleTag articleTag : articleTags) {
+                articleTag.addArticle(this);
+            }
+        }
+        this.articleTags = articleTags;
+    }
 }

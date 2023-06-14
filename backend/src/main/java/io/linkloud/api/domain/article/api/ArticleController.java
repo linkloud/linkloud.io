@@ -49,7 +49,10 @@ public class ArticleController {
 
     /** 아티클 작성 */
     @PostMapping
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> createArticle(@LoginMemberId Long memberId, @RequestBody @Valid ArticleRequestDto articleRequestDto) {
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> createArticle(
+        @LoginMemberId Long memberId,
+        @RequestBody @Valid ArticleRequestDto articleRequestDto) {
+
         ArticleResponseDto createdArticleDto = articleService.addArticle(memberId, articleRequestDto);
 
         return ResponseEntity.ok(new SingleDataResponse<>(createdArticleDto));
