@@ -2,6 +2,7 @@ package io.linkloud.api.domain.tag.model;
 
 import io.linkloud.api.domain.article.model.Article;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "ARTICLE_TAG")
+@Table
 @Getter
 public class ArticleTag {
 
@@ -22,11 +23,11 @@ public class ArticleTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ARTICLE_ID")
     private Article article;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
@@ -34,5 +35,10 @@ public class ArticleTag {
     public ArticleTag(Article article, Tag tag) {
         this.article = article;
         this.tag = tag;
+    }
+
+    // 연관 관계 매핑
+    public void addArticle(Article article) {
+        this.article = article;
     }
 }

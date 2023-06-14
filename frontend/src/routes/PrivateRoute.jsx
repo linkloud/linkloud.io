@@ -7,15 +7,19 @@ import useAuthStore from "@/stores/useAuthStore";
 import { ROUTES_PATH } from "@/common/constants";
 
 const PrivateRoute = () => {
-  const token = useAuthStore((state) => state.token);
+  const { token, isAuthLoading } = useAuthStore((state) => ({
+    token: state.token,
+    isAuthLoading: state.isAuthLoading,
+  }));
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) {
+    if (!isAuthLoading && !token) {
       toast.error("로그인이 필요합니다.");
       navigate(ROUTES_PATH.HOME, { replace: true });
     }
-  }, [token, navigate]);
+  }, [navigate, token, isAuthLoading]);
 
   return <Outlet />;
 };

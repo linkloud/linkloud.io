@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 import { getTagList } from "@/service/api/tag";
-import { TAG_SORT_OPTIONS } from "@/common/constants";
-import { toast } from "react-toastify";
+import { ERROR_CODE, TAG_SORT_OPTIONS } from "@/common/constants";
 
 const useTagList = ({
   page = 1,
@@ -33,9 +33,9 @@ const useTagList = ({
       setTagPageInfo(pageInfo);
     } catch (err) {
       setError(err);
-      toast.error(
-        "태그 조회 중 서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요."
-      );
+      toast.error("서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요.", {
+        toastId: ERROR_CODE.SERVER_ERROR,
+      });
     } finally {
       setLoading(false);
     }
