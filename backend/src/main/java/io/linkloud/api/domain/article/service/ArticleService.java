@@ -7,12 +7,19 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.global.common.PageInfo;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,14 +138,15 @@ public class ArticleService {
     @Transactional
     public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, String keywordType, int page) {
         Page<Article> articlesPage;
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("createdAt").descending());
 
         // 제목으로 검색
         if(keywordType.equals("title")){
-            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
         }
         // 글 내용으로 검색
         else if (keywordType.equals("description")) {
-            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
         }
         // 검색 범주 미 설정시 예외 처리.
         else {
