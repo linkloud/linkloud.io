@@ -20,7 +20,7 @@ const TagItemContainer = ({ tags }) => {
             {tags?.length > 0 ? (
               tags.map((tag) => (
                 <li key={tag.id}>
-                  <Link>
+                  <Link to={`/search?tag=${tag.name}`}>
                     <TagItem tag={tag.name} />
                   </Link>
                 </li>
