@@ -1,3 +1,4 @@
+import TagItem from "../tag/TagItem";
 import { BookmarkIcon, LinkOutIcon } from "@/static/svg";
 
 const ArticleItem = ({ article, onClickArticle }) => {
@@ -26,19 +27,16 @@ const ArticleItem = ({ article, onClickArticle }) => {
           <div className="py-5">
             <ul className="flex">
               {article.tags &&
-                article.tags.map((t) => (
-                  <li
-                    key={t.id}
-                    className="mr-2 text-gray-400 text-xs md:text-sm"
-                  >
-                    #{t.name}
+                article.tags.map((tag) => (
+                  <li key={tag.id} className="mr-2">
+                    <TagItem tag={tag.name} />
                   </li>
                 ))}
             </ul>
           </div>
         </div>
         {/* right */}
-        <div className="flex flex-col items-center px-2 md:px-3">
+        <div className="flex flex-col mt-4 items-center px-2 md:px-3">
           <button type="button" title="북마크" className="px-2 pb-2">
             <BookmarkIcon className="w-6 h-6 stroke-gray-400 text-xs md:text-sm" />
           </button>

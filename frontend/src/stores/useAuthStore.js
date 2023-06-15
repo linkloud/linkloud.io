@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
 
-import { socialLogin, me, refresh, logout } from "@/service/api";
+import authApi from "@/service/api/auth";
+import memberApi from "@/service/api/member";
 import { ROLE, ERROR_CODE } from "@/common/constants";
 
 const initialUserInfo = {
@@ -18,7 +19,7 @@ const useAuthStore = create((set, get) => ({
   },
   initUserInfo: async () => {
     try {
-      const { data } = await refresh();
+      const { data } = await authApi.refresh();
       const { accessToken } = data;
       get()._setToken(accessToken);
       await get()._fetchUserInfo();
@@ -33,7 +34,7 @@ const useAuthStore = create((set, get) => ({
   },
   socialLogin: async (socialType, code) => {
     try {
-      const { data } = await socialLogin(socialType, code);
+      const { data } = await authApi.socialLogin({ socialType, code });
       const { accessToken } = data;
       get()._setToken(accessToken);
       get()._fetchUserInfo();
@@ -45,7 +46,7 @@ const useAuthStore = create((set, get) => ({
   },
   refresh: async () => {
     try {
-      const { data } = await refresh();
+      const { data } = await authApi.refresh();
       const { accessToken } = data;
 
       get()._setToken(accessToken);
@@ -65,12 +66,12 @@ const useAuthStore = create((set, get) => ({
     }
   },
   logout: async () => {
-    await logout();
+    await authApi.logout();
     set({ token: "", userInfo: { ...initialUserInfo } });
   },
   _fetchUserInfo: async () => {
     const token = get().token;
-    const { data } = await me(token);
+    const { data } = await memberApi.me({ token });
     set((state) => ({ ...state, userInfo: { ...data } }));
   },
   _setToken: (token) => set((state) => ({ ...state, token })),

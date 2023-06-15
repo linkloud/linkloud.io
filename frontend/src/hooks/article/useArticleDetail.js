@@ -1,9 +1,9 @@
-import { getArticleDetail } from "@/service/api";
+import articleApi from "@/service/api/article";
 
 const useArticleDetail = () => {
   const handleArticleClick = async (id) => {
     try {
-      const { data } = await getArticleDetail({ id });
+      const { data } = await articleApi.get({ id });
 
       if (data.url) {
         window.open(data.url, "_blank", "noreferrer");

@@ -1,60 +1,46 @@
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
-import useTagList from "@/hooks/tag/useTagList";
+import articleApi from "@/service/api/article";
 
-import Search from "@/common/components/search";
-import SearchValidationErrorModal from "@/common/components/search/SearchValidationErrorModal";
-import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
+import TagItem from "@/common/components/tag/TagItem";
 import ArticleItem from "@/common/components/article/ArticleItem";
-import TagItemContainer from "@/common/components/tag/TagItemContainer";
-
-import { fakeArticleList } from "@/common/utils/fakedata";
 
 const SearchPage = () => {
-  const orderList = [
-    {
-      id: 1,
-      name: "최신순",
-      isSelected: true,
-    },
-    {
-      id: 2,
-      name: "인기순",
-      isSelected: false,
-    },
-  ];
+  const [articles, setArticles] = useState([]);
+  const [articlePageInfo, setArticlePageInfo] = useState({
+    page: 1,
+    size: 10,
+    totalElements: 0,
+    totalPages: 0,
+  });
 
   const [searchParams] = useSearchParams();
-  // TODO: keyword -> api DOC
+
   const searchKeyword = searchParams.get("keyword");
-  const tagList = searchParams.getAll("tag");
+  const tags = searchParams
+    .getAll("tag")
+    .map((tag) => ({ name: tag, id: uuidv4() }));
 
-  const {
-    searchValidationErrMsg,
-    isSearchValidationErrorModalOpened,
-    handleSearch,
-    handleCloseSearchValidationModal,
-  } = useArticleSearch();
+  const { handleSearch } = useArticleSearch();
 
-  //TODO: 예외처리
-  const { tagList: popularityTagList, error: getTagsError } = useTagList({
-    page: 1,
-    size: 15,
-    sortBy: "popularity",
-  });
+  useEffect(() => {
+    searchArticles(searchKeyword);
+  }, []);
+
+  const searchArticles = async (keyword) => {
+    const { data, pageInfo } = await articleApi.search({
+      keyword,
+      type: "title",
+    });
+    setArticles(data);
+    setArticlePageInfo(pageInfo);
+  };
 
   return (
     <div className="flex flex-col py-10 max-w-7xl w-full">
-      <section className="mx-auto max-w-xl w-full">
-        <h1 className="sr-only">search section</h1>
-        <Search onSearch={handleSearch} />
-        <SearchValidationErrorModal
-          isOpened={isSearchValidationErrorModalOpened}
-          errMsg={searchValidationErrMsg}
-          onClose={handleCloseSearchValidationModal}
-        />
-      </section>
       <div className="px-6 py-5">
         <h2 className="text-xl">
           {searchKeyword ? (
@@ -65,44 +51,33 @@ const SearchPage = () => {
             <>태그로 검색 결과</>
           )}
         </h2>
-        {tagList.length > 0 && (
+        {tags?.length > 0 && (
           <>
             {searchKeyword && (
               <p className="mt-1">다음 태그와 함께 검색되었습니다.</p>
             )}
-            <ul className="flex">
-              {tagList.map((tag, index) => (
-                <li key={index} className="mr-1 text-gray-400">
-                  #{tag}
-                  {index !== tagList.length - 1 && <>,</>}
+            <ul className="flex mt-1">
+              {tags.map((tag) => (
+                <li key={tag.id} className="mr-1 text-gray-400">
+                  <TagItem tag={tag.name} />
                 </li>
               ))}
             </ul>
           </>
         )}
       </div>
+
       <div className="flex w-full max-w-7xl">
         <section className="w-full p-6">
-          <h1 className="hidden">link article list section</h1>
-          <div className="hidden md:block w-full mb-4">
-            <nav>
-              <h1 className="hidden">link article order option</h1>
-              <ul className="flex py-3">
-                {orderList.map((o) => (
-                  <li key={o.id}>
-                    <AnchorSelectable isSelected={o.isSelected}>
-                      {o.name}
-                    </AnchorSelectable>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-          {fakeArticleList?.map((a) => (
-            <ArticleItem article={a} key={a.id}></ArticleItem>
-          ))}
+          <h1 className="hidden">검색 목록</h1>
+          {articles?.length > 0 ? (
+            articles.map((article) => (
+              <ArticleItem article={article} key={article.id}></ArticleItem>
+            ))
+          ) : (
+            <p>검색 결과가 없습니다.</p>
+          )}
         </section>
-        <TagItemContainer tagList={popularityTagList} />
       </div>
     </div>
   );

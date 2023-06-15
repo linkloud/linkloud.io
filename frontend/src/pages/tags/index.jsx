@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import useTagList from "@/hooks/tag/useTagList";
+import useTags from "@/hooks/tag/useTags";
 import useScrollToView from "@/hooks/useScrollToView";
 
 import TagListItem from "@/common/components/tag/TagListItem";
@@ -10,36 +10,16 @@ import Button from "@/common/components/button";
 
 import { TAG_SORT_OPTIONS } from "@/common/constants";
 
-const TAG_SORT_LIST = [
-  {
-    id: 1,
-    name: "인기순",
-    value: TAG_SORT_OPTIONS.POPULARITY,
-  },
-  {
-    id: 2,
-    name: "최신순",
-    value: TAG_SORT_OPTIONS.LATEST,
-  },
-  {
-    id: 3,
-    name: "이름순",
-    value: TAG_SORT_OPTIONS.NAME,
-  },
-];
-
-const TagListPage = () => {
-  const [tagSortOption, setTagSortOption] = useState(
-    TAG_SORT_OPTIONS.POPULARITY
-  );
+const TagsPage = () => {
+  const [tagSortOption, setTagSortOption] = useState(TAG_SORT_OPTIONS[0].value);
 
   const {
-    tagList,
+    tags,
     tagPageInfo,
-    handlePrevTagList,
-    handleNextTagList,
+    handlePrevTags,
+    handleNextTags,
     handleChangeSortOption,
-  } = useTagList({
+  } = useTags({
     page: 1,
     size: 10,
     sortBy: tagSortOption,
@@ -55,7 +35,8 @@ const TagListPage = () => {
   const nextButtonVisible = tagPageInfo.page < tagPageInfo.totalPages;
 
   return (
-    <div className="max-w-7xl px-6">
+    <div className="w-full max-w-7xl px-6">
+      {/* 제목 */}
       <h2 className="mt-7 mb-4 font-bold text-2xl">태그</h2>
       <p ref={sortRef} className="max-w-[640px]">
         태그는 링크를 분류하는 키워드입니다. <br />
@@ -65,7 +46,7 @@ const TagListPage = () => {
 
       {/* 태그 정렬 옵션 */}
       <ul className="flex mt-7 mb-4">
-        {TAG_SORT_LIST.map((order) => (
+        {TAG_SORT_OPTIONS.map((order) => (
           <li key={order.id}>
             <AnchorSelectable
               onClick={() => handleChangeTagOption(order.value)}
@@ -77,12 +58,13 @@ const TagListPage = () => {
         ))}
       </ul>
 
+      {/* 태그 목록 */}
       <section className="flex flex-col gap-y-4 gap-x-6 py-3">
         <h1 className="hidden">태그 목록</h1>
-        {tagList.length > 0 ? (
+        {tags?.length > 0 ? (
           <>
             <ul>
-              {tagList.map((tag) => (
+              {tags.map((tag) => (
                 <li key={tag.id}>
                   <TagListItem tag={tag} />
                 </li>
@@ -90,7 +72,7 @@ const TagListPage = () => {
             </ul>
             <div className="flex mt-5 mb-24">
               {prevButtonVisible && (
-                <Button size="sm" styleType="lined" onClick={handlePrevTagList}>
+                <Button size="sm" styleType="lined" onClick={handlePrevTags}>
                   이전
                 </Button>
               )}
@@ -98,7 +80,7 @@ const TagListPage = () => {
                 <Button
                   size="sm"
                   styleType="lined"
-                  onClick={handleNextTagList}
+                  onClick={handleNextTags}
                   className={"ml-auto"}
                 >
                   다음
@@ -114,4 +96,4 @@ const TagListPage = () => {
   );
 };
 
-export default TagListPage;
+export default TagsPage;

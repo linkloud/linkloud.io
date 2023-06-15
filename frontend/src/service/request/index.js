@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import useAuthStore from "@/stores/useAuthStore";
 import { log } from "@/common/utils/";
 import { ERROR_CODE } from "@/common/constants";
@@ -45,13 +46,16 @@ instance.interceptors.response.use(
     if (data && data.message === ERROR_CODE.ACCESS_EXPIRED_TOKEN) {
       return handleExpiredToken(error, request);
     }
+
     // 서버 예외
-    if (data) {
+    if (data.message) {
       log(data);
       return Promise.reject(data);
     }
 
     log(error);
+    error.status = 500;
+
     return Promise.reject(error);
   }
 );

@@ -49,9 +49,6 @@ const MemberProfilePage = () => {
             </ul>
           </nav>
         </div>
-        {/* {fakeArticleList.map((a) => (
-          <ArticleCard article={a} key={a.id}></ArticleCard>
-        ))} */}
       </section>
     </>
   );

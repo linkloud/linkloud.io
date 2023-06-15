@@ -23,7 +23,7 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
         <>
           <Dimmed />
           <div className="fixed flex justify-center items-center inset-0 z-[999] px-6">
-            <section className="flex flex-col items-center pt-4 pb-10 px-7 w-full max-w-xl rounded-lg bg-white shadow-md">
+            <section className="inline-block pt-4 pb-10 px-7 rounded-lg bg-white shadow-md">
               {/* header */}
               <div className="flex justify-end w-full">
                 <button
@@ -35,6 +35,7 @@ const Modal = ({ isOpened, onCloseModal, children }) => {
                     onClick={onCloseModal}
                     className="m-auto stroke-gray-600 w-7 h-7"
                   />
+                  <span className="sr-only">모달 닫기</span>
                 </button>
               </div>
               {children}

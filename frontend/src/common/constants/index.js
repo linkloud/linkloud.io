@@ -5,11 +5,23 @@ export const ROLE = {
   ADMIN: "ADMIN",
 };
 
-export const TAG_SORT_OPTIONS = {
-  POPULARITY: "popularity", // 인기순
-  LATEST: "latest", // 최신순
-  NAME: "name", // 이름순
-};
+export const TAG_SORT_OPTIONS = [
+  {
+    id: 1,
+    name: "인기순",
+    value: "popularity",
+  },
+  {
+    id: 2,
+    name: "최신순",
+    value: "latest",
+  },
+  {
+    id: 3,
+    name: "이름순",
+    value: "name",
+  },
+];
 
 export const ROUTES_PATH = {
   HOME: "/",

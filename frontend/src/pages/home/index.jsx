@@ -1,81 +1,61 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
-import useArticleDetail from "@/hooks/article/useArticleDetail";
-import useTagList from "@/hooks/tag/useTagList";
-import { getArticleList } from "@/service/api";
+import useArticleSearchValidation from "@/hooks/article/useArticleSearchValidation";
+import useTags from "@/hooks/tag/useTags";
+import useModalWithReset from "@/hooks/useModalWithReset";
+
+import articleApi from "@/service/api/article";
+
+import { ERROR_CODE } from "@/common/constants";
 
 import Banner from "./components/Banner";
+import ArticleItemContainer from "@/common/components/article/ArticleItemContainer";
 import TagItemContainer from "@/common/components/tag/TagItemContainer";
 import Search from "@/common/components/search";
 import SearchValidationErrorModal from "@/common/components/search/SearchValidationErrorModal";
-import ArticleItem from "@/common/components/article/ArticleItem";
-import AnchorSelectable from "@/common/components/anchor/AnchorSelectable";
-import ArticleNotFound from "@/common/components/article/ArtcleNotFound";
 
 const HomePage = () => {
-  const [articleList, setArticleList] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [articlePageInfo, setArticlePageInfo] = useState({
     page: 1,
     size: 10,
     totalElements: 0,
     totalPages: 0,
   });
-  const [searchParams] = useSearchParams();
-
-  const {
-    searchValidationErrMsg,
-    isSearchValidationErrorModalOpened,
-    handleSearch,
-    handleCloseSearchValidationModal,
-  } = useArticleSearch();
-  const { handleArticleClick } = useArticleDetail();
-
-  //TODO: 예외처리
-  const { tagList, error: getTagListError } = useTagList({
+  const { handleSearch } = useArticleSearch();
+  const { searchValidationError, setSearchValidationError, validateSearch } =
+    useArticleSearchValidation();
+  const { isOpened, openModal, closeModal } = useModalWithReset(false, () =>
+    setSearchValidationError("")
+  );
+  const { tags, fetchTagsError } = useTags({
     page: 1,
     size: 15,
     sortBy: "popularity",
   });
 
-  const sortBy = searchParams.get("sortBy") || "createdAt";
-
-  const sortList = [
-    {
-      id: 1,
-      displayName: "최신순",
-      name: "createdAt",
-      isSelected: sortBy === "createdAt",
-    },
-    {
-      id: 2,
-      displayName: "인기순",
-      name: "popularity",
-      isSelected: sortBy === "popularity",
-    },
-    {
-      id: 3,
-      displayName: "이주의 링크",
-      name: "weekly",
-      isSelected: sortBy === "weekly",
-    },
-    {
-      id: 4,
-      displayName: "이달의 링크",
-      name: "monthly",
-      isSelected: sortBy === "monthly",
-    },
-  ];
-
   useEffect(() => {
-    fetchArticleList(1);
+    fetchArticles(1);
   }, []);
 
-  const fetchArticleList = async (page) => {
+  useEffect(() => {
+    if (fetchTagsError) {
+      toast.error("서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요.", {
+        toastId: ERROR_CODE.SERVER_ERROR,
+      });
+    }
+  }, [fetchTagsError]);
+
+  useEffect(() => {
+    if (searchValidationError) openModal();
+  }, [searchValidationError]);
+
+  const fetchArticles = async (page, keyword) => {
     try {
-      const { data, pageInfo } = await getArticleList({ page });
-      setArticleList(data);
+      const { data, pageInfo } = await articleApi.getList({ page });
+      setArticles(data);
       setArticlePageInfo(pageInfo);
     } catch (err) {
       // setError(err);
@@ -84,51 +64,32 @@ const HomePage = () => {
     }
   };
 
+  const handleSearchSubmit = (keyword) => {
+    if (!validateSearch(keyword)) return;
+    handleSearch(keyword);
+  };
+
   return (
     <>
       <Banner articleCounts={articlePageInfo.totalElements || 0} />
-      <section className="px-5 md:px-0 w-full max-w-xl translate-y-[-50%]">
-        <h1 className="sr-only">search section</h1>
-        <Search onSearch={handleSearch} />
-        <SearchValidationErrorModal
-          isOpened={isSearchValidationErrorModalOpened}
-          errMsg={searchValidationErrMsg}
-          onClose={handleCloseSearchValidationModal}
-        />
+
+      <section className="flex flex-col items-center px-5 md:px-0 w-full">
+        <h1 className="sr-only">검색</h1>
+        <div className="w-full max-w-xl translate-y-[-50%]">
+          <Search onSearch={handleSearchSubmit} />
+        </div>
+        {searchValidationError && (
+          <SearchValidationErrorModal
+            isOpened={isOpened}
+            onClose={closeModal}
+            message={searchValidationError}
+          />
+        )}
       </section>
+
       <div className="flex w-full max-w-7xl">
-        <section className="w-full p-6">
-          <h1 className="hidden">link article list section</h1>
-          {/* <div className="hidden md:block w-full mb-4">
-            <nav>
-              <h1 className="hidden">link article order option</h1>
-              <ul className="flex py-3">
-                {sortList.map((s) => (
-                  <li key={s.id}>
-                    <AnchorSelectable
-                      isSelected={s.isSelected}
-                      to={`?sortBy=${s.name}`}
-                    >
-                      {s.displayName}
-                    </AnchorSelectable>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div> */}
-          {articleList?.length > 0 ? (
-            articleList.map((article) => (
-              <ArticleItem
-                onClickArticle={handleArticleClick}
-                article={article}
-                key={article.id}
-              ></ArticleItem>
-            ))
-          ) : (
-            <ArticleNotFound />
-          )}
-        </section>
-        <TagItemContainer tagList={tagList} />
+        <ArticleItemContainer articles={articles} />
+        <TagItemContainer tags={tags} />
       </div>
     </>
   );

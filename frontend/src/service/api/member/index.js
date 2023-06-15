@@ -1,7 +1,10 @@
 import request from "@/service/request";
 
-export const me = (token) => {
-  return request.get(`/member/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+const memberApi = {
+  me: ({ token }) =>
+    request.get(`/member/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
 };
+
+export default memberApi;

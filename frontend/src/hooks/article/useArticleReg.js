@@ -1,21 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
-import { registerArticle } from "@/service/api";
+import articleApi from "@/service/api/article";
 
 const useArticleReg = () => {
   const [form, setForm] = useState({
     title: "",
     url: "",
     description: "",
-    tagList: [],
+    tags: [],
   });
   const [formErrorMessage, setFormErrorMessage] = useState({
     title: null,
     url: null,
     description: null,
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,12 +93,15 @@ const useArticleReg = () => {
 
   const handleRegisterArticle = async () => {
     try {
-      const { data } = await registerArticle(form);
-      toast.success("링크 등록이 완료되었습니다.", {});
+      setLoading(true);
+      await articleApi.create(form);
       navigate("/");
-    } catch (e) {
-      toast.error("링크 등록에 실패했습니다. 다시 시도해주세요.", {});
-      return;
+      return true;
+    } catch (error) {
+      setError(error);
+      return false;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,6 +114,8 @@ const useArticleReg = () => {
     setForm,
     isValid,
     formErrorMessage,
+    loading,
+    registerArticleError: error,
     handleRegisterArticle,
   };
 };

@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 
-import { getTagList } from "@/service/api/tag";
-import { ERROR_CODE, TAG_SORT_OPTIONS } from "@/common/constants";
+import tagApi from "@/service/api/tag";
+import { isServerError } from "@/service/request/helper";
 
-const useTagList = ({
-  page = 1,
-  size = 10,
-  initialSortBy = TAG_SORT_OPTIONS.POPULARITY,
-}) => {
-  const [tagList, setTagList] = useState([]);
+const useTags = ({ page = 1, size = 10, sortBy: initialSortBy }) => {
+  const [tags, setTags] = useState([]);
   const [tagPageInfo, setTagPageInfo] = useState({
     page,
     size,
@@ -22,26 +17,23 @@ const useTagList = ({
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchTagList(tagPageInfo.page, tagPageInfo.size, sortBy);
+    fetchTags(tagPageInfo.page, tagPageInfo.size, sortBy);
   }, [page, size, sortBy]);
 
-  const fetchTagList = async (page, size, sortBy) => {
+  const fetchTags = async (page, size, sortBy) => {
     try {
       setLoading(true);
-      const { data, pageInfo } = await getTagList({ page, size, sortBy });
-      setTagList(data);
+      const { data, pageInfo } = await tagApi.getList({ page, size, sortBy });
+      setTags(data);
       setTagPageInfo(pageInfo);
-    } catch (err) {
-      setError(err);
-      toast.error("서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요.", {
-        toastId: ERROR_CODE.SERVER_ERROR,
-      });
+    } catch (error) {
+      if (isServerError(error)) setError(error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePrevTagList = () => {
+  const handlePrevTags = () => {
     if (tagPageInfo.page > 1) {
       setTagPageInfo((prev) => ({
         ...prev,
@@ -50,7 +42,7 @@ const useTagList = ({
     }
   };
 
-  const handleNextTagList = () => {
+  const handleNextTags = () => {
     if (tagPageInfo.page < tagPageInfo.totalPages) {
       setTagPageInfo((prev) => ({
         ...prev,
@@ -69,14 +61,14 @@ const useTagList = ({
   };
 
   return {
-    tagList,
+    tags,
     tagPageInfo,
     loading,
-    fetchTagListError: error,
-    handlePrevTagList,
-    handleNextTagList,
+    fetchTagsError: error,
+    handlePrevTags,
+    handleNextTags,
     handleChangeSortOption,
   };
 };
 
-export default useTagList;
+export default useTags;

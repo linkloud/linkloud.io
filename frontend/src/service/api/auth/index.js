@@ -1,13 +1,12 @@
 import request from "@/service/request";
 
-export const socialLogin = (socialType, code) => {
-  return request.post(`/auth/${socialType}`, { socialType, code });
+const authApi = {
+  socialLogin: ({ socialType, code }) =>
+    request.post(`/auth/${socialType}`, { socialType, code }),
+
+  refresh: () => request.post("/auth/refresh"),
+
+  logout: () => request.get("/auth/logout"),
 };
 
-export const refresh = () => {
-  return request.post(`/auth/refresh`);
-};
-
-export const logout = () => {
-  return request.get(`/auth/logout`);
-};
+export default authApi;
