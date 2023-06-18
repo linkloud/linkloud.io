@@ -184,22 +184,7 @@ public class ArticleService {
         }
         // 제목 + 글 내용으로 검색
         else if (keywordType.equals("titleAndDescription")) {
-            // 제목 검색결과, 내용 검색 결과 저장
-            Page<Article> page1 = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
-            Page<Article> page2 = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
-
-            // 결과 합치기
-            List<Article> combinedContent = new ArrayList<>();
-            combinedContent.addAll(page1.getContent());
-            combinedContent.addAll(page2.getContent());
-
-            // 중복 제거 및 정렬
-            List<Article> distinctArticles = combinedContent.stream()
-                .distinct()
-                .sorted(Comparator.comparing(Article::getCreatedAt).reversed())
-                .collect(Collectors.toList());
-
-            articlesPage = new PageImpl(distinctArticles, pageable, distinctArticles.size());
+            articlesPage = articleRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword, pageable);
         }
         // 검색 범주 미 설정시 예외 처리.
         else {
