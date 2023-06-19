@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,9 +36,10 @@ public class ArticleService {
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
     public Page<ArticleResponseDto> fetchAllArticle(int page) {
-        Page<Article> articlesPage = articleRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        List<Article> articleList = articleRepository.findAllArticle();
+        Page<Article> articlePage = new PageImpl(articleList, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()), articleList.size());
 
-        return articlesPage.map(article -> new ArticleResponseDto(article));
+        return articlePage.map(article -> new ArticleResponseDto(article));
     }
 
     /** 아티클 한 개 반환 */
@@ -168,26 +170,28 @@ public class ArticleService {
         * description         : 내용
         * titleAndDescription : 제목 + 내용
         */
+        List<Article> articlelist;
         Page<Article> articlesPage;
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("createdAt").descending());
 
         // 제목으로 검색
         if(keywordType.equals("title")){
-            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+            articlelist = articleRepository.findByTitleContainingIgnoreCase(keyword);
         }
         // 글 내용으로 검색
         else if (keywordType.equals("description")) {
-            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
+            articlelist = articleRepository.findByDescriptionContainingIgnoreCase(keyword);
         }
         // 제목 + 글 내용으로 검색
         else if (keywordType.equals("titleAndDescription")) {
-            articlesPage = articleRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword, pageable);
+            articlelist = articleRepository.findArticleByTitleOrDescription(keyword);
         }
         // 검색 범주 미 설정시 예외 처리.
         else {
             throw new CustomException(BAD_REQUEST);  //TODO: 예외 처리 코드 정하기
         }
 
+        articlesPage = new PageImpl(articlelist, pageable, articlelist.size());
         return articlesPage.map(article -> new ArticleResponseDto(article));
     }
 
