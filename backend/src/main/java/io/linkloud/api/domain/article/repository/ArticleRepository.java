@@ -10,19 +10,22 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-
-    // 조건 없이 모든 아티클 조회
-    Page<Article> findAll(Pageable pageable);
     /*
      * Containing : 검색 기능(LIKE)
      * IgnoreCase : 대소문자 구분 없음.
      * */
 
+    // 조건 없이 모든 아티클 조회
+    @Query("SELECT a FROM Article a JOIN FETCH a.member ORDER BY a.createdAt DESC")
+    List<Article> findAll();
+
     // 제시된 키워드를 제목(title)으로 가지는 엔티티 조회
-    Page<Article> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% ORDER BY a.createdAt DESC")
+    List<Article> findByTitleContainingIgnoreCase(String keyword);
 
     // 제시된 키워드를 내용(description)으로 가지는 엔티티 조회
-    Page<Article> findByDescriptionContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT a FROM Article a JOIN FETCH a.member WHERE a.description LIKE %:keyword% ORDER BY a.createdAt DESC")
+    List<Article> findByDescriptionContainingIgnoreCase(String keyword);
 
     // 제시된 키워드를 제목(title) + 내용(description)으로 가지는 엔티티 조회
     // 'Join Fetch'로 참조할 멤버 테이블을 매핑.
