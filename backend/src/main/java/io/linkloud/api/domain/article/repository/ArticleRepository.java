@@ -17,7 +17,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     // 조건 없이 모든 아티클 조회
     @Query("SELECT a FROM Article a JOIN FETCH a.member ORDER BY a.createdAt DESC")
-    List<Article> findAll();
+    List<Article> findAllArticle();
 
     // 제시된 키워드를 제목(title)으로 가지는 엔티티 조회
     @Query("SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% ORDER BY a.createdAt DESC")
