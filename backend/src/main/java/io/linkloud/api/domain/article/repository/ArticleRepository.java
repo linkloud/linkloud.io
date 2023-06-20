@@ -1,7 +1,6 @@
 package io.linkloud.api.domain.article.repository;
 
 import io.linkloud.api.domain.article.model.Article;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,20 +15,20 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
      * */
 
     // 조건 없이 모든 아티클 조회
-    @Query("SELECT a FROM Article a JOIN FETCH a.member ORDER BY a.createdAt DESC")
-    List<Article> findAllArticle();
+    @Query(value = "SELECT a FROM Article a JOIN FETCH a.member ORDER BY a.createdAt DESC", countQuery = "select count(a) from Article a")
+    Page<Article> findAllArticle(Pageable pageable);
 
     // 제시된 키워드를 제목(title)으로 가지는 엔티티 조회
-    @Query("SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% ORDER BY a.createdAt DESC")
-    List<Article> findByTitleContainingIgnoreCase(String keyword);
+    @Query(value = "SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% ORDER BY a.createdAt DESC", countQuery = "select count(a) from Article a")
+    Page<Article> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
 
     // 제시된 키워드를 내용(description)으로 가지는 엔티티 조회
-    @Query("SELECT a FROM Article a JOIN FETCH a.member WHERE a.description LIKE %:keyword% ORDER BY a.createdAt DESC")
-    List<Article> findByDescriptionContainingIgnoreCase(String keyword);
+    @Query(value = "SELECT a FROM Article a JOIN FETCH a.member WHERE a.description LIKE %:keyword% ORDER BY a.createdAt DESC", countQuery = "select count(a) from Article a")
+    Page<Article> findByDescriptionContainingIgnoreCase(String keyword, Pageable pageable);
 
     // 제시된 키워드를 제목(title) + 내용(description)으로 가지는 엔티티 조회
     // 'Join Fetch'로 참조할 멤버 테이블을 매핑.
-    @Query("SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% OR a.description LIKE %:keyword% ORDER BY a.createdAt DESC")
-    List<Article> findArticleByTitleOrDescription(String keyword);
+    @Query(value = "SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% OR a.description LIKE %:keyword% ORDER BY a.createdAt DESC", countQuery = "select count(a) from Article a")
+    Page<Article> findArticleByTitleOrDescription(String keyword, Pageable pageable);
 
 }
