@@ -6,13 +6,13 @@ on:
       - main
       - dev
     paths:
-      - "frontend/**"
+      - "client/**"
   pull_request:
     branches:
       - main
       - dev
     paths:
-      - "frontend/**"
+      - "client/**"
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: "./frontend"
+        working-directory: "./client"
 
     strategy:
       matrix:

@@ -12,3 +12,4 @@ export { ReactComponent as KekbabHorizon } from "./icon-kebab-h.svg";
 export { ReactComponent as BookmarkIcon } from "./icon-bookmark.svg";
 export { ReactComponent as BookmarkFillIcon } from "./icon-bookmark-fill.svg";
 export { ReactComponent as LinkOutIcon } from "./icon-link-out.svg";
+export { ReactComponent as GithubIcon } from "./icon-github.svg";

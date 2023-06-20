@@ -115,7 +115,7 @@ const LinksRegPage = () => {
       {isArticleRegConfirmModalOpened && (
         <ArticleRegConfirmModal
           isOpened={isArticleRegConfirmModalOpened}
-          popularTags={tags}
+          popularTags={[]}
           onClose={closeModal}
           onAddTag={handleChangeTagList}
           onRegister={handlerArticleSubmit}
