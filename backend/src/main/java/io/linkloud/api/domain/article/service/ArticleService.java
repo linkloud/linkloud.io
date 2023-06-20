@@ -16,6 +16,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +35,9 @@ public class ArticleService {
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
     public Page<ArticleResponseDto> fetchAllArticle(int page) {
-        Page<Article> articlesPage = articleRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        Page<Article> articlePage = articleRepository.findAllArticle(PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
 
-        return articlesPage.map(article -> new ArticleResponseDto(article));
+        return articlePage.map(article -> new ArticleResponseDto(article));
     }
 
     /** 아티클 한 개 반환 */
@@ -161,16 +162,26 @@ public class ArticleService {
 
     /** 검색 */
     @Transactional
-    public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, String type, int page) {
+    public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, String keywordType, int page) {
+        /* 키워드 목록
+        * title               : 제목
+        * description         : 내용
+        * titleAndDescription : 제목 + 내용
+        */
         Page<Article> articlesPage;
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("createdAt").descending());
 
         // 제목으로 검색
-        if(type.equals("title")){
-            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        if(keywordType.equals("title")){
+            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
         }
         // 글 내용으로 검색
-        else if (type.equals("description")) {
-            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
+        else if (keywordType.equals("description")) {
+            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
+        }
+        // 제목 + 글 내용으로 검색
+        else if (keywordType.equals("titleAndDescription")) {
+            articlesPage = articleRepository.findArticleByTitleOrDescription(keyword, pageable);
         }
         // 검색 범주 미 설정시 예외 처리.
         else {

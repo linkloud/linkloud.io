@@ -82,10 +82,15 @@ public class ArticleController {
     @GetMapping("search")
     public ResponseEntity<MultiDataResponse> getArticleBySearch(
         @RequestParam String keyword,
-        @RequestParam String type,
+        @RequestParam String keywordType,
         @Positive @RequestParam int page) {
 
-        Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, type, page);
+        /* 키워드 목록
+         * title               : 제목
+         * description         : 내용
+         * titleAndDescription : 제목 + 내용
+         */
+        Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, keywordType, page);
 
         return ResponseEntity.ok(new MultiDataResponse<>(getArticleBySearchDto));
     }
