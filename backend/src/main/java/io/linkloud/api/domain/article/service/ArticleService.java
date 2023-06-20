@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,8 +35,7 @@ public class ArticleService {
     /** 아티클 모두 반환 */
     @Transactional(readOnly = true)
     public Page<ArticleResponseDto> fetchAllArticle(int page) {
-        List<Article> articleList = articleRepository.findAllArticle();
-        Page<Article> articlePage = new PageImpl(articleList, PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()), articleList.size());
+        Page<Article> articlePage = articleRepository.findAllArticle(PageRequest.of(page - 1, 10, Sort.by("createdAt").descending()));
 
         return articlePage.map(article -> new ArticleResponseDto(article));
     }
@@ -170,28 +168,26 @@ public class ArticleService {
         * description         : 내용
         * titleAndDescription : 제목 + 내용
         */
-        List<Article> articlelist;
         Page<Article> articlesPage;
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("createdAt").descending());
 
         // 제목으로 검색
         if(keywordType.equals("title")){
-            articlelist = articleRepository.findByTitleContainingIgnoreCase(keyword);
+            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
         }
         // 글 내용으로 검색
         else if (keywordType.equals("description")) {
-            articlelist = articleRepository.findByDescriptionContainingIgnoreCase(keyword);
+            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
         }
         // 제목 + 글 내용으로 검색
         else if (keywordType.equals("titleAndDescription")) {
-            articlelist = articleRepository.findArticleByTitleOrDescription(keyword);
+            articlesPage = articleRepository.findArticleByTitleOrDescription(keyword, pageable);
         }
         // 검색 범주 미 설정시 예외 처리.
         else {
             throw new CustomException(BAD_REQUEST);  //TODO: 예외 처리 코드 정하기
         }
 
-        articlesPage = new PageImpl(articlelist, pageable, articlelist.size());
         return articlesPage.map(article -> new ArticleResponseDto(article));
     }
 
