@@ -35,15 +35,6 @@ const ArticleItem = ({ article, onClickArticle }) => {
             </ul>
           </div>
         </div>
-        {/* right */}
-        <div className="flex flex-col mt-4 items-center px-2 md:px-3">
-          <button type="button" title="북마크" className="px-2 pb-2">
-            <BookmarkIcon className="w-6 h-6 stroke-gray-400 text-xs md:text-sm" />
-          </button>
-          <span className="text-gray-600">
-            {article.counts ? article.counts : 0}
-          </span>
-        </div>
       </div>
       <hr />
     </article>
