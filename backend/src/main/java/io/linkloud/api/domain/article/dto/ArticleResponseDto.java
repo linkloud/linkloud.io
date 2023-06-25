@@ -1,6 +1,8 @@
 package io.linkloud.api.domain.article.dto;
 
 import io.linkloud.api.domain.article.model.Article;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +28,7 @@ public class ArticleResponseDto {
 
     private Integer bookmarks;
 
+    private List<String> tags;
 
     /** Entity -> Dto */
     public ArticleResponseDto(Article article) {
@@ -37,6 +40,10 @@ public class ArticleResponseDto {
         this.description = article.getDescription();
         this.views = article.getViews();
         this.bookmarks = article.getBookmarks();
+        this.tags = new ArrayList<>();
+        if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
+            article.getArticleTags().forEach(at -> this.tags.add(at.getTag().getName()));
+        }
     }
 
 }
