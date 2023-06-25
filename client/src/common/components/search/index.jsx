@@ -30,7 +30,7 @@ const Search = ({ onSearch }) => {
         />
       </div>
 
-      {isInputFocused && (
+      {/* {isInputFocused && (
         <div
           className={
             "p-4 absolute top-14 left-0 w-full max-w-full bg-white border border-gray-50 rounded-md shadow-lg translate-y-[30%]"
@@ -41,7 +41,7 @@ const Search = ({ onSearch }) => {
             <span className="ml-2 text-gray-400">태그와 함께 검색합니다</span>
           </p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
