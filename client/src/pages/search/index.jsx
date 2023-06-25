@@ -9,6 +9,7 @@ import TagItem from "@/common/components/tag/TagItem";
 import ArticleItem from "@/common/components/article/ArticleItem";
 
 const SearchPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [articles, setArticles] = useState([]);
   const [articlePageInfo, setArticlePageInfo] = useState({
     page: 1,
@@ -27,17 +28,24 @@ const SearchPage = () => {
   const { handleSearch } = useArticleSearch();
 
   useEffect(() => {
-    searchArticles(searchKeyword);
+    search(searchKeyword);
   }, []);
 
-  const searchArticles = async (keyword) => {
+  const search = async (keyword) => {
     const { data, pageInfo } = await articleApi.search({
       keyword,
-      type: "title",
+      page: currentPage,
     });
     setArticles(data);
     setArticlePageInfo(pageInfo);
   };
+
+  const handleClickNext = () => {
+    if (currentPage >= articlePageInfo.totalPages) return;
+    setCurrentPage(currentPage + 1);
+  };
+
+  const nextButtonVisible = currentPage.page < articlePageInfo.totalPages;
 
   return (
     <div className="flex flex-col py-10 max-w-7xl w-full">
@@ -76,6 +84,11 @@ const SearchPage = () => {
             ))
           ) : (
             <p>검색 결과가 없습니다.</p>
+          )}
+          {nextButtonVisible && (
+            <Button size="sm" styleType="lined" onClick={handleClickNext}>
+              더보기
+            </Button>
           )}
         </section>
       </div>
