@@ -39,9 +39,7 @@ const useAuthStore = create((set, get) => ({
       get()._setToken(accessToken);
       get()._fetchUserInfo();
     } catch (e) {
-      if (e.message === ERROR_CODE.SERVER_ERROR) {
-        toast.error("로그인에 실패했습니다. 잠시후에 다시 시도해주세요");
-      }
+      toast.error("로그인에 실패했습니다. 잠시후에 다시 시도해주세요");
     }
   },
   refresh: async () => {
