@@ -17,6 +17,7 @@ import Search from "@/common/components/search";
 import SearchValidationErrorModal from "@/common/components/search/SearchValidationErrorModal";
 
 const HomePage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [articles, setArticles] = useState([]);
   const [articlePageInfo, setArticlePageInfo] = useState({
     page: 1,
@@ -37,8 +38,8 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-    fetchArticles(1);
-  }, []);
+    fetchArticles(currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
     if (fetchTagsError) {
@@ -52,10 +53,10 @@ const HomePage = () => {
     if (searchValidationError) openModal();
   }, [searchValidationError]);
 
-  const fetchArticles = async (page, keyword) => {
+  const fetchArticles = async (page) => {
     try {
       const { data, pageInfo } = await articleApi.getList({ page });
-      setArticles(data);
+      setArticles((prev) => [...prev, ...data]);
       setArticlePageInfo(pageInfo);
     } catch (err) {
       // setError(err);
@@ -67,6 +68,11 @@ const HomePage = () => {
   const handleSearchSubmit = (keyword) => {
     if (!validateSearch(keyword)) return;
     handleSearch(keyword);
+  };
+
+  const handleClickNext = () => {
+    if (currentPage >= articlePageInfo.totalPages) return;
+    setCurrentPage(currentPage + 1);
   };
 
   return (
@@ -88,7 +94,11 @@ const HomePage = () => {
       </section>
 
       <div className="flex w-full max-w-7xl">
-        <ArticleItemContainer articles={articles} />
+        <ArticleItemContainer
+          articles={articles}
+          pageInfo={articlePageInfo}
+          onClickNext={handleClickNext}
+        />
         <TagItemContainer tags={tags} />
       </div>
     </>
