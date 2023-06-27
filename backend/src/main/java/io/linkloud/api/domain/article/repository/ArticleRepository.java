@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {
     /*
      * Containing : 검색 기능(LIKE)
      * IgnoreCase : 대소문자 구분 없음.
