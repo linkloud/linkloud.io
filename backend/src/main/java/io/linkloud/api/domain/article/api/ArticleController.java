@@ -9,6 +9,7 @@ import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -82,7 +83,7 @@ public class ArticleController {
     @GetMapping("search")
     public ResponseEntity<MultiDataResponse> getArticleBySearch(
         @RequestParam String keyword,
-        @RequestParam String keywordType,
+        @RequestParam(required = false) List<String> tags,
         @Positive @RequestParam int page) {
 
         /* 키워드 목록
@@ -90,7 +91,7 @@ public class ArticleController {
          * description         : 내용
          * titleAndDescription : 제목 + 내용
          */
-        Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, keywordType, page);
+        Page<ArticleResponseDto> getArticleBySearchDto = articleService.fetchArticleBySearch(keyword, tags, page);
 
         return ResponseEntity.ok(new MultiDataResponse<>(getArticleBySearchDto));
     }
