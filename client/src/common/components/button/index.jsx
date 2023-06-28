@@ -15,9 +15,9 @@ const Button = ({
   };
 
   const styleTable = {
-    subtle: "rounded hover:bg-gray-100 transition-colors",
-    lined: "rounded border border-gray-300 bg-white hover:border-gray-400",
-    fill: "rounded text-white bg-primary-600 hover:bg-primary-500 transition-colors",
+    subtle: "rounded-md hover:bg-gray-100 transition-colors",
+    lined: "rounded-md border border-gray-300 bg-white hover:border-gray-400",
+    fill: "rounded-md text-white bg-primary-600 hover:bg-primary-500 transition-colors",
   };
 
   const classesName = `
