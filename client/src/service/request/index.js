@@ -48,7 +48,7 @@ instance.interceptors.response.use(
     }
 
     // 서버 예외
-    if (data.message) {
+    if (data.message || data.fieldErrors.length > 0) {
       log(data);
       return Promise.reject(data);
     }
