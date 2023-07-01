@@ -44,16 +44,6 @@ const Header = () => {
         <nav>
           <h1 className="hidden">navigation</h1>
           <ul className="flex items-center">
-            <li className="ml-2 hidden md:block">
-              <Button
-                size="md"
-                styleType="subtle"
-                aria-haspopup="dialog"
-                onClick={handleClickNotice}
-              >
-                공지사항
-              </Button>
-            </li>
             {role !== ROLE.USER && (
               <li className="ml-2">
                 <Button
