@@ -4,7 +4,7 @@ const authApi = {
   socialLogin: ({ socialType, code }) =>
     request.post(`/auth/${socialType}`, { socialType, code }),
 
-  refresh: () => request.post("/auth/refresh"),
+  refresh: () => request.get("/auth/refresh"),
 
   logout: () => request.get("/auth/logout"),
 };
