@@ -56,6 +56,7 @@ const HomePage = () => {
   const fetchArticles = async (page) => {
     try {
       const { data, pageInfo } = await articleApi.getList({ page });
+      if (!data) return;
       setArticles((prev) => [...prev, ...data]);
       setArticlePageInfo(pageInfo);
     } catch (err) {
