@@ -189,7 +189,7 @@ class AuthControllerTest {
         String content = gson.toJson(refreshTokenRequest);
         given(authService.refreshTokenAndAccessToken(any(),any())).willReturn(newTokenAuthResponse);
 
-        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
                         .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
@@ -219,7 +219,7 @@ class AuthControllerTest {
         when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
             new CustomException(AuthExceptionCode.INVALID_TOKEN));
 
-        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
                     .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(content))
@@ -253,7 +253,7 @@ class AuthControllerTest {
         when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
             new CustomException(AuthExceptionCode.EXPIRED_REFRESH_TOKEN));
 
-        ResultActions actions = mockMvc.perform(post(BASE_URL + "/refresh")
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
                 .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
