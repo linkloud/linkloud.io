@@ -1,10 +1,11 @@
 const Button = ({
-  children,
+  type = "button",
   size = "md",
   styleType = "fill",
   className = "",
   disabled = false,
   onClick,
+  children,
   ...props
 }) => {
   const sizeTable = {
@@ -41,7 +42,7 @@ const Button = ({
     <button
       disabled={disabled}
       onClick={handleClick}
-      type="button"
+      type={type}
       {...props}
       className={classesName}
     >

@@ -13,3 +13,4 @@ export { ReactComponent as BookmarkIcon } from "./icon-bookmark.svg";
 export { ReactComponent as BookmarkFillIcon } from "./icon-bookmark-fill.svg";
 export { ReactComponent as LinkOutIcon } from "./icon-link-out.svg";
 export { ReactComponent as GithubIcon } from "./icon-github.svg";
+export { ReactComponent as PlusIcon } from "./icon-plus.svg";

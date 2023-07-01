@@ -10,90 +10,120 @@ const useArticleReg = () => {
     description: "",
     tags: [],
   });
+  const [inputTagsValue, setInputTagsValue] = useState("");
   const [formErrorMessage, setFormErrorMessage] = useState({
     title: null,
     url: null,
     description: null,
+    tags: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!form.title.trim() || form.title.length < 2 || form.title.length > 50) {
-      setFormErrorMessage((prev) => ({
-        ...prev,
-        title: "이름을 2 ~ 50자 사이로 입력해주세요.",
-      }));
-      return;
-    }
-
-    setFormErrorMessage((prev) => ({ ...prev, title: null }));
-
-    return () => {
-      setFormErrorMessage((prev) => ({ ...prev, title: null }));
+  const validateForm = ({ title, url, description, tags }) => {
+    let errorMessages = {
+      title: null,
+      url: null,
+      description: null,
     };
-  }, [form.title]);
 
-  useEffect(() => {
-    if (!form.url.trim()) {
+    if (!title.trim() || title.length < 2 || title.length > 50) {
+      errorMessages.title = "이름을 2 ~ 50자 사이로 입력해주세요.";
+    }
+
+    if (!url.trim()) {
+      errorMessages.url = "url을 입력해주세요.";
+    } else if (form.url.length > 255) {
+      errorMessages.url = "255자를 넘을 수 없습니다.";
+    } else {
+      const urlReg =
+        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+      if (!urlReg.test(url)) {
+        errorMessages.url = "올바른 url 주소를 입력해주세요.";
+      }
+    }
+
+    if (description.length > 255) {
+      errorMessages.description = "255자를 넘을 수 없습니다.";
+    }
+
+    setFormErrorMessage(errorMessages);
+
+    return !Object.values(errorMessages).some(
+      (errorMessage) => errorMessage !== null
+    );
+  };
+
+  const handleChangeForm = (key) => (e) => {
+    setForm({ ...form, [key]: e.target.value });
+  };
+
+  const handleChangeTags = (e) => {
+    setInputTagsValue(e.target.value);
+  };
+
+  const handleAddTag = () => {
+    const tag = inputTagsValue.trim().replace(/\s+/g, "-");
+    const existingTags = form.tags.map((t) => t.toLowerCase());
+
+    if (
+      tag.length < 2 ||
+      tag.length > 20 ||
+      !/^[a-zA-Z0-9ㄱ-힣-]+$/.test(tag)
+    ) {
       setFormErrorMessage((prev) => ({
         ...prev,
-        url: "url을 입력해주세요.",
+        tags: "태그는 2자 이상 20자 이하의 한글, 영문, 숫자, 하이픈(-)만 입력 가능합니다.",
       }));
       return;
     }
 
-    if (form.url.length > 255) {
+    if (form.tags.length >= 5) {
       setFormErrorMessage((prev) => ({
         ...prev,
-        url: "255자를 넘을 수 없습니다.",
+        tags: "최대 5개까지 등록 가능합니다.",
       }));
       return;
     }
 
-    const urlReg = /^(https?:\/\/)([\w.-]+)\.([a-zA-Z]{2,})(\/\S*)?$/;
-
-    if (!urlReg.test(form.url)) {
+    if (existingTags.includes(tag.toLocaleLowerCase())) {
       setFormErrorMessage((prev) => ({
         ...prev,
-        url: "올바른 url 주소를 입력해주세요.",
+        tags: "중복된 태그입니다.",
       }));
       return;
     }
 
-    return () => {
-      setFormErrorMessage((prev) => ({ ...prev, url: null }));
-    };
-  }, [form.url]);
+    setForm((prev) => ({
+      ...prev,
+      tags: [...prev.tags, tag],
+    }));
+    setInputTagsValue("");
+    setFormErrorMessage((prev) => ({
+      ...prev,
+      tags: null,
+    }));
+  };
 
-  useEffect(() => {
-    if (!form.description.trim()) {
-      setFormErrorMessage((prev) => ({
-        ...prev,
-        description: "설명을 입력해주세요.",
-      }));
-      return;
+  const handleRemoveTag = (tag) => {
+    setForm((prev) => ({
+      ...prev,
+      tags: form.tags.filter((t) => t !== tag),
+    }));
+  };
+
+  const handleSubmitArticle = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const isValid = validateForm(form);
+    if (!isValid) {
+      setLoading(false);
+      return false;
     }
 
-    if (form.description.length > 255) {
-      setFormErrorMessage((prev) => ({
-        ...prev,
-        description: "255자를 넘을 수 없습니다.",
-      }));
-      return;
-    }
-
-    setFormErrorMessage((prev) => ({ ...prev, description: null }));
-
-    return () => {
-      setFormErrorMessage((prev) => ({ ...prev, description: null }));
-    };
-  }, [form.description]);
-
-  const handleRegisterArticle = async () => {
     try {
-      setLoading(true);
       await articleApi.create(form);
       navigate("/");
       return true;
@@ -105,18 +135,18 @@ const useArticleReg = () => {
     }
   };
 
-  const isValid = !Object.values(formErrorMessage).some(
-    (errorMessage) => errorMessage !== null
-  );
-
   return {
     form,
     setForm,
-    isValid,
+    inputTagsValue,
     formErrorMessage,
     loading,
-    registerArticleError: error,
-    handleRegisterArticle,
+    submitArticleError: error,
+    handleChangeForm,
+    handleChangeTags,
+    handleAddTag,
+    handleRemoveTag,
+    handleSubmitArticle,
   };
 };
 

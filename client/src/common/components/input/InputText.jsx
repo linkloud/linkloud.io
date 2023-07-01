@@ -1,43 +1,53 @@
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 
-const InputText = ({ labelText, className, validMessage, onChange }) => {
-  const [isInputFocused, setIsInputFocused] = useState(false); // focus 여부
-  const [isInputTouched, setIsInputTouched] = useState(false); // 첫 focus 여부
-  const [value, setValue] = useState(""); // 사용자 입력 값
+const styleClasses = {
+  base: "mt-1 border-b transition-colors duration-200",
+  focused: "border-primary-500",
+  unfocused: "border-gray-200",
+};
 
-  // input이 foucs거나 text 값이 있다면 top-[-1rem] text-sm text-blue-400
-  const labelFocusedClass =
-    isInputFocused || value !== ""
-      ? "-top-[16px] text-sm text-blue-400"
-      : "top-1 text-gray-300";
-
-  const labelClasses = `${labelFocusedClass} ${
-    isInputTouched && validMessage ? "text-red-500" : ""
-  } absolute left-0 transition-all duration-300`;
-
-  const handleTextChange = (e) => {
-    setValue(e.target.value);
-    if (!isInputTouched) setIsInputTouched(true);
-    onChange(e);
-  };
+const InputText = ({
+  id,
+  label,
+  placeholder,
+  value,
+  required = false,
+  errorMessage = "",
+  ...props
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className={`relative w-full ${className ? className : ""}`}>
-      <input
-        type="text"
-        id={labelText}
-        required
-        autoComplete="off"
-        onFocus={() => setIsInputFocused(true)}
-        onBlur={() => setIsInputFocused(false)}
-        onChange={handleTextChange}
-        className="w-full py-1 bg-transparent border-b border-gray-300 outline-none"
-      />
-      <label htmlFor={labelText} className={labelClasses}>
-        {labelText}
-      </label>
-      {isInputTouched && validMessage && (
-        <p className="mt-2 text-red-400">{validMessage}</p>
+    <div className="flex flex-col w-full">
+      <div>
+        <label
+          htmlFor={id}
+          className="mb-2 flex items-center font-medium text-sm md:text-base"
+        >
+          {label}
+          {required && <span className="ml-1 text-red-500"> *</span>}
+        </label>
+      </div>
+      <div>
+        <input
+          type="text"
+          id={id}
+          placeholder={placeholder}
+          autoComplete="off"
+          value={value}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          {...props}
+          className="w-full outline-none md:text-lg"
+        />
+      </div>
+      <span
+        className={`${styleClasses.base} ${
+          isFocused ? styleClasses.focused : styleClasses.unfocused
+        }`}
+      ></span>
+      {errorMessage && (
+        <p className="mt-2 md:text-base text-red-500">{errorMessage}</p>
       )}
     </div>
   );
