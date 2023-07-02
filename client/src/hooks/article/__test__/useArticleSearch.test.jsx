@@ -22,7 +22,7 @@ describe("useArticleSearch TEST", () => {
     });
 
     expect(useNavigate()).toHaveBeenCalledWith(
-      "/search?keyword=test&tag=tag1&tag=tag2"
+      "/search?keyword=test&tags=tag1&tags=tag2"
     );
   });
 
@@ -43,6 +43,8 @@ describe("useArticleSearch TEST", () => {
       result.current.handleSearch("test [tag1] [tag1]");
     });
 
-    expect(useNavigate()).toHaveBeenCalledWith("/search?keyword=test&tag=tag1");
+    expect(useNavigate()).toHaveBeenCalledWith(
+      "/search?keyword=test&tags=tag1"
+    );
   });
 });
