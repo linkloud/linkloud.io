@@ -173,8 +173,7 @@ const logRequest = (request) => {
 
   const { method, url, params, data } = request;
   log("🚀 request");
-  console.log("params ");
-  console.log(params);
+
   let queryParams = "";
   if (params) {
     queryParams = Object.keys(params)
