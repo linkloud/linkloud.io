@@ -3,13 +3,16 @@ import { BookmarkIcon, LinkOutIcon } from "@/static/svg";
 
 const ArticleItem = ({ article, onClickArticle }) => {
   return (
-    <article onClick={() => onClickArticle(article.id)} className="pt-5">
+    <article className="pt-5">
       {/* wrap */}
-      <div className="group flex">
+      <div className="flex">
         {/* left */}
-        <div className="w-full cursor-pointer">
+        <div className="w-full">
           {/* content */}
-          <div className="flex flex-col w-full">
+          <div
+            onClick={() => onClickArticle(article.id)}
+            className="group flex flex-col w-full cursor-pointer"
+          >
             <h1 className="md:text-lg font-medium">{article.title}</h1>
             <a
               onClick={(e) => e.preventDefault}
@@ -28,8 +31,8 @@ const ArticleItem = ({ article, onClickArticle }) => {
             <ul className="flex">
               {article.tags &&
                 article.tags.map((tag) => (
-                  <li key={tag.id} className="mr-2">
-                    <TagItem tag={tag.name} />
+                  <li key={tag} className="mr-2">
+                    <TagItem tag={tag} />
                   </li>
                 ))}
             </ul>
