@@ -1,0 +1,4 @@
+jwt:
+  secretKey: dfsaldfsljkfdsajfsdfsjdsfljfdsljfsdjlfsdjfdsjkafdsjlljafkdsladfs
+  accessTokenExpiration: 123 # 10분 (10 * 60 * 1000)
+  refreshTokenExpiration: 1234 # 3일 (3 * 24 * 60 * 60 * 1000)
