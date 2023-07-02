@@ -7,7 +7,7 @@ const TagListItem = ({ tag }) => {
     <>
       <div className="flex flex-col py-4 border-b border-gray-200">
         <div>
-          <Link to={`/search?tag=${tag.name}`}>
+          <Link to={`/search?tags=${tag.name}`}>
             <TagItem tag={tag.name} />
           </Link>
         </div>
