@@ -162,33 +162,16 @@ public class ArticleService {
 
     /** 검색 */
     @Transactional
-    public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, String keywordType, int page) {
+    public Page<ArticleResponseDto> fetchArticleBySearch(String keyword, List<String> tags, int page) {
         /* 키워드 목록
         * title               : 제목
         * description         : 내용
         * titleAndDescription : 제목 + 내용
         */
-        Page<Article> articlesPage;
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("createdAt").descending());
 
-        // 제목으로 검색
-        if(keywordType.equals("title")){
-            articlesPage = articleRepository.findByTitleContainingIgnoreCase(keyword, pageable);
-        }
-        // 글 내용으로 검색
-        else if (keywordType.equals("description")) {
-            articlesPage = articleRepository.findByDescriptionContainingIgnoreCase(keyword, pageable);
-        }
-        // 제목 + 글 내용으로 검색
-        else if (keywordType.equals("titleAndDescription")) {
-            articlesPage = articleRepository.findArticleByTitleOrDescription(keyword, pageable);
-        }
-        // 검색 범주 미 설정시 예외 처리.
-        else {
-            throw new CustomException(BAD_REQUEST);  //TODO: 예외 처리 코드 정하기
-        }
 
-        return articlesPage.map(article -> new ArticleResponseDto(article));
+        return articleRepository.findArticleListBySearch(keyword, tags, pageable);
     }
 
 }

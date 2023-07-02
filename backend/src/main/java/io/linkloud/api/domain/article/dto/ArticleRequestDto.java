@@ -27,9 +27,8 @@ public class ArticleRequestDto {
     @Size(max = 255, message = "링크의 길이가 너무 깁니다.")
     private String url;
 
-    @NotBlank(message = "본문은 빈칸으로 둘 수 없습니다.")
     @Size(max = 255, message = "본문은 255자 이하로 작성해야 합니다.")
-    private String description;
+    private String description = "";
 
     @Size(max = 5)
     private List<
