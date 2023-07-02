@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 
 import useArticleSearch from "@/hooks/article/useArticleSearch";
 import articleApi from "@/service/api/article";
@@ -21,35 +20,32 @@ const SearchPage = () => {
   const [searchParams] = useSearchParams();
 
   const searchKeyword = searchParams.get("keyword");
-  const tags = searchParams
-    .getAll("tags")
-    .map((tag) => ({ name: tag, id: uuidv4() }));
+  const tags = searchParams.getAll("tags");
 
-  useEffect(() => {
-    search(searchKeyword);
-  }, []);
-
-  const search = async (keyword) => {
-    try {
-      const tagsParams = tags.map((tag) => tag.name);
-      const { data, pageInfo } = await articleApi.search({
-        keyword,
-        tags: tagsParams,
-        page: currentPage,
-      });
-      setArticles(data);
-      setArticlePageInfo(pageInfo);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const nextButtonVisible = currentPage.page < articlePageInfo.totalPages;
 
   const handleClickNext = () => {
     if (currentPage >= articlePageInfo.totalPages) return;
     setCurrentPage(currentPage + 1);
   };
 
-  const nextButtonVisible = currentPage.page < articlePageInfo.totalPages;
+  useEffect(() => {
+    const search = async (keyword, tags, page) => {
+      try {
+        const { data, pageInfo } = await articleApi.search({
+          keyword,
+          tags,
+          page,
+        });
+        setArticles(data);
+        setArticlePageInfo(pageInfo);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    search(searchKeyword, tags, currentPage);
+  }, [searchParams, currentPage]);
 
   return (
     <div className="flex flex-col py-10 max-w-7xl w-full">
@@ -70,8 +66,8 @@ const SearchPage = () => {
             )}
             <ul className="flex mt-1">
               {tags.map((tag) => (
-                <li key={tag.id} className="mr-1 text-gray-400">
-                  <TagItem tag={tag.name} />
+                <li key={tag} className="mr-1 text-gray-400">
+                  <TagItem tag={tag} />
                 </li>
               ))}
             </ul>
