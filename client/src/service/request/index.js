@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import qs from "qs";
 import useAuthStore from "@/stores/useAuthStore";
 import { log } from "@/common/utils/";
 import { ERROR_CODE } from "@/common/constants";
@@ -9,6 +9,9 @@ const instance = axios.create({
   timeout: 3 * 1000,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
+  paramsSerializer: function (params) {
+    return qs.stringify(params, { arrayFormat: "repeat" });
+  },
 });
 
 /** 요청 인터셉터 */
@@ -170,7 +173,8 @@ const logRequest = (request) => {
 
   const { method, url, params, data } = request;
   log("🚀 request");
-
+  console.log("params ");
+  console.log(params);
   let queryParams = "";
   if (params) {
     queryParams = Object.keys(params)
@@ -207,4 +211,5 @@ const logResponse = (response) => {
 const logError = (error) => {
   const request = error.config;
   log(`🚨 error [${request.method.toUpperCase()}] ${request.url}`);
+  log(error);
 };

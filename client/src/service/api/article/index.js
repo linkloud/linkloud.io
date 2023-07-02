@@ -14,8 +14,11 @@ const articleApi = {
 
   getList: ({ page }) => request.get("/article", { params: { page } }),
 
-  search: ({ keyword, keywordType = "titleAndDescription", page = 1 }) =>
-    request.get("/article/search", { params: { keyword, keywordType, page } }),
+  search: ({ keyword, tags, page = 1 }) => {
+    return request.get("/article/search", {
+      params: { keyword, tags, page },
+    });
+  },
 };
 
 export default articleApi;

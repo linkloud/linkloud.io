@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
+
 import TagItem from "../tag/TagItem";
-import { BookmarkIcon, LinkOutIcon } from "@/static/svg";
+import { LinkOutIcon } from "@/static/svg";
 
 const ArticleItem = ({ article, onClickArticle }) => {
   return (
@@ -32,7 +34,9 @@ const ArticleItem = ({ article, onClickArticle }) => {
               {article.tags &&
                 article.tags.map((tag) => (
                   <li key={tag} className="mr-2">
-                    <TagItem tag={tag} />
+                    <Link to={`/search?tags=${tag}`}>
+                      <TagItem tag={tag} />
+                    </Link>
                   </li>
                 ))}
             </ul>

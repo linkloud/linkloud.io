@@ -34,7 +34,7 @@ const useArticleSearch = () => {
     }
 
     tags.forEach((tag, index) => {
-      query += `${index > 0 || fullKeyword ? "&" : ""}tag=${tag}`;
+      query += `${index > 0 || fullKeyword ? "&" : ""}tags=${tag}`;
     });
 
     return query;

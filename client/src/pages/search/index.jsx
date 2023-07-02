@@ -22,22 +22,26 @@ const SearchPage = () => {
 
   const searchKeyword = searchParams.get("keyword");
   const tags = searchParams
-    .getAll("tag")
+    .getAll("tags")
     .map((tag) => ({ name: tag, id: uuidv4() }));
-
-  const { handleSearch } = useArticleSearch();
 
   useEffect(() => {
     search(searchKeyword);
   }, []);
 
   const search = async (keyword) => {
-    const { data, pageInfo } = await articleApi.search({
-      keyword,
-      page: currentPage,
-    });
-    setArticles(data);
-    setArticlePageInfo(pageInfo);
+    try {
+      const tagsParams = tags.map((tag) => tag.name);
+      const { data, pageInfo } = await articleApi.search({
+        keyword,
+        tags: tagsParams,
+        page: currentPage,
+      });
+      setArticles(data);
+      setArticlePageInfo(pageInfo);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleClickNext = () => {
