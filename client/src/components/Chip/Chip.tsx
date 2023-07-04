@@ -1,3 +1,4 @@
+import { DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "clsx";
 import { StrictPropsWithChildren } from "@/types";
 
@@ -11,7 +12,8 @@ const sizes = {
   md: "h-8 px-3.5",
 };
 
-export interface ChipProps {
+export interface ChipProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
   styleName?: keyof typeof styleNames;
   size?: keyof typeof sizes;
   className?: string;
@@ -22,17 +24,19 @@ export const Chip = ({
   size = "md",
   className = "",
   children,
+  ...props
 }: StrictPropsWithChildren<ChipProps>) => {
   return (
-    <div
+    <span
       className={clsx(
         "flex justify-center items-center rounded",
         styleNames[styleName],
         sizes[size],
         className
       )}
+      {...props}
     >
       {children}
-    </div>
+    </span>
   );
 };
