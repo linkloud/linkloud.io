@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
-
 import { Spinner, SpinnerProps } from "../Spinner";
+import { StrictPropsWithChildren } from "@/types";
 
 const styleNames = {
   solid:
@@ -38,7 +38,7 @@ export const Button = ({
   className = "",
   children,
   ...props
-}: ButtonProps) => {
+}: StrictPropsWithChildren<ButtonProps>) => {
   const spinnerStyle: SpinnerProps["styleName"] =
     styleName === "solid" || styleName === "solid-warn" ? "light" : "primary";
   const spinnerSize: SpinnerProps["size"] =
