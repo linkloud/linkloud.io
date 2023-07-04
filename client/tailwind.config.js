@@ -1,3 +1,5 @@
+const plugin = require("tailwindcss/plugin");
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -38,5 +40,30 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".link-shadow-xs": {
+          "box-shadow":
+            "0px 3px 4px -2px rgba(18, 18, 23, 0.06), 0px 0px 0px 1px rgba(18, 18, 23, 0.03)",
+        },
+        ".link-shadow-sm": {
+          "box-shadow":
+            " 0px 5px 8px -2px rgba(18, 18, 23, 0.10), 0px 0px 0px 1px rgba(18, 18, 23, 0.03)",
+        },
+        ".link-shadow-md": {
+          "box-shadow":
+            "0px 6px 10px -2px rgba(18, 18, 23, 0.15), 0px 0px 0px 1px rgba(18, 18, 23, 0.03)",
+        },
+        ".link-shadow-lg": {
+          "box-shadow":
+            "0px 8px 15px -2px rgba(18, 18, 23, 0.20), 0px 0px 0px 1px rgba(18, 18, 23, 0.03)",
+        },
+        ".link-shadow-xl": {
+          "box-shadow":
+            "0px 10px 20px -2px rgba(18, 18, 23, 0.23), 0px 0px 0px 1px rgba(18, 18, 23, 0.03)",
+        },
+      });
+    }),
+  ],
 };
