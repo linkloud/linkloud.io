@@ -11,7 +11,7 @@ const sizes = {
   md: "h-8 px-3.5",
 };
 
-export interface ChipProp {
+export interface ChipProps {
   styleName?: keyof typeof styleNames;
   size?: keyof typeof sizes;
   className?: string;
@@ -22,11 +22,11 @@ export const Chip = ({
   size = "md",
   className = "",
   children,
-}: StrictPropsWithChildren<ChipProp>) => {
+}: StrictPropsWithChildren<ChipProps>) => {
   return (
     <div
       className={clsx(
-        "flex justify-center items-center rounded ",
+        "flex justify-center items-center rounded",
         styleNames[styleName],
         sizes[size],
         className
