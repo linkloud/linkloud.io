@@ -14,6 +14,19 @@ export default {
           700: "#3751A9",
           800: "#233788",
           900: "#152471",
+          high: "#7291ED",
+          medium: "#5276CE",
+          low: "#FBFCFF",
+        },
+        success: {
+          high: "#67AA0C",
+          medium: "#81C611",
+          low: "#A8DC45",
+        },
+        warn: {
+          high: "#DB402E",
+          medium: "#FF623F",
+          low: "#FF946F",
         },
       },
       maxWidth: {
