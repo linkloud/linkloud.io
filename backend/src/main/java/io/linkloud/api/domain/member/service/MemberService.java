@@ -42,7 +42,7 @@ public class MemberService {
             .orElseGet(() -> {
                 Member newMember = Member.builder()
                     .email(userInfo.getEmail())
-                    .role(Role.NEW_MEMBER)
+                    .role(Role.MEMBER) // NEW_MEMBER -> MEMBER 임시 수정
                     .nickname(extractedName)
                     .socialType(userInfo.getSocialType())
                     .picture(userInfo.getPicture())

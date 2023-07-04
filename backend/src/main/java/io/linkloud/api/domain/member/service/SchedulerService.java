@@ -21,7 +21,9 @@ public class SchedulerService {
 
     // todo : 쿼리 성능 개선 필요
     // 매일 새벽 4시에 실행 (cron 표현식 참고)
-    @Scheduled(cron = "0 0 4 * * ?")
+    // @Scheduled(cron = "0 0 4 * * ?")
+    // 사용자가 많아지면 하는걸로
+    @Deprecated
     @Transactional
     public void updateMemberRoleToUser() {
 
