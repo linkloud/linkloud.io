@@ -12,7 +12,7 @@ export const Dimmed = ({
   return (
     <div
       onClick={onClick}
-      className="fixed inset-0 w-full h-screen cursor-pointer bg-black opacity-30 z-10"
+      className="fixed flex justify-center inset-0 cursor-pointer bg-black bg-opacity-20 z-20"
     >
       {children}
     </div>
