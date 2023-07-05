@@ -25,12 +25,14 @@ const sizes = {
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  name: string;
   styleName?: keyof typeof styleNames;
   size?: keyof typeof sizes;
   isLoading?: boolean;
 }
 
 export const Button = ({
+  name,
   type = "button",
   styleName = "solid",
   size = "md",
@@ -46,6 +48,7 @@ export const Button = ({
 
   return (
     <button
+      aria-label={name}
       className={clsx(
         "flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed border rounded-md font-medium",
         sizes[size],
