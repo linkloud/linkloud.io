@@ -17,6 +17,11 @@ import java.util.Set;
 import lombok.Getter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 
 /**
@@ -90,23 +95,28 @@ public class DiscordWebhook {
             json.put("embeds", embedObjects.toArray());
         }
 
+        WebClient webClient = WebClient.builder()
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(HttpHeaders.USER_AGENT, "Java-DiscordWebhook-BY-LINKLOUD-IO")
 
-        URL url = new URL(this.url);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
+            .build();
 
-        OutputStream stream = connection.getOutputStream();
-        stream.write(json.toString().getBytes());
-        stream.flush();
-        stream.close();
-
-        connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
-        connection.disconnect();
+        Mono<Void> responseMono = webClient.post()
+            .uri(this.url)
+            .body(BodyInserters.fromValue(json.toString()))
+            .retrieve()
+            .bodyToMono(Void.class);
 
 
+        responseMono.then()
+            .doOnSuccess(nil -> {
+                log.info("디스코드에 성공적으로 500에러 메세지가 전송되었습니다");
+            })
+            .doOnError(error -> {
+                // Action to perform if an error occurs during the Mono<Void> operation
+                log.error("디스코드 메세지 전송 실패 : {}" ,error.getMessage());
+            })
+            .subscribe();
     }
 
     @Getter
