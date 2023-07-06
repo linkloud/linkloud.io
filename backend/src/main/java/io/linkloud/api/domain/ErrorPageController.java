@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ErrorPageController implements ErrorController {
 
 
-    @RequestMapping(value = "/error")
-    public String errorPages() {
-        return "redirect:/404";
-    }
+//    @RequestMapping(value = "/error")
+//    public String errorPages() {
+//        return "redirect:/404";
+//    }
 
 }
