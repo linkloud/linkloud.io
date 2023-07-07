@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { RouterProvider } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -10,8 +11,11 @@ import useAuthStore from "./stores/useAuthStore";
 import "./App.css";
 
 const App = () => {
-  const initUserInfo = useAuthStore((state) => state.initUserInfo);
-  initUserInfo();
+  const refresh = useAuthStore((state) => state.refresh);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   return (
     <HelmetProvider>

@@ -4,9 +4,9 @@ interface Return<T> {
   ref: React.RefObject<T>;
 }
 
-function useScrollToElement<T extends HTMLElement>(
+const useScrollToElement = <T extends HTMLElement>(
   dependencies: DependencyList
-): Return<T> {
+): Return<T> => {
   const ref = useRef<T>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -21,6 +21,6 @@ function useScrollToElement<T extends HTMLElement>(
   }, []);
 
   return { ref };
-}
+};
 
 export default useScrollToElement;

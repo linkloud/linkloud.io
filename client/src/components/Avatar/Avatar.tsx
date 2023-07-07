@@ -1,3 +1,4 @@
+import { AnchorHTMLAttributes } from "react";
 import clsx from "clsx";
 
 import { userProfile } from "@/assets/images";
@@ -8,7 +9,7 @@ const sizes = {
   lg: "x-14 h-14",
 };
 
-export interface AvatarProps {
+export interface AvatarProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   nickname: string;
   profileImage: string | null;
   size?: keyof typeof sizes;
@@ -18,9 +19,10 @@ export const Avatar = ({
   nickname,
   profileImage,
   size = "md",
+  ...props
 }: AvatarProps) => {
   return (
-    <a className={`bg-gray-200 rounded-full cursor-pointer`}>
+    <a className={`bg-gray-200 rounded-full cursor-pointer`} {...props}>
       <img
         src={profileImage || userProfile}
         alt={nickname}
