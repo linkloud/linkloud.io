@@ -76,7 +76,7 @@ export const DefaultHeader = () => {
               )}
             </li>
             <li className="hidden md:inline-flex">
-              <NavLink to="/links/reg" onClick={handleRegisterLink}>
+              <NavLink to="/links/reg" onClick={(e) => handleRegisterLink(e)}>
                 링크 등록
               </NavLink>
             </li>
