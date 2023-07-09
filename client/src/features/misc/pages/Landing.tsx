@@ -55,7 +55,10 @@ const Landing = () => {
         </h1>
         <p className="my-3 text-md md:text-lg text-neutral-50">
           지금까지
-          <Counter end={100} className="text-md md:text-lg text-neutral-50" />
+          <Counter
+            end={articlesPageInfo.totalElements}
+            className="text-md md:text-lg text-neutral-50"
+          />
           개의 링크가 모였습니다
         </p>
       </section>
