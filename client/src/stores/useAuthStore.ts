@@ -26,7 +26,7 @@ const initialUserInfo: Member = {
 };
 
 const useAuthStore = create<AuthState>()((set, get) => ({
-  loading: false,
+  loading: true,
   token: "",
   userInfo: {
     ...initialUserInfo,
