@@ -36,7 +36,7 @@ export const SearchMenu = ({ onSearch, onClose }: SearchMenuProps) => {
 
   return (
     <>
-      <section className="fixed left-0 mt-4 h-60 w-full bg-white shadow-xl">
+      <section className="fixed left-0 mt-4 h-60 w-full bg-white shadow-xl z-[5] animate-fade-down animate-once animate-duration-300 animate-ease-out">
         <div className="mx-auto w-full max-w-7xl px-6">
           <h1 className="sr-only">검색하기</h1>
           <div className="pt-8">
@@ -66,7 +66,7 @@ export const SearchMenu = ({ onSearch, onClose }: SearchMenuProps) => {
 
       <Portal elementId="root">
         <div
-          className="fixed inset-0 h-full w-full blur backdrop-blur-sm z-[5]"
+          className="fixed inset-0 h-full w-full blur backdrop-blur-sm z-[5] animate-fade animate-once animate-duration-300 animate-ease-linear"
           onClick={onClose}
         ></div>
       </Portal>
