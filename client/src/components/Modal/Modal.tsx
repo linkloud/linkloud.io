@@ -28,30 +28,28 @@ export const Modal = ({
   }, [isOpened]);
 
   return (
-    isOpened && (
-      <Portal elementId="modal">
-        <div>
-          <Dimmed>
-            <section className="fixed inset-0 sm:inset-auto sm:top-1/4 z-50 bg-white rounded-md link-shadow-xl">
-              <h1 className="sr-only">{name}</h1>
+    <Portal elementId="modal">
+      <div className={isOpened ? "block" : "hidden"}>
+        <Dimmed>
+          <section className="fixed inset-0 sm:inset-auto sm:top-1/4 z-50 bg-white rounded-md link-shadow-xl animate-fade-up animate-once animate-duration-300 animate-ease-out">
+            <h1 className="sr-only">{name}</h1>
 
-              <header className="flex justify-end pt-5 px-6">
-                <button
-                  aria-label={`${name} 닫기`}
-                  type="button"
-                  className="flex justify-center items-center p-2"
-                  onClick={onClose}
-                >
-                  <XIcon className="h-6 w-6 stroke-neutral-600" />
-                  <span className="sr-only">닫기</span>
-                </button>
-              </header>
+            <header className="flex justify-end pt-5 px-6">
+              <button
+                aria-label={`${name} 닫기`}
+                type="button"
+                className="flex justify-center items-center p-2"
+                onClick={onClose}
+              >
+                <XIcon className="h-6 w-6 stroke-neutral-600" />
+                <span className="sr-only">닫기</span>
+              </button>
+            </header>
 
-              {children}
-            </section>
-          </Dimmed>
-        </div>
-      </Portal>
-    )
+            {children}
+          </section>
+        </Dimmed>
+      </div>
+    </Portal>
   );
 };
