@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -16,8 +16,14 @@ const useHeader = () => {
     setIsAuthModalVisible(state);
   };
 
-  const handleRegisterLink = () => {
-    if (!userInfo.role || userInfo.role === "USER") setIsAuthModalVisible(true);
+  const handleRegisterLink = (e: MouseEvent) => {
+    e.preventDefault();
+
+    if (userInfo.role === "USER") {
+      setIsAuthModalVisible(true);
+      return;
+    }
+
     navigate("/links/reg");
   };
 
