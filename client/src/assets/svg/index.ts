@@ -1,0 +1,14 @@
+export { ReactComponent as Logo } from "./logo.svg";
+export { ReactComponent as LoadingIcon } from "./loading.svg";
+export { ReactComponent as SearchIcon } from "./search.svg";
+export { ReactComponent as ChevronRightIcon } from "./chevron-right.svg";
+export { ReactComponent as GoogleIcon } from "./google.svg";
+export { ReactComponent as XIcon } from "./x.svg";
+export { ReactComponent as EditIcon } from "./edit.svg";
+export { ReactComponent as HeartIcon } from "./heart.svg";
+export { ReactComponent as HeartFillIcon } from "./heart-fill.svg";
+export { ReactComponent as TrashIcon } from "./trash.svg";
+export { ReactComponent as UserIcon } from "./user.svg";
+export { ReactComponent as InboxIcon } from "./inbox.svg";
+export { ReactComponent as CopyIcon } from "./copy.svg";
+export { ReactComponent as PlusIcon } from "./plus.svg";
