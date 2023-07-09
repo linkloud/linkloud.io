@@ -111,7 +111,7 @@ export const DefaultHeader = () => {
                     onMouseLeave={handleLeaveAvatar}
                   >
                     <ActionMenu>
-                      <ActionMenuItem to="/box">
+                      {/* <ActionMenuItem to="/box">
                         <InboxIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
                         보관함
                       </ActionMenuItem>
@@ -122,7 +122,7 @@ export const DefaultHeader = () => {
                       <ActionMenuItem to="/likes">
                         <HeartIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
                         좋아요
-                      </ActionMenuItem>
+                      </ActionMenuItem> */}
                       <ActionMenuItem to="#" onClick={handleLogout}>
                         로그아웃
                       </ActionMenuItem>
