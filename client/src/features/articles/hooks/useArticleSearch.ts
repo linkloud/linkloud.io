@@ -29,7 +29,6 @@ export const useArticleSearch = ({ page = 1 }) => {
       setArticles(data);
       setPageInfo(pageInfo);
     } catch (e) {
-      console.log(e);
     } finally {
       setLoading(false);
     }

@@ -22,7 +22,7 @@ const PrivateRoute = ({ children }: StrictPropsWithChildren) => {
       toast.error("로그인이 필요합니다.");
       navigate("/", { replace: true });
     }
-  }, [navigate, token, isAuthLoading]);
+  }, [token, isAuthLoading]);
 
   return children;
 };

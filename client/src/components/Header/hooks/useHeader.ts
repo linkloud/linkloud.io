@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/useAuthStore";
 
@@ -31,7 +32,9 @@ const useHeader = () => {
   const handleLogout = async () => {
     try {
       await logout();
-    } catch (e) {}
+    } catch (e) {
+      toast.error("로그아웃에 실패했습니다");
+    }
   };
 
   return {

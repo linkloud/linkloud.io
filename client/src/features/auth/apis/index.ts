@@ -21,7 +21,7 @@ const authApi = {
   },
 
   logout() {
-    return request.get<void>("/auth/logout");
+    return request.post<void>("/auth/logout");
   },
 };
 

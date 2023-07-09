@@ -57,7 +57,6 @@ export const useArticleReg = () => {
     }
 
     setFormErrorMessage(errorMessages);
-    console.log(errorMessages);
     return !Object.values(errorMessages).some(
       (errorMessage) => errorMessage !== ""
     );

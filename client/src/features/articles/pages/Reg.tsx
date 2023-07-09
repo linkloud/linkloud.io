@@ -23,7 +23,6 @@ const Reg = () => {
   } = useArticleReg();
 
   const handleAddTags = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.id);
     if (e.key === "Enter" && e.currentTarget.id === "tag") {
       e.preventDefault();
       handleAddTag();
