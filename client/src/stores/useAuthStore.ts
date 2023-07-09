@@ -42,7 +42,6 @@ const useAuthStore = create<AuthState>()((set, get) => ({
   },
   refresh: async () => {
     try {
-      if (get().loading) return;
       set({ loading: true });
 
       const { data } = await authApi.refresh();
