@@ -1,8 +1,12 @@
 package io.linkloud.api.global.advice;
 
+
+import io.linkloud.api.domain.discord.service.DiscordWebhookService;
 import io.linkloud.api.global.common.ErrorResponse;
 import io.linkloud.api.global.exception.CustomException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +20,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+@RequiredArgsConstructor
 @Slf4j
 @RestControllerAdvice
 public class ExceptionAdvice {
+
+
+    private final DiscordWebhookService discordWebhookService;
+
     // 요청 바디 필드 유효성 검증 예외 처리
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException e) {
+        MethodArgumentNotValidException e) {
 
         return ErrorResponse.of(e.getBindingResult());
     }
@@ -98,9 +107,11 @@ public class ExceptionAdvice {
     // 반드시 로그를 기록하고, 관리자에게 알림을 줄 것.
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception e) {
+    public ErrorResponse handleException(HttpServletRequest req,Exception e) {
         log.error("# handle Exception", e);
-
+        discordWebhookService.sendMessage(e,req);
         return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 }

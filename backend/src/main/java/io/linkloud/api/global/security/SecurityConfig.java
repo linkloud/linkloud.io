@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -35,6 +36,7 @@ public class SecurityConfig {
                 logout -> logout
                     .logoutUrl("/api/v1/auth/logout")
                     .logoutSuccessHandler(new LogoutSuccessHandler())
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/api/v1/auth/logout","POST"))
             )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter 클래스를 먼저 실행하도록 설정
                 .authorizeHttpRequests(authorize -> authorize

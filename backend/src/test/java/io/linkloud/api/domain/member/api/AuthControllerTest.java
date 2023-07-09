@@ -280,7 +280,7 @@ class AuthControllerTest {
         Cookie tempCookie = new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc");
         tempCookie.setMaxAge(10000);
 
-        ResultActions actions = mockMvc.perform(get(BASE_URL + "/logout")
+        ResultActions actions = mockMvc.perform(post(BASE_URL + "/logout")
                 .cookie(tempCookie)
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
