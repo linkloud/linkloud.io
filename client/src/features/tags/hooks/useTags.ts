@@ -27,7 +27,7 @@ export const useTags = ({
       const { data, pageInfo } = await tagApi.getList({ page, size, sortBy });
       setTags(data);
       setPageInfo(pageInfo);
-    } catch (e) {
+    } catch (e: any) {
       setError(e);
     } finally {
       setLoading(false);

@@ -14,7 +14,7 @@ export const useArticle = () => {
       if (data.url) {
         window.open(data.url, "_blank", "noreferrer");
       }
-    } catch (e) {
+    } catch (e: any) {
       setError(e);
     } finally {
       setLoading(false);

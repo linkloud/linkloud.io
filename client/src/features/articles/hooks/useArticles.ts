@@ -22,7 +22,7 @@ export const useArticles = ({ page = 1 }: GetArticlesRequest) => {
       const { data, pageInfo } = await articleApi.getList({ page });
       setArticles(data);
       setPageInfo(pageInfo);
-    } catch (e) {
+    } catch (e: any) {
       setError(e);
     } finally {
       setLoading(false);

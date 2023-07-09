@@ -134,8 +134,8 @@ export const useArticleReg = () => {
     try {
       await articleApi.create(form);
       navigate("/");
-    } catch (error) {
-      setError(error);
+    } catch (e: any) {
+      setError(e);
     } finally {
       setLoading(false);
     }
