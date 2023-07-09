@@ -19,9 +19,10 @@ public class SchedulerService {
 
     private final MemberRepository memberRepository;
 
-    // todo : 쿼리 성능 개선 필요
+    // todo : 현재 사용하지 않음
     // 매일 새벽 4시에 실행 (cron 표현식 참고)
-    @Scheduled(cron = "0 0 4 * * ?")
+    // @Scheduled(cron = "0 0 4 * * ?")
+    @Deprecated
     @Transactional
     public void updateMemberRoleToUser() {
 

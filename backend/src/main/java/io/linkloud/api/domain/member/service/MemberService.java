@@ -42,7 +42,7 @@ public class MemberService {
             .orElseGet(() -> {
                 Member newMember = Member.builder()
                     .email(userInfo.getEmail())
-                    .role(Role.NEW_MEMBER)
+                    .role(Role.MEMBER) // NEW_MEMBER 일경우, 가입 후 3일 글쓰기 제한가능
                     .nickname(extractedName)
                     .socialType(userInfo.getSocialType())
                     .picture(userInfo.getPicture())
