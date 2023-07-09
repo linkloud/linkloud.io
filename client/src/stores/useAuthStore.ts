@@ -41,14 +41,19 @@ const useAuthStore = create<AuthState>()((set, get) => ({
     return;
   },
   refresh: async () => {
-    if (get().loading) return;
-    set({ loading: true });
+    try {
+      if (get().loading) return;
+      set({ loading: true });
 
-    const { data } = await authApi.refresh();
-    get().setToken(data.accessToken);
+      const { data } = await authApi.refresh();
+      get().setToken(data.accessToken);
 
-    await get().fetchUserInfo();
-    set({ loading: false });
+      await get().fetchUserInfo();
+    } catch (e: any) {
+      throw new Error(e.message);
+    } finally {
+      set({ loading: false });
+    }
   },
   logout: async () => {
     await authApi.logout();
