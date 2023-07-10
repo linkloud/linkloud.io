@@ -65,7 +65,7 @@ const Landing = () => {
 
       <section className="w-full max-w-7xl px-6">
         <div className="pt-8 flex justify-between">
-          <h1 className="text-2xl font-semibold">인기 태그</h1>
+          <h1 className="text-lg md:text-2xl font-medium">인기 태그</h1>
           <div className="flex justify-end md:justify-start">
             <Link
               to="tags"
