@@ -65,7 +65,7 @@ public class ArticleController {
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
     @PutMapping("/{articleId}")
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> patchArticle(
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> putArticle(
         @PathVariable Long articleId,
         @LoginMemberId Long memberId,
         @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
