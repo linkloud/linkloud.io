@@ -51,7 +51,7 @@ export const DefaultHeader = () => {
       <Header layout="between">
         <h1>
           <Link to="/">
-            <Logo className="h-14 w-fit" />
+            <Logo className="h-14 w-14" />
             <span className="sr-only">링클라우드</span>
           </Link>
         </h1>
