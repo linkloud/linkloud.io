@@ -67,7 +67,7 @@ class ArticleServiceTest {
     );
 
     ArticleUpdateDto articleUpdateRequestDto = new ArticleUpdateDto("updateTitle", "updateURL",
-        "updateDesc");
+        "updateDesc", List.of(""));
     @Test
     @DisplayName("게시글 생성 성공")
     public void addArticleSuccess() {
