@@ -103,11 +103,11 @@ export const useArticleReg = () => {
       return;
     }
 
+    setEnteredTagValue("");
     setForm((prev) => ({
       ...prev,
       tags: [...prev.tags, tag],
     }));
-    setEnteredTagValue("");
     setFormErrorMessage((prev) => ({
       ...prev,
       tags: "",
