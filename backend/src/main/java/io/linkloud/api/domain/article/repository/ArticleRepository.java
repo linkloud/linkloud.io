@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {
     /*
@@ -31,5 +33,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
     // 'Join Fetch'로 참조할 멤버 테이블을 매핑.
     @Query(value = "SELECT a FROM Article a JOIN FETCH a.member WHERE a.title LIKE %:keyword% OR a.description LIKE %:keyword% ORDER BY a.createdAt DESC", countQuery = "select count(a) from Article a")
     Page<Article> findArticleByTitleOrDescription(String keyword, Pageable pageable);
+
+    List<Article> findMyArticlesByMemberId(Long memberId);
 
 }
