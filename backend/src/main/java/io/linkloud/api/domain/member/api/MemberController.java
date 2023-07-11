@@ -3,6 +3,7 @@ package io.linkloud.api.domain.member.api;
 
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
+import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
@@ -11,11 +12,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/api/v1/member")
@@ -39,6 +38,15 @@ public class MemberController {
     ) {
         memberService.updateNickname(loginMemberId,requestNicknameDto);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{memberId}/articles")
+    public ResponseEntity<SingleDataResponse<List<MyArticlesResponseDto>>> getMyArticlesByMemberId(
+            @PathVariable Long memberId,
+            @LoginMemberId Long extractedMemberId){
+        List<MyArticlesResponseDto> articleResponseDto =
+                memberService.fetchMyArticlesByMemberId(memberId,extractedMemberId);
+        return ResponseEntity.ok(new SingleDataResponse<>(articleResponseDto));
     }
 
 }
