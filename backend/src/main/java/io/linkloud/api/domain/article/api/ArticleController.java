@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,8 +64,11 @@ public class ArticleController {
     /** 아티클 수정 */
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
-    @PatchMapping("/{articleId}")
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> patchArticle(@PathVariable Long articleId, @LoginMemberId Long memberId, @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
+    @PutMapping("/{articleId}")
+    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> putArticle(
+        @PathVariable Long articleId,
+        @LoginMemberId Long memberId,
+        @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
         ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId, memberId, articleUpdateDto);
 
         return ResponseEntity.ok(new SingleDataResponse<>(updatedArticleDto));

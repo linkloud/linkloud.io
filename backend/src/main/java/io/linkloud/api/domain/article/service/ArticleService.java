@@ -92,6 +92,14 @@ public class ArticleService {
         validateMemberArticleMatch(member, article);
         article.articleUpdate(updateDto);
 
+        List<ArticleTag> articleTags = new ArrayList<>();
+        if (updateDto.getTags() != null && !updateDto.getTags().isEmpty()) {
+            articleTags = addArticleTagList(updateDto.getTags());
+        }
+
+        article.getArticleTags().clear();
+        article.addArticleTag(articleTags);
+
         return new ArticleResponseDto(article);
     }
 
