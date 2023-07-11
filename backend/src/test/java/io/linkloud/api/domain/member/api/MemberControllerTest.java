@@ -364,4 +364,36 @@ class MemberControllerTest {
                                 fieldWithPath("data[].tags[]").description("해당 회원의 게시글 태그")
                         )));
     }
+
+    @DisplayName("회원 내 게시글 목록 조회 실패")
+    @Test
+    public void getMyArticlesByMemberFail() throws Exception {
+
+        // given
+        Long memberId = 1L;
+
+        doThrow(new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH))
+                .when(memberService).fetchMyArticlesByMemberId(any(Long.class),any(Long.class));
+
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/articles", memberId)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        actions
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andDo(document("member/articles/fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원PK ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("Http 상태 코드"),
+                                fieldWithPath("message").description("{memberId}와 jwt토큰 추출 회원ID가 다름"),
+                                fieldWithPath("fieldErrors").description("필드 에러 리스트"),
+                                fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
+                        )));
+    }
 }
