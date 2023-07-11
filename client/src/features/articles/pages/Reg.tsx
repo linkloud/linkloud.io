@@ -22,8 +22,12 @@ const Reg = () => {
     handleSubmitArticle,
   } = useArticleReg();
 
-  const handleAddTags = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.currentTarget.id === "tag") {
+  const handleTagInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === "Enter" &&
+      e.currentTarget.id === "tag" &&
+      e.nativeEvent.isComposing === false
+    ) {
       e.preventDefault();
       handleAddTag();
     }
@@ -81,7 +85,7 @@ const Reg = () => {
                 errorMessage={formErrorMessage.tags}
                 className="mt-8 w-full"
                 onChange={handleChangeTags}
-                onKeyDown={handleAddTags}
+                onKeyDown={handleTagInputEnter}
               />
             </div>
             <div>
