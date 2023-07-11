@@ -2,6 +2,7 @@ import { ReactNode, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
 import { DefaultHeader } from "../Header";
+import { MobileNavigation } from "../Navigation";
 import { Spinner } from "../Spinner";
 
 export const DefaultLayout = () => {
@@ -13,6 +14,7 @@ export const DefaultLayout = () => {
           <Outlet />
         </Suspense>
       </main>
+      <MobileNavigation />
     </>
   );
 };

@@ -117,14 +117,14 @@ const Reg = () => {
           )}
         </div>
 
-        <div className="">
+        <div>
           <Button
             name="링크 등록"
             type="submit"
             size="lg"
             styleName="solid"
             disabled={false}
-            className="fixed md:static bottom-4 w-[calc(100%-3rem)] md:w-full md:mt-8"
+            className="fixed md:static bottom-20 w-[calc(100%-3rem)] md:w-full md:mt-8"
             onClick={handleSubmitArticle}
           >
             등록
