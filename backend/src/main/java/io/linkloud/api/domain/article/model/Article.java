@@ -46,9 +46,8 @@ public class Article extends Auditable {
     @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
     private List<ArticleTag> articleTags = new ArrayList<>();
 
-
     @Enumerated(EnumType.STRING)
-    private ArticleStatus articleStatus;
+    private ArticleStatus articleStatus = ArticleStatus.UNREAD;
 
     /** 생성자 */
     @Builder
