@@ -23,7 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
+import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
@@ -83,6 +85,11 @@ class MemberControllerTest {
 
     @Autowired
     private Gson gson;
+
+    MyArticlesResponseDto article1dto;
+    MyArticlesResponseDto article2dto;
+    List<MyArticlesResponseDto> articleResponseDto  = new ArrayList<>();
+
     @BeforeEach
     void setUp() {
         when(member.getId()).thenReturn(1L);
@@ -93,7 +100,68 @@ class MemberControllerTest {
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
 
         accessToken = jwtProvider.generateAccessToken(member.getId(), member.getSocialType());
+
+
+        Article article1 = Article.builder()
+                .id(1L)
+                .title("게시글1의 제목")
+                .url("게시글1의 url")
+                .description("게시글1의 설명")
+                .build();
+
+        Article article2 = Article.builder()
+                .id(1L)
+                .title("게시글2의 제목")
+                .url("게시글2의 url")
+                .description("게시글2의 설명")
+                .build();
+
+        Tag tag1 = Tag.builder()
+                .name("첫번째태그")
+                .build();
+
+
+        Tag tag2 = Tag.builder()
+                .name("두번째태그")
+                .build();
+
+        ArticleTag articleTag1_1 = ArticleTag.builder()
+                .article(article1)
+                .tag(tag1)
+                .build();
+
+        ArticleTag articleTag1_2 = ArticleTag.builder()
+                .article(article1)
+                .tag(tag2)
+                .build();
+
+        ArticleTag articleTag2_1 = ArticleTag.builder()
+                .article(article1)
+                .tag(tag1)
+                .build();
+
+        ArticleTag articleTag2_2 = ArticleTag.builder()
+                .article(article1)
+                .tag(tag2)
+                .build();
+
+
+
+        article1.getArticleTags().add(articleTag1_1);
+        article1.getArticleTags().add(articleTag1_2);
+
+        article2.getArticleTags().add(articleTag2_1);
+        article2.getArticleTags().add(articleTag2_2);
+
+
+        article1dto = new MyArticlesResponseDto(article1);
+        article2dto = new MyArticlesResponseDto(article2);
+
+
+        articleResponseDto.add(article1dto);
+        articleResponseDto.add(article2dto);
     }
+
 
     @AfterEach
     public void cleanUp() {
@@ -280,67 +348,6 @@ class MemberControllerTest {
         Long memberId = 1L;
         Long extractedMemberId = 1L;
 
-        Article article1 = Article.builder()
-                .id(memberId)
-                .title("게시글1의 제목")
-                .url("게시글1의 url")
-                .description("게시글1의 설명")
-                .build();
-
-        Article article2 = Article.builder()
-                .id(memberId)
-                .title("게시글2의 제목")
-                .url("게시글2의 url")
-                .description("게시글2의 설명")
-                .build();
-
-        Tag tag1 = Tag.builder()
-                .name("첫번째태그")
-                .build();
-
-
-        Tag tag2 = Tag.builder()
-                .name("두번째태그")
-                .build();
-
-        ArticleTag articleTag1_1 = ArticleTag.builder()
-                .article(article1)
-                .tag(tag1)
-                .build();
-
-        ArticleTag articleTag1_2 = ArticleTag.builder()
-                .article(article1)
-                .tag(tag2)
-                .build();
-
-        ArticleTag articleTag2_1 = ArticleTag.builder()
-                .article(article1)
-                .tag(tag1)
-                .build();
-
-        ArticleTag articleTag2_2 = ArticleTag.builder()
-                .article(article1)
-                .tag(tag2)
-                .build();
-
-
-
-        article1.getArticleTags().add(articleTag1_1);
-        article1.getArticleTags().add(articleTag1_2);
-
-        article2.getArticleTags().add(articleTag2_1);
-        article2.getArticleTags().add(articleTag2_2);
-
-
-        MyArticlesResponseDto article1dto = new MyArticlesResponseDto(article1);
-        MyArticlesResponseDto article2dto = new MyArticlesResponseDto(article2);
-
-
-        List<MyArticlesResponseDto> articleResponseDto = new ArrayList<>();
-        articleResponseDto.add(article1dto);
-        articleResponseDto.add(article2dto);
-
-
         given(memberService.fetchMyArticlesByMemberId(memberId, extractedMemberId)).willReturn(articleResponseDto);
 
         ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/articles", memberId)
@@ -397,4 +404,6 @@ class MemberControllerTest {
                                 fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
                         )));
     }
+
+
 }
