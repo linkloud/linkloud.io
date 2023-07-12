@@ -191,6 +191,7 @@ class MemberControllerTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 responseFields(
+                    fieldWithPath("data.id").description("회원의 PK ID"),
                     fieldWithPath("data.nickname").description("회원의 닉네임."),
                     fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
                     fieldWithPath("data.role").description("가입한지 3일 이내 회원의 권한")
@@ -214,6 +215,7 @@ class MemberControllerTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 responseFields(
+                    fieldWithPath("data.id").description("회원의 PK ID"),
                     fieldWithPath("data.nickname").description("회원의 닉네임."),
                     fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
                     fieldWithPath("data.role").description("가입한지 3일 지난 회원의 권한")
