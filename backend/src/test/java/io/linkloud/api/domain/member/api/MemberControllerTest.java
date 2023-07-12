@@ -361,7 +361,8 @@ class MemberControllerTest {
                                 fieldWithPath("data[].title").description("해당 회원의 게시글 제목"),
                                 fieldWithPath("data[].url").description("해당 회원의 게시글 url"),
                                 fieldWithPath("data[].description").description("해당 회원의 게시글 설명"),
-                                fieldWithPath("data[].tags[]").description("해당 회원의 게시글 태그")
+                                fieldWithPath("data[].tags[]").description("해당 회원의 게시글 태그"),
+                                fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD,READING,READ]")
                         )));
     }
 
