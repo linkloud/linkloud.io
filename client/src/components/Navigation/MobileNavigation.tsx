@@ -17,6 +17,8 @@ import {
 } from "@/assets/svg";
 import { AuthModal } from "../Auth";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 const activeColor = "stroke-primary-high fill-primary-high";
 const inactiveColor = "stroke-gray-400 ";
 
@@ -24,21 +26,21 @@ const links = [
   {
     id: 1,
     name: "홈",
-    to: "/",
+    to: ROUTE_PATH.LANDING,
     inactive: <HomeIcon className={inactiveColor} />,
     active: <HomeFillIcon className={activeColor} />,
   },
-  // {
-  //   id: 2,
-  //   name: "내 링크",
-  //   to: "/library/links",
-  //   inactive: <InboxIcon className={inactiveColor} />,
-  //   active: <InboxFillIcon className={activeColor} />,
-  // },
+  {
+    id: 2,
+    name: "내 링크",
+    to: ROUTE_PATH.LIBRARY.LINKS,
+    inactive: <InboxIcon className={inactiveColor} />,
+    active: <InboxFillIcon className={activeColor} />,
+  },
   {
     id: 3,
     name: "등록",
-    to: "/links/reg",
+    to: ROUTE_PATH.LINK.REG,
     inactive: <PlusIcon className={inactiveColor} />,
     active: <PlusIcon className={activeColor} />,
   },

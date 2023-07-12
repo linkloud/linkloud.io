@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import useAuthStore from "@/stores/useAuthStore";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 const useMobileNavigation = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
 
@@ -25,7 +27,7 @@ const useMobileNavigation = () => {
       return;
     }
 
-    navigate("/links/reg");
+    navigate(ROUTE_PATH.LINK.REG);
   };
 
   return {

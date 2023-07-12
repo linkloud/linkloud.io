@@ -9,6 +9,8 @@ import { StrictPropsWithChildren } from "@/types";
 
 const LinksReg = lazy(() => import("@/features/articles/pages/Reg"));
 
+import { ROUTE_PATH } from "./constants";
+
 const PrivateRoute = ({ children }: StrictPropsWithChildren) => {
   const { token, isAuthLoading } = useAuthStore((state) => ({
     token: state.token,
@@ -37,7 +39,7 @@ export const privateRoutes: RouteObject[] = [
     ),
     children: [
       {
-        path: "/links/reg",
+        path: ROUTE_PATH.LINK.REG,
         index: true,
         element: <LinksReg />,
       },
