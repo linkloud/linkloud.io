@@ -13,9 +13,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.google.gson.Gson;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
+import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
@@ -49,6 +48,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -405,5 +406,48 @@ class MemberControllerTest {
                         )));
     }
 
+    @DisplayName("회원 게시글 상태 변경 성공")
+    @ParameterizedTest
+    @EnumSource(ArticleStatus.class)
+    public void updateMyArticleStatusSuccess() throws Exception {
 
+        // given
+        Long memberId = 1L;
+        Long articleId = 1L;
+
+        ArticleStatus articleStatus = ArticleStatus.READ;
+
+        ArticleStatusRequest articleStatusRequest = new ArticleStatusRequest();
+        articleStatusRequest.setArticleStatus(articleStatus);
+
+        // when
+        when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
+                .thenReturn(new ArticleStatusResponse(articleId,articleStatus.name()));
+
+
+        String json = gson.toJson(articleStatusRequest);
+        ResultActions actions = mockMvc.perform(patch(BASE_URL + "/{memberId}/article-status/{articleId}", memberId,articleId)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON));
+
+        actions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("member/article/status/success",
+                        preprocessRequest(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원PK ID"),
+                                parameterWithName("articleId").description("변경할 게시글PK ID")
+
+                        ),
+                        requestFields(
+                                fieldWithPath("articleStatus").description("변경할 게시글 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
+                                fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
+                        )));
+    }
 }
