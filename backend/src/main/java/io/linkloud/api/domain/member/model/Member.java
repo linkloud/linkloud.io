@@ -1,20 +1,17 @@
 package io.linkloud.api.domain.member.model;
 
 
+import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.global.audit.Auditable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -54,7 +51,8 @@ public class Member extends Auditable {
     @Column(name = "member_role", nullable = false)
     private Role role;
 
-
+    @OneToMany(mappedBy = "member")
+    private List<Article> myArticles = new ArrayList<>();
     // 닉네임 변경
     public void updateNickname(String nickname) {
         this.nickname = nickname;

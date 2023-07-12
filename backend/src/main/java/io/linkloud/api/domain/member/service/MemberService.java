@@ -1,8 +1,11 @@
 package io.linkloud.api.domain.member.service;
 
+import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
+import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.repository.MemberRepository;
@@ -14,12 +17,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final ArticleRepository articleRepository;
 
     // #1 멤버 회원가입
     @Transactional
@@ -102,6 +109,31 @@ public class MemberService {
     private void isNicknameDuplicated(String nickname) {
         if (memberRepository.existsByNickname(nickname)) {
             throw new CustomException(LogicExceptionCode.MEMBER_ALREADY_EXISTS);
+        }
+    }
+
+
+    /**
+     *
+     * @param memberId PathVariable
+     * @param extractedMemberId JWT Token extracted MemberID
+     * @return  member's articles List
+     */
+    @Transactional(readOnly = true)
+    public List<MyArticlesResponseDto> fetchMyArticlesByMemberId(Long memberId, Long extractedMemberId) {
+        validateMember(memberId, extractedMemberId);
+        List<Article> myArticles = articleRepository.findMyArticlesByMemberId(memberId);
+        return myArticles
+                .stream()
+                .map(MyArticlesResponseDto::new)
+                .toList();
+    }
+
+
+    /** 요청한 회원 ID 와 액세스토큰에서 추출한 ID 가 같은지 비교*/
+    private void validateMember(Long memberId, Long extractedMemberId) {
+        if (!memberId.equals(extractedMemberId)) {
+            throw new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH);
         }
     }
 }

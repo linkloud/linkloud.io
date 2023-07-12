@@ -252,6 +252,48 @@ include::{snippets}/member/me/fail/notfound/response-fields.adoc[]
 .response-body
 include::{snippets}/member/me/fail/notfound/response-body.adoc[]
 
+=== 회원 내 게시글 목록 조회
+
+==== 성공
+.curl-request
+include::{snippets}/member/articles/success/curl-request.adoc[]
+
+.path-parameters
+include::{snippets}/member/articles/success/path-parameters.adoc[]
+
+.http-request
+include::{snippets}/member/articles/success/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/articles/success/http-response.adoc[]
+
+.response-body
+include::{snippets}/member/articles/success/response-body.adoc[]
+
+.request-fields
+include::{snippets}/member/articles/success/request-fields.adoc[]
+
+.response-fields
+include::{snippets}/member/articles/success/response-fields.adoc[]
+
+==== 실패, {memberId} 와 jwt 토큰 회원 ID 가 다름
+.curl-request
+include::{snippets}/member/articles/fail/curl-request.adoc[]
+
+.path-parameters
+include::{snippets}/member/articles/fail/path-parameters.adoc[]
+
+.http-request
+include::{snippets}/member/articles/fail/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/articles/fail/http-response.adoc[]
+
+.response-body
+include::{snippets}/member/articles/fail/response-body.adoc[]
+
+.response-fields
+include::{snippets}/member/articles/fail/response-fields.adoc[]
 
 === 회원 닉네임 변경
 
