@@ -415,27 +415,26 @@ class MemberControllerTest {
         Long memberId = 1L;
         Long articleId = 1L;
 
-        ArticleStatus articleStatus = ArticleStatus.READ;
+        // UNREAD
+        ArticleStatus UNREAD = ArticleStatus.UNREAD;
 
         ArticleStatusRequest articleStatusRequest = new ArticleStatusRequest();
-        articleStatusRequest.setArticleStatus(articleStatus);
+        articleStatusRequest.setArticleStatus(UNREAD);
 
         // when
         when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
-                .thenReturn(new ArticleStatusResponse(articleId,articleStatus.name()));
+                .thenReturn(new ArticleStatusResponse(articleId,UNREAD.name()));
 
 
-        String json = gson.toJson(articleStatusRequest);
-        ResultActions actions = mockMvc.perform(patch(BASE_URL + "/{memberId}/article-status/{articleId}", memberId,articleId)
+        String json_UNREAD = gson.toJson(articleStatusRequest);
+        ResultActions actions_UNREAD = mockMvc.perform(patch(BASE_URL + "/{memberId}/article-status/{articleId}", memberId,articleId)
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-                .accept(MediaType.APPLICATION_JSON));
-
-        actions
+                .content(json_UNREAD)
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("member/article/status/success",
+                .andDo(document("member/article_status/success/UNREAD",
                         preprocessRequest(prettyPrint()),
                         pathParameters(
                                 parameterWithName("memberId").description("회원PK ID"),
@@ -443,11 +442,70 @@ class MemberControllerTest {
 
                         ),
                         requestFields(
-                                fieldWithPath("articleStatus").description("변경할 게시글 상태")
+                                fieldWithPath("articleStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
                                 fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
                                 fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
                         )));
+
+        // READING
+        ArticleStatus READING = ArticleStatus.READING;
+        articleStatusRequest.setArticleStatus(READING);
+        when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
+                .thenReturn(new ArticleStatusResponse(articleId, READING.name()));
+
+        String json_READING = gson.toJson(articleStatusRequest);
+        ResultActions actions_READING = mockMvc.perform(patch(BASE_URL + "/{memberId}/article-status/{articleId}", memberId,articleId)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json_READING)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("member/article_status/success/READING",
+                        preprocessRequest(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원PK ID"),
+                                parameterWithName("articleId").description("변경할 게시글PK ID")
+
+                        ),
+                        requestFields(
+                                fieldWithPath("articleStatus").description("변경할 게시글의 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
+                                fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
+                        )));
+
+        // READ
+        ArticleStatus READ = ArticleStatus.READ;
+        articleStatusRequest.setArticleStatus(READ);
+        when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
+                .thenReturn(new ArticleStatusResponse(articleId, READ.name()));
+
+        String json_READ = gson.toJson(articleStatusRequest);
+        ResultActions actions_READ = mockMvc.perform(patch(BASE_URL + "/{memberId}/article-status/{articleId}", memberId,articleId)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json_READ)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("member/article_status/success/READ",
+                        preprocessRequest(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원PK ID"),
+                                parameterWithName("articleId").description("변경할 게시글PK ID")
+
+                        ),
+                        requestFields(
+                                fieldWithPath("articleStatus").description("변경할 게시글의 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
+                                fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
+                        )));
+
     }
 }
