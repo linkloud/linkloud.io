@@ -1,19 +1,12 @@
 package io.linkloud.api.domain.article.model;
 
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
+import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.global.audit.Auditable;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -53,6 +46,8 @@ public class Article extends Auditable {
     @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
     private List<ArticleTag> articleTags = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private ArticleStatus articleStatus = ArticleStatus.UNREAD;
 
     /** 생성자 */
     @Builder
@@ -86,5 +81,9 @@ public class Article extends Auditable {
             }
         }
         this.articleTags = articleTags;
+    }
+
+    public void updateArticleStatus(ArticleStatusRequest articleStatusRequest) {
+        this.articleStatus = articleStatusRequest.getArticleStatus();
     }
 }

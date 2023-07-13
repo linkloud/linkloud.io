@@ -270,9 +270,6 @@ include::{snippets}/member/articles/success/http-response.adoc[]
 .response-body
 include::{snippets}/member/articles/success/response-body.adoc[]
 
-.request-fields
-include::{snippets}/member/articles/success/request-fields.adoc[]
-
 .response-fields
 include::{snippets}/member/articles/success/response-fields.adoc[]
 
@@ -294,6 +291,65 @@ include::{snippets}/member/articles/fail/response-body.adoc[]
 
 .response-fields
 include::{snippets}/member/articles/fail/response-fields.adoc[]
+
+=== 회원 게시글 상태 변경
+
+==== 성공, UNREAD
+.path-parameters
+include::{snippets}/member/article_status/success/UNREAD/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/member/article_status/success/UNREAD/request-fields.adoc[]
+
+.curl-request
+include::{snippets}/member/article_status/success/UNREAD/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/article_status/success/UNREAD/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/article_status/success/UNREAD/http-response.adoc[]
+
+.request-body
+include::{snippets}/member/article_status/success/UNREAD/request-body.adoc[]
+
+==== 성공, READING
+.path-parameters
+include::{snippets}/member/article_status/success/READING/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/member/article_status/success/READING/request-fields.adoc[]
+
+.curl-request
+include::{snippets}/member/article_status/success/READING/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/article_status/success/READING/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/article_status/success/READING/http-response.adoc[]
+
+.request-body
+include::{snippets}/member/article_status/success/READING/request-body.adoc[]
+
+==== 성공, READ
+.path-parameters
+include::{snippets}/member/article_status/success/READ/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/member/article_status/success/READ/request-fields.adoc[]
+
+.curl-request
+include::{snippets}/member/article_status/success/READ/curl-request.adoc[]
+
+.http-request
+include::{snippets}/member/article_status/success/READ/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/article_status/success/READ/http-response.adoc[]
+
+.request-body
+include::{snippets}/member/article_status/success/READ/request-body.adoc[]
 
 === 회원 닉네임 변경
 

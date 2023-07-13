@@ -1,8 +1,10 @@
 package io.linkloud.api.domain.member.api;
 
 
+import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
+import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.global.common.SingleDataResponse;
@@ -26,27 +28,36 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity<SingleDataResponse<MemberLoginResponse>> findMe(
-        @NonNull @LoginMemberId Long loginMemberId) {
+            @NonNull @LoginMemberId Long loginMemberId) {
         MemberLoginResponse memberLoginResponse = memberService.fetchPrincipal(loginMemberId);
         return ResponseEntity.ok(new SingleDataResponse<>(memberLoginResponse));
     }
 
     @PatchMapping("/nickname")
     public ResponseEntity<Void> updateNickname(
-        @LoginMemberId @NonNull Long loginMemberId,
-        @RequestBody @Valid MemberNicknameRequestDto requestNicknameDto
+            @LoginMemberId @NonNull Long loginMemberId,
+            @RequestBody @Valid MemberNicknameRequestDto requestNicknameDto
     ) {
-        memberService.updateNickname(loginMemberId,requestNicknameDto);
+        memberService.updateNickname(loginMemberId, requestNicknameDto);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{memberId}/articles")
     public ResponseEntity<SingleDataResponse<List<MyArticlesResponseDto>>> getMyArticlesByMemberId(
             @PathVariable Long memberId,
-            @LoginMemberId Long extractedMemberId){
+            @LoginMemberId Long extractedMemberId) {
         List<MyArticlesResponseDto> articleResponseDto =
-                memberService.fetchMyArticlesByMemberId(memberId,extractedMemberId);
+                memberService.fetchMyArticlesByMemberId(memberId, extractedMemberId);
         return ResponseEntity.ok(new SingleDataResponse<>(articleResponseDto));
     }
 
+    @PatchMapping("{memberId}/article-status/{articleId}")
+    public ResponseEntity<SingleDataResponse<ArticleStatusResponse>> updateMyArticlesStatus(
+            @PathVariable Long memberId,
+            @PathVariable Long articleId,
+            @LoginMemberId Long extractedMemberId,
+            @RequestBody ArticleStatusRequest articleStatusRequest) {
+        ArticleStatusResponse article = memberService.updateMyArticleStatus(memberId, extractedMemberId, articleId, articleStatusRequest);
+        return ResponseEntity.ok(new SingleDataResponse<>(article));
+    }
 }
