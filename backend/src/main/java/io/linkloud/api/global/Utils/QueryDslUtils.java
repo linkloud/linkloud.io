@@ -27,8 +27,7 @@ public class QueryDslUtils {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
 
-                OrderSpecifier<?> orderBy
-                    = createOrderSpecifier(direction, path, order.getProperty());
+                OrderSpecifier<?> orderBy = createOrderSpecifier(direction, path, order.getProperty());
                 orders.add(orderBy);
             }
         }
@@ -37,7 +36,7 @@ public class QueryDslUtils {
 
     private static OrderSpecifier<?> createOrderSpecifier(Order order, Path<?> parent, String fieldName) {
         // count 메소드 컬럼을 기준으로 할 때의 OrderSpecifier
-        if(fieldName.equals("quantity") || fieldName.equals("popularity")) {
+        if (fieldName.equals("quantity") || fieldName.equals("popularity")) {
             NumberPath<Long> aliasQuantity = Expressions.numberPath(Long.class, fieldName);
 
             return new OrderSpecifier(order, aliasQuantity);

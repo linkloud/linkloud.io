@@ -43,8 +43,8 @@ public class TagService {
         }
 
         Tag tag = Tag.builder()
-            .name(tagName)
-            .build();
+                .name(tagName)
+                .build();
 
         Tag adddTag = tagRepository.save(tag);
         log.info("Tag 생성 완료. {}", adddTag.getName());
