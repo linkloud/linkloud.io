@@ -1,8 +1,10 @@
 package io.linkloud.api.domain.member.service;
 
+import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.dto.*;
 import io.linkloud.api.domain.member.model.Member;
@@ -13,10 +15,12 @@ import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     private final ArticleRepository articleRepository;
+    private final int PAGE_SIZE = 15;
 
     // #1 멤버 회원가입
     @Transactional
@@ -119,13 +124,25 @@ public class MemberService {
      * @return  member's articles List
      */
     @Transactional(readOnly = true)
-    public List<MyArticlesResponseDto> fetchMyArticlesByMemberId(Long memberId, Long extractedMemberId) {
+    public Page<ArticleResponseDto> fetchMyArticles(Long memberId, Long extractedMemberId, String sortField, String tag, int page) {
         validateMember(memberId, extractedMemberId);
-        List<Article> myArticles = articleRepository.findMyArticlesByMemberId(memberId);
-        return myArticles
-                .stream()
-                .map(MyArticlesResponseDto::new)
-                .toList();
+        Member member = fetchMemberById(extractedMemberId);
+        String articleStatus = "";
+
+        // 이름순은 오름차순.
+        Sort.Direction orderBy = Direction.DESC;
+        if (sortField.equals("title")) {
+            orderBy = Direction.ASC;
+        }
+
+        if (sortField.equals("reading") || sortField.equals("read")) {
+            articleStatus = sortField;
+            sortField = SortBy.LATEST.getSortBy();
+        }
+
+        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by(orderBy, sortField));
+
+        return articleRepository.findMyArticleByTag(member, tag, articleStatus, pageable);
     }
 
     /**
