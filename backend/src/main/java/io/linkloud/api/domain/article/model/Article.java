@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +49,17 @@ public class Article extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private ArticleStatus articleStatus = ArticleStatus.UNREAD;
+
+    @AllArgsConstructor
+    public enum SortBy {
+        LATEST("createdAt"),
+        TITLE("title"),
+        READING("reading"),
+        READ("read");
+
+        @Getter
+        private String sortBy;
+    }
 
     /** 생성자 */
     @Builder
