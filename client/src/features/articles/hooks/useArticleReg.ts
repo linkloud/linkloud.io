@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import articleApi from "../apis";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 interface Form {
   title: string;
   url: string;
@@ -133,7 +135,7 @@ export const useArticleReg = () => {
 
     try {
       await articleApi.create(form);
-      navigate("/");
+      navigate(ROUTE_PATH.LANDING);
     } catch (e: any) {
       setError(e);
     } finally {

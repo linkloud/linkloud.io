@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import useAuthStore from "@/stores/useAuthStore";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 const useMobileNavigation = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
 
@@ -17,22 +19,27 @@ const useMobileNavigation = () => {
     setIsAuthModalVisible(state);
   };
 
-  const handleRegisterLink = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleClickLink =
+    (path: string) => (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
 
-    if (userInfo.role === "USER") {
-      setIsAuthModalVisible(true);
-      return;
-    }
+      const links = [ROUTE_PATH.LINK.REG, ROUTE_PATH.LIBRARY.LINKS];
 
-    navigate("/links/reg");
-  };
+      if (!links.includes(path)) return;
+
+      if (userInfo.role === "USER") {
+        setIsAuthModalVisible(true);
+        return;
+      }
+
+      navigate(path);
+    };
 
   return {
     isAuthModalVisible,
     isAuth,
     handleAuthModal,
-    handleRegisterLink,
+    handleClickLink,
   };
 };
 

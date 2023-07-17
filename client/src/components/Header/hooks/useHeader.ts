@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/useAuthStore";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 const useHeader = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
@@ -24,7 +26,7 @@ const useHeader = () => {
       return;
     }
 
-    navigate("/links/reg");
+    navigate(ROUTE_PATH.LINK.REG);
   };
 
   const handleClickAvatar = () => {

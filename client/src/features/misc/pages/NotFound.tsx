@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/Button";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 const NotFound = () => {
   const navigate = useNavigate();
 
@@ -10,7 +12,7 @@ const NotFound = () => {
   };
 
   const handleClickHome = () => {
-    navigate("/");
+    navigate(ROUTE_PATH.LANDING);
   };
 
   return (

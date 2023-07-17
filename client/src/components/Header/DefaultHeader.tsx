@@ -13,6 +13,8 @@ import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 
 import { HeartIcon, InboxIcon, Logo, SearchIcon, UserIcon } from "@/assets/svg";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 export const DefaultHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
@@ -111,10 +113,11 @@ export const DefaultHeader = () => {
                     onMouseLeave={handleLeaveAvatar}
                   >
                     <ActionMenu>
-                      {/* <ActionMenuItem to="/box">
+                      <ActionMenuItem to={ROUTE_PATH.LIBRARY.LINKS}>
                         <InboxIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
                         보관함
                       </ActionMenuItem>
+                      {/* 
                       <ActionMenuItem to="/profile">
                         <UserIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
                         내정보
