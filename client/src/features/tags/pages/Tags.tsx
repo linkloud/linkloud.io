@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
 import { useTags } from "../hooks";
-import useScrollToElement from "@/hooks/useScrollToElement";
 
 import { TagSort } from "../types";
 

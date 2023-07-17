@@ -19,22 +19,27 @@ const useMobileNavigation = () => {
     setIsAuthModalVisible(state);
   };
 
-  const handleRegisterLink = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleClickLink =
+    (path: string) => (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
 
-    if (userInfo.role === "USER") {
-      setIsAuthModalVisible(true);
-      return;
-    }
+      const links = [ROUTE_PATH.LINK.REG, ROUTE_PATH.LIBRARY.LINKS];
 
-    navigate(ROUTE_PATH.LINK.REG);
-  };
+      if (!links.includes(path)) return;
+
+      if (userInfo.role === "USER") {
+        setIsAuthModalVisible(true);
+        return;
+      }
+
+      navigate(path);
+    };
 
   return {
     isAuthModalVisible,
     isAuth,
     handleAuthModal,
-    handleRegisterLink,
+    handleClickLink,
   };
 };
 
