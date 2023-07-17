@@ -1,11 +1,10 @@
 package io.linkloud.api.domain.member.service;
 
+import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
+import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
-import io.linkloud.api.domain.member.dto.MemberLoginResponse;
-import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
-import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
-import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
+import io.linkloud.api.domain.member.dto.*;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.repository.MemberRepository;
@@ -129,11 +128,45 @@ public class MemberService {
                 .toList();
     }
 
+    /**
+     * 게시글 상태 변경 로직
+     */
+    @Transactional
+    public ArticleStatusResponse updateMyArticleStatus(Long memberId, Long extractedMemberId, Long articleId, ArticleStatusRequest articleStatusRequest) {
+        validateMember(memberId, extractedMemberId);
+
+        // 상태 변경하려는 게시글 엔티티
+        Article article = fetchArticleById(articleId);
+
+        // 요청 회원 ID 와 게시글의 작성자 ID 가 같은지 비교
+        isAuthorMatch(memberId, article);
+
+        // 상태 변경 후 저장
+        article.updateArticleStatus(articleStatusRequest);
+        articleRepository.save(article);
+
+        String articleStatus = articleStatusRequest.getArticleStatus().name();
+
+        // 상태 변경된 객체 리턴
+        return new ArticleStatusResponse(articleId, articleStatus);
+    }
 
     /** 요청한 회원 ID 와 액세스토큰에서 추출한 ID 가 같은지 비교*/
     private void validateMember(Long memberId, Long extractedMemberId) {
         if (!memberId.equals(extractedMemberId)) {
             throw new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH);
         }
+    }
+
+    /** 해당 회원의 ID 와 해당 게시글의 작성자 ID 비교**/
+    private void isAuthorMatch(Long memberId, Article article) {
+        if (!article.getMember().getId().equals(memberId)) {
+            throw new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH);
+        }
+    }
+
+    private Article fetchArticleById(Long articleId) {
+        return articleRepository.findById(articleId).orElseThrow(() ->
+                new CustomException(LogicExceptionCode.ARTICLE_NOT_FOUND));
     }
 }

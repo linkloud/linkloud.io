@@ -52,7 +52,7 @@ public class Member extends Auditable {
     private Role role;
 
     @OneToMany(mappedBy = "member")
-    private List<Article> myArticles = new ArrayList<>();
+    private final List<Article> myArticles = new ArrayList<>();
     // 닉네임 변경
     public void updateNickname(String nickname) {
         this.nickname = nickname;
