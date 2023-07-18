@@ -409,7 +409,7 @@ class MemberControllerTest {
                                 fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD, READING, READ]"),
                                 fieldWithPath("pageInfo").description("해당 조회의 페이지 정보"),
                                 fieldWithPath("pageInfo.page").description("해당 조회의 페이지"),
-                                fieldWithPath("pageInfo.size").description("해당 조회의 페이지 크디"),
+                                fieldWithPath("pageInfo.size").description("해당 조회의 페이지 크기"),
                                 fieldWithPath("pageInfo.totalElements").description("해당 조회의 전체 요소"),
                                 fieldWithPath("pageInfo.totalPages").description("해당 조회의 전체 페이지")
                         )));
