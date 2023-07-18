@@ -17,7 +17,7 @@ const NotFound = () => {
 
   return (
     <main className="w-full h-screen flex flex-col justify-center items-center">
-      <h1 className="sr-only">linkloud</h1>
+      <h1 className="sr-only">링클라우드</h1>
       <h2 className="text-2xl">페이지를 찾을 수 없습니다.</h2>
       <div className="flex gap-3 mt-6">
         <Button
