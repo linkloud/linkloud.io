@@ -10,6 +10,12 @@
   }
 }
 
+html,
+body,
+#app {
+  height: 100vh;
+}
+
 *,
 *::before,
 *::after {
