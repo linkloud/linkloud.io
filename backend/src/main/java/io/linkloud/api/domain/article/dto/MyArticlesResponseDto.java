@@ -1,4 +1,4 @@
-package io.linkloud.api.domain.member.dto;
+package io.linkloud.api.domain.article.dto;
 
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.ArticleStatus;
