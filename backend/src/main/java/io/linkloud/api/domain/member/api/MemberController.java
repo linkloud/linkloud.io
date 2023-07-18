@@ -1,12 +1,12 @@
 package io.linkloud.api.domain.member.api;
 
 
-import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
+import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
@@ -52,7 +52,7 @@ public class MemberController {
             @RequestParam String tag,
             @Positive @RequestParam int page
     ) {
-        Page<ArticleResponseDto> articleResponseDto =
+        Page<MyArticlesResponseDto> articleResponseDto =
                 memberService.fetchMyArticles(memberId, extractedMemberId, sortBy.getSortBy(), tag, page);
         return ResponseEntity.ok(new MultiDataResponse(articleResponseDto));
     }

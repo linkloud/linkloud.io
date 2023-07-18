@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.model.ArticleStatus;
+import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.global.utils.QueryDslUtils;
 import java.util.List;
@@ -101,7 +102,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
     }
     @Override
-    public Page<ArticleResponseDto> findMyArticleByTag(Member m, String t, String articleStatus, Pageable pageable) {
+    public Page<MyArticlesResponseDto> findMyArticleByTag(Member m, String t, String articleStatus, Pageable pageable) {
         // 정렬 기준 변환
         OrderSpecifier[] orders = queryDslUtils.getAllOrderSpecifiers(pageable, article);
 
@@ -124,7 +125,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             builder.and(article.articleStatus.eq(ArticleStatus.valueOf(articleStatus.toUpperCase())));
         }
 
-        List<ArticleResponseDto> content = query.selectDistinct(Projections.constructor(ArticleResponseDto.class, article))
+        List<MyArticlesResponseDto> content = query.selectDistinct(Projections.constructor(MyArticlesResponseDto.class, article))
             .from(article)
             .leftJoin(article.member, member).fetchJoin()
             .where(builder.and(article.member.eq(m)))

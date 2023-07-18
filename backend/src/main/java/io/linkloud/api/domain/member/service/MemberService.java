@@ -1,8 +1,8 @@
 package io.linkloud.api.domain.member.service;
 
-import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
+import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
@@ -124,7 +124,7 @@ public class MemberService {
      * @return  member's articles List
      */
     @Transactional(readOnly = true)
-    public Page<ArticleResponseDto> fetchMyArticles(Long memberId, Long extractedMemberId, String sortField, String tag, int page) {
+    public Page<MyArticlesResponseDto> fetchMyArticles(Long memberId, Long extractedMemberId, String sortField, String tag, int page) {
         validateMember(memberId, extractedMemberId);
         Member member = fetchMemberById(extractedMemberId);
         String articleStatus = "";
