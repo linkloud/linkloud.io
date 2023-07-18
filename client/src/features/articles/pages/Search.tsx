@@ -5,21 +5,6 @@ import { Button } from "@/components/Button";
 import { Head } from "@/components/Head";
 import { LinkArticle } from "../components/LinkArticle";
 
-const generateDescription = (
-  searchKeyword: string | null,
-  searchTags: string[] | null
-) => {
-  const searchTagsString = searchTags?.join(", ");
-
-  let description = "";
-  if (searchKeyword) description = `${searchKeyword} 검색 결과`;
-  else description = "태그로 검색 결과";
-
-  if (searchTagsString) description += `. 관련 태그: ${searchTagsString}`;
-
-  return description;
-};
-
 const Search = () => {
   const {
     searchKeyword,
@@ -31,6 +16,21 @@ const Search = () => {
   } = useArticleSearch({});
   const { articleError, handleClickArticle } = useArticle();
 
+  const generateDescription = (
+    searchKeyword: string | null,
+    searchTags: string[] | null
+  ) => {
+    const searchTagsString = searchTags?.join(", ");
+
+    let description = "";
+    if (searchKeyword) description = `${searchKeyword} 검색 결과`;
+    else description = "태그로 검색 결과";
+
+    if (searchTagsString) description += `. 관련 태그: ${searchTagsString}`;
+
+    return description;
+  };
+
   const prevButtonVisible = searchedArticlesPageInfo.page > 1;
   const nextButtonVisible =
     searchedArticlesPageInfo.page < searchedArticlesPageInfo.totalPages;
@@ -39,7 +39,7 @@ const Search = () => {
 
   return (
     <>
-      <Head description={description} />
+      <Head title="링클라우드 | 검색 결과" description={description} />
       <section className="pb-20 w-full max-w-7xl px-6">
         <h1 className="pt-6 text-3xl font-medium">
           {searchKeyword ? (

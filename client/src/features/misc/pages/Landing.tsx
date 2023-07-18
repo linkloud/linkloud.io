@@ -11,6 +11,7 @@ import { Button } from "@/components/Button";
 import { TagItems } from "@/features/tags/components/TagItems";
 import { LinkArticle } from "@/features/articles";
 import { ChevronRightIcon } from "@/assets/svg";
+import { Head } from "@/components/Head";
 
 const Landing = () => {
   const isFristMounted = useRef(true);
@@ -49,6 +50,10 @@ const Landing = () => {
 
   return (
     <>
+      <Head
+        title="링클라우드 | 모두의 링크 라이브러리"
+        description="유용한 아티클, 서비스 링크를 공유하고 관리하세요."
+      />
       <section className="flex flex-col justify-center items-center h-60 md:h-80 w-full bg-primary-medium">
         <h1 className="px-5 text-center text-xl md:text-3xl text-neutral-50 font-medium">
           생산성을 높일 수 있는 유용한 도구와 자료를 제공하는 링크를 찾아보세요.
