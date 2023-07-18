@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
-import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.model.Article;
@@ -30,7 +29,7 @@ import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
-import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
+import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.model.SocialType;
@@ -38,13 +37,11 @@ import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
-import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
@@ -98,9 +95,9 @@ class MemberControllerTest {
     @Autowired
     private Gson gson;
 
-    ArticleResponseDto article1dto;
-    ArticleResponseDto article2dto;
-    Page<ArticleResponseDto> articleResponseDto;
+    MyArticlesResponseDto article1dto;
+    MyArticlesResponseDto article2dto;
+    Page<MyArticlesResponseDto> articleResponseDto;
 
     Member member1 = Member.builder()
         .id(1L)
@@ -177,8 +174,8 @@ class MemberControllerTest {
         article2.getArticleTags().add(articleTag2_1);
         article2.getArticleTags().add(articleTag2_2);
 
-        article1dto = new ArticleResponseDto(article1);
-        article2dto = new ArticleResponseDto(article2);
+        article1dto = new MyArticlesResponseDto(article1);
+        article2dto = new MyArticlesResponseDto(article2);
     }
 
 
@@ -371,10 +368,10 @@ class MemberControllerTest {
         Sort.Direction orderBy = Direction.DESC;
         PageRequest pageable = PageRequest.of(0, 15, Sort.by(orderBy, "latest"));
 
-        Page<ArticleResponseDto> articleResponseDto = new PageImpl<>(List.of(article1dto, article2dto), pageable, 100);
+        articleResponseDto = new PageImpl<>(List.of(article1dto, article2dto), pageable, 100);
+
         given(memberService.fetchMyArticles(anyLong(), anyLong(), anyString(), anyString(), anyInt()))
             .willReturn(articleResponseDto);
-
 
         ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/articles", memberId)
                 .header("Authorization", "Bearer " + accessToken)
@@ -409,7 +406,7 @@ class MemberControllerTest {
                                 fieldWithPath("data[].url").description("해당 회원의 게시글 url"),
                                 fieldWithPath("data[].description").description("해당 회원의 게시글 설명"),
                                 fieldWithPath("data[].tags[]").description("해당 회원의 게시글 태그"),
-//                                fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD,READING,READ]"),
+                                fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD, READING, READ]"),
                                 fieldWithPath("pageInfo").description("해당 조회의 페이지 정보"),
                                 fieldWithPath("pageInfo.page").description("해당 조회의 페이지"),
                                 fieldWithPath("pageInfo.size").description("해당 조회의 페이지 크디"),
