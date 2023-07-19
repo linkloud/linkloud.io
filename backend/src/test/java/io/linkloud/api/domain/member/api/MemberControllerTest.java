@@ -16,6 +16,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,9 +26,10 @@ import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.ArticleStatus;
+import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
-import io.linkloud.api.domain.member.dto.MyArticlesResponseDto;
+import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.model.SocialType;
@@ -40,7 +42,6 @@ import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
@@ -56,6 +57,11 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -76,6 +82,8 @@ class MemberControllerTest {
 
     @MockBean
     private MemberRepository memberRepository;
+    @MockBean
+    private ArticleRepository articleRepository;
     @Mock
     private Member member;
 
@@ -89,7 +97,17 @@ class MemberControllerTest {
 
     MyArticlesResponseDto article1dto;
     MyArticlesResponseDto article2dto;
-    List<MyArticlesResponseDto> articleResponseDto  = new ArrayList<>();
+    Page<MyArticlesResponseDto> articleResponseDto;
+
+    Member member1 = Member.builder()
+        .id(1L)
+        .email("temp@gmail.com")
+        .socialType(SocialType.google)
+        .socialId("123123")
+        .nickname("asdasd")
+        .picture(null)
+        .role(Role.MEMBER)
+        .build();
 
     @BeforeEach
     void setUp() {
@@ -108,6 +126,7 @@ class MemberControllerTest {
                 .title("게시글1의 제목")
                 .url("게시글1의 url")
                 .description("게시글1의 설명")
+                .member(member1)
                 .build();
 
         Article article2 = Article.builder()
@@ -115,6 +134,7 @@ class MemberControllerTest {
                 .title("게시글2의 제목")
                 .url("게시글2의 url")
                 .description("게시글2의 설명")
+                .member(member1)
                 .build();
 
         Tag tag1 = Tag.builder()
@@ -154,13 +174,8 @@ class MemberControllerTest {
         article2.getArticleTags().add(articleTag2_1);
         article2.getArticleTags().add(articleTag2_2);
 
-
         article1dto = new MyArticlesResponseDto(article1);
         article2dto = new MyArticlesResponseDto(article2);
-
-
-        articleResponseDto.add(article1dto);
-        articleResponseDto.add(article2dto);
     }
 
 
@@ -350,11 +365,19 @@ class MemberControllerTest {
 
         Long memberId = 1L;
         Long extractedMemberId = 1L;
+        Sort.Direction orderBy = Direction.DESC;
+        PageRequest pageable = PageRequest.of(0, 15, Sort.by(orderBy, "latest"));
 
-        given(memberService.fetchMyArticlesByMemberId(memberId, extractedMemberId)).willReturn(articleResponseDto);
+        articleResponseDto = new PageImpl<>(List.of(article1dto, article2dto), pageable, 100);
+
+        given(memberService.fetchMyArticles(anyLong(), anyLong(), anyString(), anyString(), anyInt()))
+            .willReturn(articleResponseDto);
 
         ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/articles", memberId)
                 .header("Authorization", "Bearer " + accessToken)
+                .param("sortBy", "latest")
+                .param("tag", "hello")
+                .param("page", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -367,12 +390,28 @@ class MemberControllerTest {
                         pathParameters(
                                 parameterWithName("memberId").description("회원PK ID")
                         ),
+                        queryParameters(
+                            parameterWithName("sortBy").description("정렬 옵션"),
+                            parameterWithName("tag").description("검색 태그"),
+                            parameterWithName("page").description("현재 페이지")
+                        ),
                         responseFields(
+                                fieldWithPath("data").description("데이터 필드"),
+                                fieldWithPath("data[].id").description("해당 회원의 게시글 식별자"),
+                                fieldWithPath("data[].member_id").description("해당 게시글의 회원 식별자"),
+                                fieldWithPath("data[].member_nickname").description("해당 게시글의 회원 별명"),
+                                fieldWithPath("data[].views").description("해당 게시글의 조회수"),
+                                fieldWithPath("data[].bookmarks").description("해당 게시글의 북마크수"),
                                 fieldWithPath("data[].title").description("해당 회원의 게시글 제목"),
                                 fieldWithPath("data[].url").description("해당 회원의 게시글 url"),
                                 fieldWithPath("data[].description").description("해당 회원의 게시글 설명"),
                                 fieldWithPath("data[].tags[]").description("해당 회원의 게시글 태그"),
-                                fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD,READING,READ]")
+                                fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD, READING, READ]"),
+                                fieldWithPath("pageInfo").description("해당 조회의 페이지 정보"),
+                                fieldWithPath("pageInfo.page").description("해당 조회의 페이지"),
+                                fieldWithPath("pageInfo.size").description("해당 조회의 페이지 크기"),
+                                fieldWithPath("pageInfo.totalElements").description("해당 조회의 전체 요소"),
+                                fieldWithPath("pageInfo.totalPages").description("해당 조회의 전체 페이지")
                         )));
     }
 
@@ -384,10 +423,13 @@ class MemberControllerTest {
         Long memberId = 1L;
 
         doThrow(new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH))
-                .when(memberService).fetchMyArticlesByMemberId(any(Long.class),any(Long.class));
+                .when(memberService).fetchMyArticles(any(Long.class),any(Long.class), anyString(), anyString(), anyInt());
 
         ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/articles", memberId)
                 .header("Authorization", "Bearer " + accessToken)
+                .param("sortBy", "latest")
+                .param("tag", "hello")
+                .param("page", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 

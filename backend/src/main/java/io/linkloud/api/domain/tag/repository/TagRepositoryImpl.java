@@ -4,12 +4,11 @@ import static io.linkloud.api.domain.tag.model.QArticleTag.articleTag;
 import static io.linkloud.api.domain.tag.model.QTag.tag;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.tag.dto.TagDto;
-import io.linkloud.api.global.Utils.QueryDslUtils;
+import io.linkloud.api.global.utils.QueryDslUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,12 +20,13 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class TagRepositoryImpl implements TagRepositoryCustom {
     private final JPAQueryFactory query;
+    private final QueryDslUtils queryDslUtils;
 
     // 정렬 옵션을 기준으로 태그 및 연관 갯수 조회
     @Override
     public Page<TagDto.Response> findAllOrderBy(Pageable pageable) {
         // DSL Order 구분자 획득
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, tag);
+        OrderSpecifier[] orders = queryDslUtils.getAllOrderSpecifiers(pageable, tag);
 
         // 데이터 조회를 위한 메인 쿼리
         // SELECT t.id, t.name, COUNT(at.tag_id) AS popularity
@@ -76,11 +76,5 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
                 .fetch();
 
         return tags;
-    }
-
-    // pageable에서 sort 객체로 OrderSpecifier를 생성하여 반환.
-    private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {
-        List<OrderSpecifier> orders = QueryDslUtils.convertToDslOrder(pageable, path);
-        return orders.toArray(OrderSpecifier[]::new);
     }
 }

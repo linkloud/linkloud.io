@@ -14,18 +14,22 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import java.util.List;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(TestConfig.class)
+@ExtendWith(SpringExtension.class)
+@TestInstance(Lifecycle.PER_CLASS)
+@SpringBootTest
 public class TagRepositoryTest {
 
     @Autowired
@@ -40,7 +44,12 @@ public class TagRepositoryTest {
     @Autowired
     ArticleRepository articleRepository;
 
-    Member member = Member.builder().email("sjdk0805@naver.com").role(Role.MEMBER).build();
+    Member member = Member.builder()
+        .email("temp@naver.com")
+        .role(Role.MEMBER)
+        .socialId("123123123123")
+        .nickname("asdasd")
+        .build();
 
     char c = 'a';
 
@@ -53,12 +62,12 @@ public class TagRepositoryTest {
 
     @BeforeAll
     public void init() {
-        memberRepository.save(member);
+        Member member1 = memberRepository.save(member);
 
         List<Article> articles = new ArrayList<>(3);
         for (int i = 0; i < 3; i++) {
             String s = String.valueOf(c);
-            articles.add(Article.builder().url(s).title(s).description(s).build());
+            articles.add(Article.builder().url(s).title(s).description(s).member(member1).build());
             c += 1;
         }
         articleRepository.saveAll(articles);
