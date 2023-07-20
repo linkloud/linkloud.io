@@ -9,7 +9,7 @@ export const DefaultLayout = () => {
   return (
     <>
       <DefaultHeader />
-      <main className="flex flex-col items-center h-full w-full">
+      <main className="flex flex-col items-center w-full">
         <Suspense fallback={<Spinner />}>
           <Outlet />
         </Suspense>

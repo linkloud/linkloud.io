@@ -41,7 +41,7 @@ const Search = () => {
     <>
       <Head title="링클라우드 | 검색 결과" description={description} />
       <section className="pb-20 w-full max-w-7xl px-6">
-        <h1 className="pt-6 text-3xl font-medium">
+        <h1 className="pt-6 text-2xl md:text-3xl font-medium">
           {searchKeyword ? (
             <>
               <strong>'{searchKeyword}'</strong> 검색 결과
