@@ -57,11 +57,17 @@ export const InputText = ({
           isFocused ? styleNames.focused : styleNames.unfocused
         )}
       ></span>
-      {errorMessage && (
-        <p className="animate-shake animate-thrice animate-duration-100 animate-ease-out mt-2 md:text-base text-red-500">
-          {errorMessage}
-        </p>
-      )}
+
+      <p
+        className={clsx(
+          "md:text-base",
+          errorMessage
+            ? "animate-shake animate-thrice animate-duration-100 animate-ease-out text-red-500"
+            : "text-transparent min-h-[1rem]"
+        )}
+      >
+        {errorMessage || " "}
+      </p>
     </div>
   );
 };
