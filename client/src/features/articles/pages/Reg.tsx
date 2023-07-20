@@ -8,8 +8,6 @@ import { InputText } from "@/components/Input";
 import { TagItem } from "@/features/tags";
 import { Head } from "@/components/Head";
 
-import { PlusIcon } from "@/assets/svg";
-
 const Reg = () => {
   const {
     form,
@@ -18,21 +16,8 @@ const Reg = () => {
     submitArticleError,
     handleChangeForm,
     handleChangeTags,
-    handleAddTag,
-    handleRemoveTag,
     handleSubmitArticle,
   } = useArticleReg();
-
-  const handleTagInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (
-      e.key === "Enter" &&
-      e.currentTarget.id === "tag" &&
-      e.nativeEvent.isComposing === false
-    ) {
-      e.preventDefault();
-      handleAddTag();
-    }
-  };
 
   useEffect(() => {
     if (submitArticleError) {
@@ -45,11 +30,11 @@ const Reg = () => {
   return (
     <>
       <Head title="링클라우드 | 링크 등록" />
-      <section className="mt-12 md:mt-20 w-full max-w-3xl">
+      <section className="mt-12 md:mt-20 h-full w-full max-w-3xl">
         <h1 className="sr-only">링크 등록</h1>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="flex flex-col gap-6 overflow-hidden px-6"
+          className="flex flex-col gap-2 overflow-hidden px-6"
         >
           <InputText
             id="link"
@@ -77,48 +62,25 @@ const Reg = () => {
             className="mt-8 w-full"
             onChange={handleChangeForm("description")}
           />
-          <div className="w-full ">
-            <div className="h-20 w-full flex items-center">
-              <div className="w-full">
-                <InputText
-                  id="tag"
-                  label="태그"
-                  placeholder="태그를 입력하세요"
-                  value={enteredTagValue}
-                  errorMessage={formErrorMessage.tags}
-                  className="mt-8 w-full"
-                  onChange={handleChangeTags}
-                  onKeyDown={handleTagInputEnter}
-                />
-              </div>
-              <div>
-                <Button
-                  name="태그 등록"
-                  type="button"
-                  size="md"
-                  styleName="outline-neutral"
-                  className="ml-10"
-                  onClick={handleAddTag}
-                >
-                  <PlusIcon className="h-5 w-5 fill-neutral-600" />
-                </Button>
-              </div>
-            </div>
+          <InputText
+            id="tag"
+            label="태그"
+            placeholder="#태그1 #태그2 ..."
+            value={enteredTagValue}
+            errorMessage={formErrorMessage.tags}
+            className="mt-8 w-full"
+            onChange={handleChangeTags}
+          />
 
-            {form.tags.length > 0 && (
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {form.tags.map((tag) => (
-                  <li key={tag}>
-                    <TagItem
-                      name={tag}
-                      size="md"
-                      onRemove={() => handleRemoveTag(tag)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {form.tags.length > 0 && (
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {form.tags.map((tag) => (
+                <li key={tag}>
+                  <TagItem name={tag} size="md" />
+                </li>
+              ))}
+            </ul>
+          )}
 
           <div>
             <Button

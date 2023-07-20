@@ -17,7 +17,7 @@ export const TagItem = ({ name, size, onClick, onRemove }: TagItemProps) => {
     <Chip
       styleName="neutral"
       size={size}
-      className="inline-flex  hover:text-primary-medium hover:bg-primary-low transition-colors duration-300 cursor-pointer"
+      className="inline-flex hover:text-primary-medium hover:bg-primary-low transition-colors duration-300 cursor-pointer"
       onClick={onClick}
     >
       #{name}{" "}
