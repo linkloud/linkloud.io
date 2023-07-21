@@ -391,7 +391,7 @@ class MemberControllerTest {
                                 parameterWithName("memberId").description("회원PK ID")
                         ),
                         queryParameters(
-                            parameterWithName("sortBy").description("정렬 옵션"),
+                            parameterWithName("sortBy").description("정렬 옵션(latest, title, reading, read)"),
                             parameterWithName("tag").description("검색 태그"),
                             parameterWithName("page").description("현재 페이지")
                         ),

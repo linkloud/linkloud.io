@@ -261,6 +261,9 @@ include::{snippets}/member/articles/success/curl-request.adoc[]
 .path-parameters
 include::{snippets}/member/articles/success/path-parameters.adoc[]
 
+.request-parameters
+include::{snippets}/member/articles/success/query-parameters.adoc[]
+
 .http-request
 include::{snippets}/member/articles/success/http-request.adoc[]
 
