@@ -601,4 +601,43 @@ class MemberControllerTest {
                     fieldWithPath("pageInfo.totalPages").description("해당 조회의 전체 페이지")
                 )));
     }
+
+    @DisplayName("회원 내 태그 목록 조회 실패")
+    @Test
+    public void getMyTagsByMemberFail() throws Exception {
+        Long memberId = 1L;
+        Sort.Direction orderBy = Direction.DESC;
+        PageRequest pageable = PageRequest.of(0, 15, Sort.by(orderBy, "createdAt"));
+
+        memberTagsDto = new PageImpl<>(List.of(memberTagsDto1, memberTagsDto2), pageable, 100);
+
+        doThrow(new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH))
+            .when(memberService).fetchMemberTags(anyLong(),anyLong(),anyInt());
+
+
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/tags", memberId)
+            .header("Authorization", "Bearer " + accessToken)
+            .param("page", "1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON));
+
+        actions
+            .andDo(print())
+            .andExpect(status().isForbidden())
+            .andDo(document("member/tags/fail",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("memberId").description("회원PK ID")
+                ),
+                queryParameters(
+                    parameterWithName("page").description("현재 페이지")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("Http 상태 코드"),
+                    fieldWithPath("message").description("{memberId}와 jwt토큰 추출 회원ID가 다름"),
+                    fieldWithPath("fieldErrors").description("필드 에러 리스트"),
+                    fieldWithPath("violationErrors").description("벨리데이션 에러 리스트")
+                )));
+    }
 }
