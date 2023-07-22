@@ -14,9 +14,9 @@ public class ArticleResponseDto {
 
     private Long id;
 
-    private Long member_id;
+    private Long memberId;
 
-    private String member_nickname;
+    private String memberNickname;
 
     private String title;
 
@@ -33,8 +33,8 @@ public class ArticleResponseDto {
     /** Entity -> Dto */
     public ArticleResponseDto(Article article) {
         this.id = article.getId();
-        this.member_id = article.getMember().getId();    // article.getMember_id()에서 Member형의 member_id를 가져온 후, Member 아티클의 getter를 이용.
-        this.member_nickname = article.getMember().getNickname();
+        this.memberId = article.getMember().getId();    // article.getMember_id()에서 Member형의 member_id를 가져온 후, Member 아티클의 getter를 이용.
+        this.memberNickname = article.getMember().getNickname();
         this.title = article.getTitle();
         this.url = article.getUrl();
         this.description = article.getDescription();
