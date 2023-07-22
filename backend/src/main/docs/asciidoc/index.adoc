@@ -379,6 +379,29 @@ include::{snippets}/member/tags/success/response-body.adoc[]
 .response-fields
 include::{snippets}/member/tags/success/response-fields.adoc[]
 
+==== 실패, {memberId} 와 jwt 토큰 회원 ID 가 다름
+
+.curl-request
+include::{snippets}/member/tags/fail/curl-request.adoc[]
+
+.path-parameters
+include::{snippets}/member/tags/fail/path-parameters.adoc[]
+
+.query-parameters
+include::{snippets}/member/tags/fail/query-parameters.adoc[]
+
+.http-request
+include::{snippets}/member/tags/fail/http-request.adoc[]
+
+.http-response
+include::{snippets}/member/tags/fail/http-response.adoc[]
+
+.response-body
+include::{snippets}/member/tags/fail/response-body.adoc[]
+
+.response-fields
+include::{snippets}/member/tags/fail/response-fields.adoc[]
+
 === 회원 닉네임 변경
 
 ==== 성공
