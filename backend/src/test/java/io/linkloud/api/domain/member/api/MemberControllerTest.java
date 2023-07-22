@@ -35,6 +35,7 @@ import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.domain.tag.dto.MemberTagsDto;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.global.exception.CustomException;
@@ -98,6 +99,11 @@ class MemberControllerTest {
     MyArticlesResponseDto article1dto;
     MyArticlesResponseDto article2dto;
     Page<MyArticlesResponseDto> articleResponseDto;
+
+    Page<MemberTagsDto> memberTagsDto;
+
+    MemberTagsDto memberTagsDto1;
+    MemberTagsDto memberTagsDto2;
 
     Member member1 = Member.builder()
         .id(1L)
@@ -176,6 +182,9 @@ class MemberControllerTest {
 
         article1dto = new MyArticlesResponseDto(article1);
         article2dto = new MyArticlesResponseDto(article2);
+
+        memberTagsDto1 = new MemberTagsDto(1L,"태그1");
+        memberTagsDto2 = new MemberTagsDto(2L,"태그2");
     }
 
 
@@ -551,5 +560,45 @@ class MemberControllerTest {
                                 fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
                         )));
 
+    }
+
+    @DisplayName("회원 내 태그 목록 조회 성공")
+    @Test
+    public void getMyTagsByMemberSuccess() throws Exception {
+        Long memberId = 1L;
+        Sort.Direction orderBy = Direction.DESC;
+        PageRequest pageable = PageRequest.of(0, 15, Sort.by(orderBy, "createdAt"));
+
+        memberTagsDto = new PageImpl<>(List.of(memberTagsDto1, memberTagsDto2), pageable, 100);
+        given(memberService.fetchMemberTags(anyLong(), anyLong(), anyInt()))
+            .willReturn(memberTagsDto);
+
+        ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/tags", memberId)
+            .header("Authorization", "Bearer " + accessToken)
+            .param("page", "1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON));
+
+        actions
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("member/tags/success",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("memberId").description("회원PK ID")
+                ),
+                queryParameters(
+                    parameterWithName("page").description("현재 페이지")
+                ),
+                responseFields(
+                    fieldWithPath("data").description("데이터 필드"),
+                    fieldWithPath("data[].id").description("해당 회원이 등록한 태그PK ID"),
+                    fieldWithPath("data[].name").description("해당 회원이 등록한 태그 이름"),
+                    fieldWithPath("pageInfo.page").description("해당 조회의 페이지"),
+                    fieldWithPath("pageInfo.size").description("해당 조회의 페이지 크기"),
+                    fieldWithPath("pageInfo.totalElements").description("해당 조회의 전체 요소"),
+                    fieldWithPath("pageInfo.totalPages").description("해당 조회의 전체 페이지")
+                )));
     }
 }
