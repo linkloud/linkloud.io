@@ -8,6 +8,7 @@ import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.domain.tag.dto.MemberTagsDto;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
@@ -65,5 +66,15 @@ public class MemberController {
             @RequestBody ArticleStatusRequest articleStatusRequest) {
         ArticleStatusResponse article = memberService.updateMyArticleStatus(memberId, extractedMemberId, articleId, articleStatusRequest);
         return ResponseEntity.ok(new SingleDataResponse<>(article));
+    }
+
+    @GetMapping("/{memberId}/tags")
+    public ResponseEntity<MultiDataResponse<MemberTagsDto>> getMyTags(
+        @PathVariable Long memberId,
+        @LoginMemberId Long extractedMemberId,
+        @Positive @RequestParam int page
+    ) {
+        Page<MemberTagsDto> responses = memberService.fetchMemberTags(memberId,extractedMemberId,page);
+        return ResponseEntity.ok(new MultiDataResponse<>(responses));
     }
 }
