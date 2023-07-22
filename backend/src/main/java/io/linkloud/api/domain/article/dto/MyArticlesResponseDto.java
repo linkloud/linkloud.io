@@ -12,9 +12,9 @@ public class MyArticlesResponseDto {
 
     private Long id;
 
-    private Long member_id;
+    private Long memberId;
 
-    private String member_nickname;
+    private String memberNickname;
 
     private String title;
 
@@ -34,8 +34,8 @@ public class MyArticlesResponseDto {
 
     public MyArticlesResponseDto(Article article) {
         this.id = article.getId();
-        this.member_id = article.getMember().getId();
-        this.member_nickname = article.getMember().getNickname();
+        this.memberId = article.getMember().getId();
+        this.memberNickname = article.getMember().getNickname();
         this.title = article.getTitle();
         this.url = article.getUrl();
         this.description = article.getDescription();
