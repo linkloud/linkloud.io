@@ -138,8 +138,8 @@ class ArticleServiceTest {
         assertThat(articleUpdateRequestDto.getDescription()).isEqualTo(articleResponseDto.getDescription());
 
         // 게시글 수정된 응답 dto 의 memberId 와 작성자의 memberId 같은지 테스트
-        assertThat(articleResponseDto.getMember_id()).isEqualTo(firstMockMember.getId());
-        assertThat(articleResponseDto.getMember_nickname()).isEqualTo(firstMockMember.getNickname());
+        assertThat(articleResponseDto.getMemberId()).isEqualTo(firstMockMember.getId());
+        assertThat(articleResponseDto.getMemberNickname()).isEqualTo(firstMockMember.getNickname());
     }
 
 
