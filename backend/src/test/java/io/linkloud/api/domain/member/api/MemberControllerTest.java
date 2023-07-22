@@ -398,8 +398,8 @@ class MemberControllerTest {
                         responseFields(
                                 fieldWithPath("data").description("데이터 필드"),
                                 fieldWithPath("data[].id").description("해당 회원의 게시글 식별자"),
-                                fieldWithPath("data[].member_id").description("해당 게시글의 회원 식별자"),
-                                fieldWithPath("data[].member_nickname").description("해당 게시글의 회원 별명"),
+                                fieldWithPath("data[].memberId").description("해당 게시글의 회원 식별자"),
+                                fieldWithPath("data[].memberNickname").description("해당 게시글의 회원 별명"),
                                 fieldWithPath("data[].views").description("해당 게시글의 조회수"),
                                 fieldWithPath("data[].bookmarks").description("해당 게시글의 북마크수"),
                                 fieldWithPath("data[].title").description("해당 회원의 게시글 제목"),

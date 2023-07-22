@@ -49,7 +49,7 @@ public class MemberController {
             @PathVariable Long memberId,
             @LoginMemberId Long extractedMemberId,
             @RequestParam(defaultValue = "createdAt") SortBy sortBy,
-            @RequestParam String tag,
+            @RequestParam(required = false) String tag,
             @Positive @RequestParam int page
     ) {
         Page<MyArticlesResponseDto> articleResponseDto =

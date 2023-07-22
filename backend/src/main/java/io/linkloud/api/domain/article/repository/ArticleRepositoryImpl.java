@@ -111,15 +111,17 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         // posts.title 조건 생성
 
         // tag 조건 생성
-        JPQLQuery<Long> sub = JPAExpressions.select(articleTag.article.id)
-            .distinct()
-            .from(articleTag)
-            .join(articleTag.article, article)
-            .join(articleTag.tag, tag)
-            .where(tag.name.eq(t));
+        if (t != null) {
+            JPQLQuery<Long> sub = JPAExpressions.select(articleTag.article.id)
+                .distinct()
+                .from(articleTag)
+                .join(articleTag.article, article)
+                .join(articleTag.tag, tag)
+                .where(tag.name.eq(t));
 
-        // tag 조건 생성
-        builder.and(article.id.in(sub));
+            // tag 조건 생성
+            builder.and(article.id.in(sub));
+        }
 
         if (!articleStatus.equals("")) {
             builder.and(article.articleStatus.eq(ArticleStatus.valueOf(articleStatus.toUpperCase())));
