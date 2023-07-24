@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import router from "./routes";
 import useAuthStore from "./stores/useAuthStore";
 
-import "./App.css";
+import "./assets/css/style.css";
 
 const App = () => {
   const refresh = useAuthStore((state) => state.refresh);
