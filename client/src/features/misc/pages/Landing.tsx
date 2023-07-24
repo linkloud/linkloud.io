@@ -82,7 +82,7 @@ const Landing = () => {
           </div>
         </div>
 
-        <div className="pt-4 pb-6 overflow-x-auto whitespace-nowrap">
+        <div className="pt-4 pb-6 scroll-none overflow-x-auto whitespace-nowrap">
           <TagItems tags={tags} size="md" />
         </div>
       </section>

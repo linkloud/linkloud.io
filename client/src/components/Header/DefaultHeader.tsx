@@ -114,8 +114,8 @@ export const DefaultHeader = () => {
                   >
                     <ActionMenu>
                       <ActionMenuItem to={ROUTE_PATH.LIBRARY.LINKS}>
-                        <InboxIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
-                        보관함
+                        <InboxIcon className="mr-2 h-4 w-4 fill-neutral-800" />
+                        내 링크
                       </ActionMenuItem>
                       {/* 
                       <ActionMenuItem to="/profile">
