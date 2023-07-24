@@ -48,7 +48,7 @@ export const useArticleReg = () => {
       errorMessages.url = "255자를 넘을 수 없습니다.";
     } else {
       const regex =
-        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+        /^((http(s?))\:\/\/)([0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}(\:[0-9]+)?(\/\S*)?$/;
       if (!regex.test(url)) {
         errorMessages.url = "올바른 url 주소를 입력해주세요.";
       }
