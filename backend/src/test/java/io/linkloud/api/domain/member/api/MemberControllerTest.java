@@ -567,15 +567,15 @@ class MemberControllerTest {
     public void getMyTagsByMemberSuccess() throws Exception {
         Long memberId = 1L;
         Sort.Direction orderBy = Direction.DESC;
-        PageRequest pageable = PageRequest.of(0, 15, Sort.by(orderBy, "createdAt"));
-
+        PageRequest pageable = PageRequest.of(0, 20, Sort.by(orderBy, "createdAt"));
         memberTagsDto = new PageImpl<>(List.of(memberTagsDto1, memberTagsDto2), pageable, 100);
-        given(memberService.fetchMemberTags(anyLong(), anyLong(), anyInt()))
+        given(memberService.fetchMemberTags(anyLong(), anyLong(), anyInt(),anyInt()))
             .willReturn(memberTagsDto);
 
         ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/tags", memberId)
             .header("Authorization", "Bearer " + accessToken)
             .param("page", "1")
+            .param("size", "20")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON));
 
@@ -589,7 +589,8 @@ class MemberControllerTest {
                     parameterWithName("memberId").description("회원PK ID")
                 ),
                 queryParameters(
-                    parameterWithName("page").description("현재 페이지")
+                    parameterWithName("page").description("현재 페이지"),
+                    parameterWithName("size").description("페이지당 크기(MIN : 5),(MAX : 20)")
                 ),
                 responseFields(
                     fieldWithPath("data").description("데이터 필드"),
@@ -607,17 +608,18 @@ class MemberControllerTest {
     public void getMyTagsByMemberFail() throws Exception {
         Long memberId = 1L;
         Sort.Direction orderBy = Direction.DESC;
-        PageRequest pageable = PageRequest.of(0, 15, Sort.by(orderBy, "createdAt"));
+        PageRequest pageable = PageRequest.of(0, 20, Sort.by(orderBy, "createdAt"));
 
         memberTagsDto = new PageImpl<>(List.of(memberTagsDto1, memberTagsDto2), pageable, 100);
 
         doThrow(new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH))
-            .when(memberService).fetchMemberTags(anyLong(),anyLong(),anyInt());
+            .when(memberService).fetchMemberTags(anyLong(),anyLong(),anyInt(),anyInt());
 
 
         ResultActions actions = mockMvc.perform(get(BASE_URL + "/{memberId}/tags", memberId)
             .header("Authorization", "Bearer " + accessToken)
             .param("page", "1")
+            .param("size", "20")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON));
 
@@ -631,7 +633,8 @@ class MemberControllerTest {
                     parameterWithName("memberId").description("회원PK ID")
                 ),
                 queryParameters(
-                    parameterWithName("page").description("현재 페이지")
+                    parameterWithName("page").description("현재 페이지"),
+                    parameterWithName("size").description("페이지당 크기(MIN : 5),(MAX : 20)")
                 ),
                 responseFields(
                     fieldWithPath("status").description("Http 상태 코드"),
