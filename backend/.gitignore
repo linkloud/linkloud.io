@@ -38,7 +38,8 @@ out/
 .vscode/
 
 ### yml ###
-*.yml
+application-*.yml
+!application-example.yml
 application.properties
 !**/test/resources/application.yml
 !**/test/resources/application-db.yml
