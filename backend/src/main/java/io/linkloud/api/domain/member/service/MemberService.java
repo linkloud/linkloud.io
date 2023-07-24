@@ -173,9 +173,10 @@ public class MemberService {
      * 회원ID로 해당 회원의 태그 리스트 가져오기
      * 최근에 등록된 순으로 정렬
      */
-    public Page<MemberTagsDto> fetchMemberTags(Long memberId,Long extractedMemberId,int page) {
+    public Page<MemberTagsDto> fetchMemberTags(Long memberId,Long extractedMemberId,int page,int size) {
         validateMember(memberId, extractedMemberId);
-        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return memberRepository.findMyTagsByMemberId(memberId, pageable);
     }
 
