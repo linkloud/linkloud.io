@@ -8,10 +8,13 @@ import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.service.MemberService;
+import io.linkloud.api.domain.tag.dto.MemberTagsDto;
 import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
 
 @Slf4j
+@Validated
 @RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
 @RestController
@@ -66,4 +72,19 @@ public class MemberController {
         ArticleStatusResponse article = memberService.updateMyArticleStatus(memberId, extractedMemberId, articleId, articleStatusRequest);
         return ResponseEntity.ok(new SingleDataResponse<>(article));
     }
+
+    @GetMapping("/{memberId}/tags")
+    public ResponseEntity<MultiDataResponse<MemberTagsDto>> getMyTags(
+        @PathVariable Long memberId,
+        @LoginMemberId Long extractedMemberId,
+        @Positive @RequestParam int page,
+        @Positive @Min(5) @Max(20) @RequestParam int size
+    ) {
+
+        log.info("size={}", size);
+        Page<MemberTagsDto> responses = memberService.fetchMemberTags(memberId, extractedMemberId,
+            page, size);
+        return ResponseEntity.ok(new MultiDataResponse<>(responses));
+    }
+
 }

@@ -10,6 +10,7 @@ import io.linkloud.api.domain.member.dto.*;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.model.Role;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.domain.tag.dto.MemberTagsDto;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
@@ -166,6 +167,17 @@ public class MemberService {
 
         // 상태 변경된 객체 리턴
         return new ArticleStatusResponse(articleId, articleStatus);
+    }
+
+    /**
+     * 회원ID로 해당 회원의 태그 리스트 가져오기
+     * 최근에 등록된 순으로 정렬
+     */
+    public Page<MemberTagsDto> fetchMemberTags(Long memberId,Long extractedMemberId,int page,int size) {
+        validateMember(memberId, extractedMemberId);
+
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return memberRepository.findMyTagsByMemberId(memberId, pageable);
     }
 
     /** 요청한 회원 ID 와 액세스토큰에서 추출한 ID 가 같은지 비교*/
