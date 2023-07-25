@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import memberApi, { GetMemeberArticlesReqeust, MyArticleSort } from "../apis";
 
 import { PageInfo } from "@/types";
-import { Article } from "@/features/articles/types";
+import { Article, ReadStatus } from "@/features/articles/types";
 
 export const useMyArticles = (memberId: number) => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -67,6 +67,14 @@ export const useMyArticles = (memberId: number) => {
     setSortBy(sort);
   };
 
+  const handleReadStatus = (id: number, newStatus: ReadStatus) => {
+    setArticles((prev) =>
+      prev.map((article) =>
+        article.id === id ? { ...article, articleStatus: newStatus } : article
+      )
+    );
+  };
+
   useEffect(() => {
     if (tag.length > 0)
       fetchArticles({ id: memberId, tag, page: pageInfo.page, sortBy });
@@ -84,5 +92,6 @@ export const useMyArticles = (memberId: number) => {
     handleNextArticles,
     handleChangeTag,
     handleChangeSort,
+    handleReadStatus,
   };
 };

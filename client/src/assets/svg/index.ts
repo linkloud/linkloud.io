@@ -16,3 +16,7 @@ export { ReactComponent as CopyIcon } from "./copy.svg";
 export { ReactComponent as PlusIcon } from "./plus.svg";
 export { ReactComponent as HomeIcon } from "./home.svg";
 export { ReactComponent as HomeFillIcon } from "./home-fill.svg";
+export { ReactComponent as MoreHorizonIcon } from "./more-horizon.svg";
+export { ReactComponent as BookIcon } from "./book.svg";
+export { ReactComponent as BookOpenIcon } from "./book-open.svg";
+export { ReactComponent as BookOpenCheckIcon } from "./book-open-check.svg";

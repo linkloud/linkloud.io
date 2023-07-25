@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-import { toast } from "react-toastify";
-
 import { useMyArticles, useMyTags } from "../hooks";
 import useAuthStore from "@/stores/useAuthStore";
 
@@ -8,10 +5,10 @@ import { MyArticleSort } from "../apis";
 
 import { Head } from "@/components/Head";
 import { SelectableChip } from "@/components/Chip";
-import { LinkArticle, useArticle } from "@/features/articles";
 import { Spinner } from "@/components/Spinner";
 import { Button } from "@/components/Button";
 import { TagItem } from "@/features/tags";
+import { MyLinkArticles } from "../components/MyLinkArticles";
 
 interface SortOption {
   id: number;
@@ -54,14 +51,9 @@ const Links = () => {
     handleNextArticles,
     handlePrevArticles,
     handleChangeSort,
+    handleReadStatus,
   } = useMyArticles(userInfo.id);
   const { tags, tagsLoading, tagsError } = useMyTags(userInfo.id);
-  const { articleError, handleClickArticle } = useArticle();
-
-  useEffect(() => {
-    if (articleError)
-      toast.error("서버 오류가 발생했습니다. 잠시후에 다시 시도해주세요.");
-  }, [articleError]);
 
   const prevButtonVisible = articlesPageInfo.page > 1;
   const nextButtonVisible = articlesPageInfo.page < articlesPageInfo.totalPages;
@@ -69,7 +61,7 @@ const Links = () => {
   return (
     <>
       <Head title="링클라우드 | 내 링크" />
-      <section className="w-full max-w-7xl px-6">
+      <section className="w-full max-w-7xl px-6 pb-20">
         <h1 className="sr-only">내 링크</h1>
 
         {!tagsLoading && tags.length === 0 && <div className="py-8"></div>}
@@ -111,16 +103,10 @@ const Links = () => {
         )}
 
         {!articlesLoading && articles.length > 0 && (
-          <ul>
-            {articles.map((article) => (
-              <li key={article.id}>
-                <LinkArticle
-                  article={article}
-                  onClick={() => handleClickArticle(article.id)}
-                />
-              </li>
-            ))}
-          </ul>
+          <MyLinkArticles
+            articles={articles}
+            onUpdateReadStatus={handleReadStatus}
+          />
         )}
 
         {!articlesLoading && articles.length === 0 && (

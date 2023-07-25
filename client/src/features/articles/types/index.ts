@@ -7,7 +7,10 @@ export interface Article extends BaseTimeEntity {
   title: string;
   url: string;
   description: string;
+  articleStatus: ReadStatus;
   views: number;
   bookmarks: number;
   tags: Tag[];
 }
+
+export type ReadStatus = "UNREAD" | "READING" | "READ";
