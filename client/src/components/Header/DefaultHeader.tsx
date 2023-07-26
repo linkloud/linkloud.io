@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 
 import useHeader from "./hooks/useHeader";
 
-import { Header } from "./Header";
+import { HeaderLayout } from "./HeaderLayout";
 import { NavLink } from "./NavLink";
 import { SearchMenu } from "./SearchMenu";
 import { Button } from "../Button";
-import { AuthModal } from "../Auth";
 import { Avatar } from "../Avatar";
 import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 
@@ -49,7 +48,7 @@ export const DefaultHeader = () => {
 
   return (
     <>
-      <Header layout="between">
+      <HeaderLayout layout="between">
         <h1>
           <Link to="/">
             <Logo className="h-14 w-14" />
@@ -131,7 +130,7 @@ export const DefaultHeader = () => {
             )}
           </ul>
         </nav>
-      </Header>
+      </HeaderLayout>
     </>
   );
 };
