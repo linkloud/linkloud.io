@@ -20,8 +20,7 @@ export const DefaultHeader = () => {
 
   const {
     userInfo,
-    isAuthModalVisible,
-    handleAuthModal,
+    handleClickLogin,
     isActionMenuVisible,
     handleRegisterLink,
     handleClickAvatar,
@@ -87,14 +86,10 @@ export const DefaultHeader = () => {
                 <NavLink
                   to="#"
                   className="bg-primary-medium hover:bg-primary-high text-white rounded-md transition-colors"
-                  onClick={() => handleAuthModal(true)}
+                  onClick={handleClickLogin}
                 >
                   로그인
                 </NavLink>
-                <AuthModal
-                  isOpened={isAuthModalVisible}
-                  onClose={() => handleAuthModal(false)}
-                />
               </li>
             )}
             {userInfo.role !== "USER" && (

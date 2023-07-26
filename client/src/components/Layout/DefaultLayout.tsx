@@ -1,9 +1,10 @@
-import { ReactNode, Suspense } from "react";
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
 import { DefaultHeader } from "../Header";
 import { MobileNavigation } from "../Navigation";
 import { Spinner } from "../Spinner";
+import { Modals } from "../Modal";
 
 export const DefaultLayout = () => {
   return (
@@ -15,6 +16,7 @@ export const DefaultLayout = () => {
         </Suspense>
       </main>
       <MobileNavigation />
+      <Modals />
     </>
   );
 };

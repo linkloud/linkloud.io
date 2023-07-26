@@ -15,7 +15,6 @@ import {
   UserIcon,
   UserFillIcon,
 } from "@/assets/svg";
-import { AuthModal } from "../Auth";
 
 import { ROUTE_PATH } from "@/routes/constants";
 
@@ -64,8 +63,7 @@ export interface NavigationProps extends HTMLAttributes<HTMLElement> {}
 
 export const MobileNavigation = ({ ...props }: NavigationProps) => {
   const location = useLocation();
-  const { isAuthModalVisible, isAuth, handleAuthModal, handleClickLink } =
-    useMobileNavigation();
+  const { handleClickLink } = useMobileNavigation();
 
   return (
     <nav
@@ -89,10 +87,6 @@ export const MobileNavigation = ({ ...props }: NavigationProps) => {
           </li>
         ))}
       </ul>
-      <AuthModal
-        isOpened={isAuthModalVisible}
-        onClose={() => handleAuthModal(false)}
-      />
     </nav>
   );
 };

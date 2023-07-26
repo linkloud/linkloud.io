@@ -17,6 +17,7 @@ interface AuthState {
   logout: () => Promise<void>;
   fetchUserInfo: () => Promise<void>;
   setToken: (token: string) => void;
+  isAuth: () => boolean;
 }
 
 const initialUserInfo: Member = {
@@ -65,6 +66,9 @@ const useAuthStore = create<AuthState>()((set, get) => ({
     set((state) => ({ ...state, userInfo: { ...data } }));
   },
   setToken: (token) => set((state) => ({ ...state, token })),
+  isAuth: () => {
+    return get().userInfo.role !== "USER";
+  },
 }));
 
 export default useAuthStore;
