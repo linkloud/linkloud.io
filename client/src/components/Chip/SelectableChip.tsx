@@ -5,7 +5,7 @@ import { ChipProps } from "./Chip";
 
 const styleNames = {
   primary: "text-white bg-primary-high",
-  neutral: "text-neutral-600 bg-white",
+  neutral: "text-neutral-600 bg-white active:bg-gray-100",
 };
 
 const sizes = {
