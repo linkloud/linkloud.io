@@ -1,4 +1,5 @@
 @import url("./reset.css");
+@import url("./util.css");
 @import url("./tailwind.css");
 
 @font-face {

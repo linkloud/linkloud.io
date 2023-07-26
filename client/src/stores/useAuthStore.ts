@@ -20,6 +20,7 @@ interface AuthState {
 }
 
 const initialUserInfo: Member = {
+  id: 0,
   nickname: "",
   picture: "",
   role: "USER",
