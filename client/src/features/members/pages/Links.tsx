@@ -7,7 +7,7 @@ import { Head } from "@/components/Head";
 import { SelectableChip } from "@/components/Chip";
 import { Spinner } from "@/components/Spinner";
 import { Button } from "@/components/Button";
-import { TagItem } from "@/features/tags";
+import { MyTags } from "../components/MyTags";
 import { MyLinkArticles } from "../components/MyLinkArticles";
 
 interface SortOption {
@@ -65,21 +65,7 @@ const Links = () => {
         <h1 className="sr-only">내 링크</h1>
 
         {!tagsLoading && tags.length === 0 && <div className="py-8"></div>}
-        {!tagsLoading && tags.length > 0 && (
-          <section className="py-6 scroll-none overflow-x-auto whitespace-nowrap">
-            <ul className="flex gap-2">
-              <li>
-                <TagItem name="전체" size="md" />
-              </li>
-              {!tagsLoading &&
-                tags.map((tag) => (
-                  <li key={tag.id}>
-                    <TagItem name={tag.name} size="md" />
-                  </li>
-                ))}
-            </ul>
-          </section>
-        )}
+        {!tagsLoading && tags.length > 0 && <MyTags tags={tags} />}
 
         <ul className="flex gap-2 pb-3">
           {sortOptions.map((option) => (
