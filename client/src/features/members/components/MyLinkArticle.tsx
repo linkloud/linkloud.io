@@ -138,15 +138,15 @@ export const MyLinkArticle = ({
                 onMouseLeave={() => handleActionMenu(false)}
               >
                 <ActionMenu>
-                  <ActionMenuItem to="/links/edit">
+                  {/* <ActionMenuItem to="/links/edit">
                     <EditIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
                     수정
-                  </ActionMenuItem>
+                  </ActionMenuItem> */}
                   {ReadActionItems}
-                  <ActionMenuItem to="#">
+                  {/* <ActionMenuItem to="#">
                     <TrashIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
                     삭제
-                  </ActionMenuItem>
+                  </ActionMenuItem> */}
                 </ActionMenu>
               </div>
             </>
