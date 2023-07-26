@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 
 import useHeader from "./hooks/useHeader";
 
-import { Header } from "./Header";
+import { HeaderLayout } from "./HeaderLayout";
 import { NavLink } from "./NavLink";
 import { SearchMenu } from "./SearchMenu";
 import { Button } from "../Button";
-import { AuthModal } from "../Auth";
 import { Avatar } from "../Avatar";
 import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 
@@ -20,8 +19,7 @@ export const DefaultHeader = () => {
 
   const {
     userInfo,
-    isAuthModalVisible,
-    handleAuthModal,
+    handleClickLogin,
     isActionMenuVisible,
     handleRegisterLink,
     handleClickAvatar,
@@ -50,7 +48,7 @@ export const DefaultHeader = () => {
 
   return (
     <>
-      <Header layout="between">
+      <HeaderLayout layout="between">
         <h1>
           <Link to="/">
             <Logo className="h-14 w-14" />
@@ -87,14 +85,10 @@ export const DefaultHeader = () => {
                 <NavLink
                   to="#"
                   className="bg-primary-medium hover:bg-primary-high text-white rounded-md transition-colors"
-                  onClick={() => handleAuthModal(true)}
+                  onClick={handleClickLogin}
                 >
                   로그인
                 </NavLink>
-                <AuthModal
-                  isOpened={isAuthModalVisible}
-                  onClose={() => handleAuthModal(false)}
-                />
               </li>
             )}
             {userInfo.role !== "USER" && (
@@ -136,7 +130,7 @@ export const DefaultHeader = () => {
             )}
           </ul>
         </nav>
-      </Header>
+      </HeaderLayout>
     </>
   );
 };
