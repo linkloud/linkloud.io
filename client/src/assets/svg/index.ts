@@ -1,4 +1,4 @@
-export { ReactComponent as Logo } from "./logo.svg";
+export { ReactComponent as LogoIcon } from "./logo.svg";
 export { ReactComponent as LoadingIcon } from "./loading.svg";
 export { ReactComponent as SearchIcon } from "./search.svg";
 export { ReactComponent as ChevronRightIcon } from "./chevron-right.svg";
