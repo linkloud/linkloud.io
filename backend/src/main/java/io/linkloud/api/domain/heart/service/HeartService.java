@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.heart.service;
 
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.ARTICLE_NOT_FOUND;
+import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.BOOKMARK_NOT_FOUND;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_ALREADY_EXISTS;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_FOUND;
 
@@ -41,7 +42,7 @@ public class HeartService {
     @Transactional
     public Heart fetchHeartById(Long id) {
         return heartRepository.findById(id)
-            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));  // 좋아요를 하지 않아서 없을 경우 404에러, 임시로 지정
+            .orElseThrow(() -> new CustomException(BOOKMARK_NOT_FOUND));  // 좋아요를 하지 않아서 없을 경우 404에러
     }
 
     /** 좋아요 생성 */
@@ -69,7 +70,7 @@ public class HeartService {
         Article article = fetchArticleById(articleId);
 
         Heart deletedHeart = heartRepository.findByMemberAndArticle(member, article)
-            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));  // 404에러, 임시로 지정
+            .orElseThrow(() -> new CustomException(BOOKMARK_NOT_FOUND));
 
         heartRepository.delete(deletedHeart);
     }
