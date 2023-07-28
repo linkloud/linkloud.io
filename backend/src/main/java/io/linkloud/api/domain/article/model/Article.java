@@ -85,6 +85,11 @@ public class Article extends Auditable {
         this.views = views;
     }
 
+    /** 좋아요 변동 */
+    public void articleBookmarkChange(Integer bookmarks) {
+        this.bookmarks = bookmarks;
+    }
+
     // 연관 관계 양방향 매핑
     public void addArticleTag(List<ArticleTag> articleTags) {
         if (articleTags != null && articleTags.size() != 0) {
