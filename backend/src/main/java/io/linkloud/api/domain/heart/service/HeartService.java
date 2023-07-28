@@ -62,4 +62,11 @@ public class HeartService {
         return new HeartResponseDto(createdHeart);
     }
 
+    /** 좋아요 삭제 */
+    @Transactional
+    public void removeHeart(Long heartId) {
+        Heart deletedHeart = fetchHeartById(heartId);
+        heartRepository.delete(deletedHeart);
+    }
+
 }
