@@ -41,7 +41,7 @@ public class HeartService {
     @Transactional
     public Heart fetchHeartById(Long id) {
         return heartRepository.findById(id)
-            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));  // 임시로 지정
+            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));  // 좋아요를 하지 않아서 없을 경우 404에러, 임시로 지정
     }
 
     /** 좋아요 생성 */
@@ -52,7 +52,7 @@ public class HeartService {
 
         // 이미 좋아요한 게시글인지 검증
         if (heartRepository.findByMemberAndArticle(member, article).isPresent()) {
-            //TODO: 409코드 -> 예외 처리 알맞게 변경
+            //TODO: 409코드, 예외 처리 이름 알맞게 변경
             throw new CustomException(MEMBER_ALREADY_EXISTS);
         }
 
@@ -64,8 +64,13 @@ public class HeartService {
 
     /** 좋아요 삭제 */
     @Transactional
-    public void removeHeart(Long heartId) {
-        Heart deletedHeart = fetchHeartById(heartId);
+    public void removeHeart(Long memberId, Long articleId) {
+        Member member = fetchMemberById(memberId);
+        Article article = fetchArticleById(articleId);
+
+        Heart deletedHeart = heartRepository.findByMemberAndArticle(member, article)
+            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));  // 404에러, 임시로 지정
+
         heartRepository.delete(deletedHeart);
     }
 
