@@ -59,6 +59,7 @@ public class HeartService {
 
         Heart createdHeart = heartRequestDto.toLikeEntity(member, article);
         heartRepository.save(createdHeart);
+        article.articleBookmarkChange(article.getBookmarks() + 1);
 
         return new HeartResponseDto(createdHeart);
     }
@@ -73,6 +74,7 @@ public class HeartService {
             .orElseThrow(() -> new CustomException(BOOKMARK_NOT_FOUND));
 
         heartRepository.delete(deletedHeart);
+        article.articleBookmarkChange(article.getBookmarks() - 1);
     }
 
 }
