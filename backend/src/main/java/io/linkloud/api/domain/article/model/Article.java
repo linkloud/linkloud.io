@@ -48,7 +48,11 @@ public class Article extends Auditable {
     private List<ArticleTag> articleTags = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private ArticleStatus articleStatus = ArticleStatus.UNREAD;
+    @Column(name = "status")
+    private ArticleStatus articleStatus = ArticleStatus.ACTIVE;
+
+    @Enumerated(EnumType.STRING)
+    private ReadStatus readStatus = ReadStatus.UNREAD;
 
     @AllArgsConstructor
     public enum SortBy {
@@ -96,6 +100,10 @@ public class Article extends Auditable {
     }
 
     public void updateArticleStatus(ArticleStatusRequest articleStatusRequest) {
-        this.articleStatus = articleStatusRequest.getArticleStatus();
+        this.readStatus = articleStatusRequest.getReadStatus();
+    }
+
+    public void deleteArticle() {
+        this.articleStatus = ArticleStatus.INACTIVE;
     }
 }
