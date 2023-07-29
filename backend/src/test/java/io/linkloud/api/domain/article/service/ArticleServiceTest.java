@@ -190,7 +190,7 @@ class ArticleServiceTest {
 
         // then
         // delete 메서드가 한 번 실행되었는지 확인
-        verify(articleRepository, times(1)).delete(firstMockArticle);
+        verify(articleRepository, times(1)).save(firstMockArticle);
     }
 
     @Test

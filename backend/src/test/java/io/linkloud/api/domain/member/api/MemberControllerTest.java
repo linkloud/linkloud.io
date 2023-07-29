@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.article.dto.ArticleStatusResponse;
 import io.linkloud.api.domain.article.model.Article;
-import io.linkloud.api.domain.article.model.ArticleStatus;
+import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.dto.MemberLoginResponse;
 import io.linkloud.api.domain.member.dto.MemberNicknameRequestDto;
@@ -406,7 +406,7 @@ class MemberControllerTest {
                                 fieldWithPath("data[].url").description("해당 회원의 게시글 url"),
                                 fieldWithPath("data[].description").description("해당 회원의 게시글 설명"),
                                 fieldWithPath("data[].tags[]").description("해당 회원의 게시글 태그"),
-                                fieldWithPath("data[].articleStatus").description("게시글 상태[UNREAD, READING, READ]"),
+                                fieldWithPath("data[].readStatus").description("게시글 상태[UNREAD, READING, READ]"),
                                 fieldWithPath("pageInfo").description("해당 조회의 페이지 정보"),
                                 fieldWithPath("pageInfo.page").description("해당 조회의 페이지"),
                                 fieldWithPath("pageInfo.size").description("해당 조회의 페이지 크기"),
@@ -452,7 +452,7 @@ class MemberControllerTest {
 
     @DisplayName("회원 게시글 상태 변경 성공")
     @ParameterizedTest
-    @EnumSource(ArticleStatus.class)
+    @EnumSource(ReadStatus.class)
     public void updateMyArticleStatusSuccess() throws Exception {
 
         // given
@@ -460,10 +460,10 @@ class MemberControllerTest {
         Long articleId = 1L;
 
         // UNREAD
-        ArticleStatus UNREAD = ArticleStatus.UNREAD;
+        ReadStatus UNREAD = ReadStatus.UNREAD;
 
         ArticleStatusRequest articleStatusRequest = new ArticleStatusRequest();
-        articleStatusRequest.setArticleStatus(UNREAD);
+        articleStatusRequest.setReadStatus(UNREAD);
 
         // when
         when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
@@ -486,16 +486,16 @@ class MemberControllerTest {
 
                         ),
                         requestFields(
-                                fieldWithPath("articleStatus").description("변경할 게시글의 상태")
+                                fieldWithPath("readStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
                                 fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
-                                fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
+                                fieldWithPath("data.readStatus").description("변경된 게시글 상태")
                         )));
 
         // READING
-        ArticleStatus READING = ArticleStatus.READING;
-        articleStatusRequest.setArticleStatus(READING);
+        ReadStatus READING = ReadStatus.READING;
+        articleStatusRequest.setReadStatus(READING);
         when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
                 .thenReturn(new ArticleStatusResponse(articleId, READING.name()));
 
@@ -515,16 +515,16 @@ class MemberControllerTest {
 
                         ),
                         requestFields(
-                                fieldWithPath("articleStatus").description("변경할 게시글의 상태")
+                                fieldWithPath("readStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
                                 fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
-                                fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
+                                fieldWithPath("data.readStatus").description("변경된 게시글 상태")
                         )));
 
         // READ
-        ArticleStatus READ = ArticleStatus.READ;
-        articleStatusRequest.setArticleStatus(READ);
+        ReadStatus READ = ReadStatus.READ;
+        articleStatusRequest.setReadStatus(READ);
         when(memberService.updateMyArticleStatus(anyLong(), anyLong(), anyLong(), any(ArticleStatusRequest.class)))
                 .thenReturn(new ArticleStatusResponse(articleId, READ.name()));
 
@@ -544,11 +544,11 @@ class MemberControllerTest {
 
                         ),
                         requestFields(
-                                fieldWithPath("articleStatus").description("변경할 게시글의 상태")
+                                fieldWithPath("readStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
                                 fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
-                                fieldWithPath("data.articleStatus").description("변경된 게시글 상태")
+                                fieldWithPath("data.readStatus").description("변경된 게시글 상태")
                         )));
 
     }
