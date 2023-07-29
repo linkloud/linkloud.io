@@ -1,8 +1,8 @@
 package io.linkloud.api.domain.heart.service;
 
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.ARTICLE_NOT_FOUND;
+import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.BOOKMARKS_ALREADY_EXISTS;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.BOOKMARK_NOT_FOUND;
-import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_ALREADY_EXISTS;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_FOUND;
 
 import io.linkloud.api.domain.article.model.Article;
@@ -53,8 +53,7 @@ public class HeartService {
 
         // 이미 좋아요한 게시글인지 검증
         if (heartRepository.findByMemberAndArticle(member, article).isPresent()) {
-            //TODO: 409코드, 예외 처리 이름 알맞게 변경
-            throw new CustomException(MEMBER_ALREADY_EXISTS);
+            throw new CustomException(BOOKMARKS_ALREADY_EXISTS);
         }
 
         Heart createdHeart = heartRequestDto.toLikeEntity(member, article);
@@ -70,6 +69,7 @@ public class HeartService {
         Member member = fetchMemberById(memberId);
         Article article = fetchArticleById(articleId);
 
+        // 좋아요를 누른 적이 없다면 예외로 처리
         Heart deletedHeart = heartRepository.findByMemberAndArticle(member, article)
             .orElseThrow(() -> new CustomException(BOOKMARK_NOT_FOUND));
 
