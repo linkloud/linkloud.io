@@ -11,6 +11,7 @@ public enum LogicExceptionCode implements ExceptionCode {
     MEMBER_NOT_MATCH(403, "Member Not Matched"),
     MEMBER_NOT_AUTHORIZED(403, "Member Not Authorized"),
     MEMBER_ALREADY_EXISTS(409, "Member Already Exist."),
+    BOOKMARKS_ALREADY_EXISTS(409, "Bookmarks Already Exist."),
     ARTICLE_NOT_FOUND(404, "Article not found"),
     BOOKMARK_NOT_FOUND(404, "Bookmark not found"),
     JSON_REQUEST_FAILED(401, "Json Request Failed."),
