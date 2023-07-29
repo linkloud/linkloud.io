@@ -162,7 +162,7 @@ public class MemberService {
         article.updateArticleStatus(articleStatusRequest);
         articleRepository.save(article);
 
-        String articleStatus = articleStatusRequest.getArticleStatus().name();
+        String articleStatus = articleStatusRequest.getReadStatus().name();
 
         // 상태 변경된 객체 리턴
         return new ArticleStatusResponse(articleId, articleStatus);
