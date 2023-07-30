@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/api/v1/heart")
+@RequestMapping("/api/v1/likes")
 public class HeartController {
 
     private final HeartService heartService;
