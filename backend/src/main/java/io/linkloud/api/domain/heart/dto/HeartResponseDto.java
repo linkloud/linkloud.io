@@ -12,15 +12,15 @@ public class HeartResponseDto {
 
     private Long id;
 
-    private Long member_id;
+    private Long memberId;
 
-    private Long article_id;
+    private Long articleId;
 
     /** Entity -> Dto */
     public HeartResponseDto(Heart heart) {
         this.id = heart.getId();
-        this.member_id = heart.getMember().getId();
-        this.article_id = heart.getArticle().getId();
+        this.memberId = heart.getMember().getId();
+        this.articleId = heart.getArticle().getId();
     }
 
 }
