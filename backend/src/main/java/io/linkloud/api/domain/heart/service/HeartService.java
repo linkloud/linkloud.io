@@ -56,7 +56,7 @@ public class HeartService {
             throw new CustomException(BOOKMARKS_ALREADY_EXISTS);
         }
 
-        Heart createdHeart = heartRequestDto.toLikeEntity(member, article);
+        Heart createdHeart = heartRequestDto.toHeartEntity(member, article);
         heartRepository.save(createdHeart);
         article.articleBookmarkChange(article.getBookmarks() + 1);
 

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class HeartRequestDto {
 
     /** Dto -> Entity */
-    public Heart toLikeEntity(Member member, Article article) {
+    public Heart toHeartEntity(Member member, Article article) {
         Heart heart = Heart.builder()
             .member(member)
             .article(article)
