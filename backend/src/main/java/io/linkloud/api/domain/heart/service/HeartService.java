@@ -58,7 +58,7 @@ public class HeartService {
 
         Heart createdHeart = heartRequestDto.toHeartEntity(member, article);
         heartRepository.save(createdHeart);
-        article.articleBookmarkChange(article.getBookmarks() + 1);
+        article.articleHeartChange(article.getHearts() + 1);
 
         return new HeartResponseDto(createdHeart);
     }
@@ -74,7 +74,7 @@ public class HeartService {
             .orElseThrow(() -> new CustomException(HEART_NOT_FOUND));
 
         heartRepository.delete(deletedHeart);
-        article.articleBookmarkChange(article.getBookmarks() - 1);
+        article.articleHeartChange(article.getHearts() - 1);
     }
 
 }
