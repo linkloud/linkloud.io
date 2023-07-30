@@ -63,14 +63,14 @@ public class Article extends Auditable {
 
     /** 생성자 */
     @Builder
-    public Article(Long id, Member member, String title, String url, String description, Integer views, Integer bookmarks) {
+    public Article(Long id, Member member, String title, String url, String description, Integer views, Integer hearts) {
         this.id = id;
         this.member = member;
         this.title = title;
         this.url = url;
         this.description = description;
         this.views = views == null ? 0 : views; // 기본값 0으로 설정
-        this.hearts = bookmarks == null ? 0 : bookmarks;
+        this.hearts = hearts == null ? 0 : hearts;
     }
 
     /** 아티클 수정 */
@@ -86,7 +86,7 @@ public class Article extends Auditable {
     }
 
     /** 좋아요 변동 */
-    public void articleBookmarkChange(Integer hearts) {
+    public void articleHeartChange(Integer hearts) {
         this.hearts = hearts;
     }
 
