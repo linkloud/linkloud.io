@@ -6,8 +6,4 @@ import lombok.Getter;
 public enum ArticleStatus {
     ACTIVE,
     INACTIVE;
-
-
-    public void deleteArticle() {
-    }
 }
