@@ -42,7 +42,7 @@ public class Article extends Auditable {
     private Integer views;
 
     @ColumnDefault("0")
-    private Integer bookmarks;
+    private Integer hearts;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
     private List<ArticleTag> articleTags = new ArrayList<>();
@@ -70,7 +70,7 @@ public class Article extends Auditable {
         this.url = url;
         this.description = description;
         this.views = views == null ? 0 : views; // 기본값 0으로 설정
-        this.bookmarks = bookmarks == null ? 0 : bookmarks;
+        this.hearts = bookmarks == null ? 0 : bookmarks;
     }
 
     /** 아티클 수정 */
@@ -86,8 +86,8 @@ public class Article extends Auditable {
     }
 
     /** 좋아요 변동 */
-    public void articleBookmarkChange(Integer bookmarks) {
-        this.bookmarks = bookmarks;
+    public void articleBookmarkChange(Integer hearts) {
+        this.hearts = hearts;
     }
 
     // 연관 관계 양방향 매핑
