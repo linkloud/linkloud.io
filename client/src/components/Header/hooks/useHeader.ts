@@ -3,28 +3,31 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/useAuthStore";
+import useModalStore from "@/stores/useModalStore";
+
+import { ROUTE_PATH } from "@/routes/constants";
 
 const useHeader = () => {
-  const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
 
   const userInfo = useAuthStore((state) => state.userInfo);
   const logout = useAuthStore((state) => state.logout);
+  const openModal = useModalStore((state) => state.openModal);
   const navigate = useNavigate();
 
-  const handleAuthModal = (state: boolean) => {
-    setIsAuthModalVisible(state);
+  const handleClickLogin = () => {
+    openModal("auth");
   };
 
   const handleRegisterLink = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
 
     if (userInfo.role === "USER") {
-      setIsAuthModalVisible(true);
+      openModal("auth");
       return;
     }
 
-    navigate("/links/reg");
+    navigate(ROUTE_PATH.LINK.REG);
   };
 
   const handleClickAvatar = () => {
@@ -45,8 +48,7 @@ const useHeader = () => {
 
   return {
     userInfo,
-    isAuthModalVisible,
-    handleAuthModal,
+    handleClickLogin,
     isActionMenuVisible,
     handleRegisterLink,
     handleClickAvatar,

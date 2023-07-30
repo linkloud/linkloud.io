@@ -9,22 +9,24 @@ const Serach = lazy(() => import("@/features/articles/pages/Search"));
 const Tags = lazy(() => import("@/features/tags/pages/Tags"));
 const NofFound = lazy(() => import("@/features/misc/pages/NotFound"));
 
+import { ROUTE_PATH } from "./constants";
+
 export const publicRoutes: RouteObject[] = [
   {
     path: "",
     element: <DefaultLayout />,
     children: [
       {
-        path: "/",
+        path: ROUTE_PATH.LANDING,
         index: true,
         element: <Landing />,
       },
       {
-        path: "/search",
+        path: ROUTE_PATH.SEARCH,
         element: <Serach />,
       },
       {
-        path: "/tags",
+        path: ROUTE_PATH.TAG.LIST,
         element: <Tags />,
       },
     ],

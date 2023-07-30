@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import articleApi from "../apis";
 
+import { ROUTE_PATH } from "@/routes/constants";
+
 interface Form {
   title: string;
   url: string;
@@ -45,9 +47,9 @@ export const useArticleReg = () => {
     } else if (form.url.length > 255) {
       errorMessages.url = "255자를 넘을 수 없습니다.";
     } else {
-      const urlReg =
-        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-      if (!urlReg.test(url)) {
+      const regex =
+        /^((http(s?))\:\/\/)([0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}(\:[0-9]+)?(\/\S*)?$/;
+      if (!regex.test(url)) {
         errorMessages.url = "올바른 url 주소를 입력해주세요.";
       }
     }
@@ -68,57 +70,48 @@ export const useArticleReg = () => {
     };
 
   const handleChangeTags = (e: ChangeEvent<HTMLInputElement>) => {
-    setEnteredTagValue(e.target.value);
-  };
+    const value = e.target.value;
 
-  const handleAddTag = () => {
-    const tag = enteredTagValue.trim().replace(/\s+/g, "-");
-    const existingTags = form.tags.map((tag) => tag.toLowerCase());
+    const findTagsRegex = /#[^\s#]+(?=\s|#|$)/g;
+    const tags = value.match(findTagsRegex) || [];
 
-    if (
-      tag.length < 2 ||
-      tag.length > 20 ||
-      !/^[a-zA-Z0-9ㄱ-힣-]+$/.test(tag)
-    ) {
+    if (tags.length > 5) {
       setFormErrorMessage((prev) => ({
         ...prev,
-        tags: "태그는 2자 이상 20자 이하의 한글, 영문, 숫자, 하이픈(-)만 입력 가능합니다.",
+        tags: "태그는 최대 5개까지 입력할 수 있습니다.",
       }));
       return;
     }
 
-    if (form.tags.length >= 5) {
+    const tagRegex = /^#[\wㄱ-ㅎㅏ-ㅣ가-힣-]{1,20}$/;
+    const isValidLengthAndChar = tags.every((tag) => {
+      return tagRegex.test(tag);
+    });
+
+    if (!isValidLengthAndChar) {
       setFormErrorMessage((prev) => ({
         ...prev,
-        tags: "최대 5개까지 등록 가능합니다.",
+        tags: "20자 미만의 한글, 영문, 숫자, 하이픈만 사용할 수 있습니다.",
       }));
       return;
     }
 
-    if (existingTags.includes(tag.toLocaleLowerCase())) {
+    const isNoDuplicate = tags.every((tag, index, self) => {
+      return self.indexOf(tag) === index;
+    });
+
+    if (!isNoDuplicate) {
       setFormErrorMessage((prev) => ({
         ...prev,
-        tags: "중복된 태그입니다.",
+        tags: "중복된 태그를 입력할 수 없습니다.",
       }));
       return;
     }
 
-    setEnteredTagValue("");
-    setForm((prev) => ({
-      ...prev,
-      tags: [...prev.tags, tag],
-    }));
-    setFormErrorMessage((prev) => ({
-      ...prev,
-      tags: "",
-    }));
-  };
-
-  const handleRemoveTag = (tag: string) => {
-    setForm((prev) => ({
-      ...prev,
-      tags: form.tags.filter((t) => t !== tag),
-    }));
+    const tagsWithoutHash = tags.map((tag) => tag.slice(1));
+    setForm((prev) => ({ ...prev, tags: tagsWithoutHash }));
+    setFormErrorMessage((prev) => ({ ...prev, tags: "" }));
+    setEnteredTagValue(value);
   };
 
   const handleSubmitArticle = async () => {
@@ -133,7 +126,7 @@ export const useArticleReg = () => {
 
     try {
       await articleApi.create(form);
-      navigate("/");
+      navigate(ROUTE_PATH.LANDING);
     } catch (e: any) {
       setError(e);
     } finally {
@@ -149,8 +142,6 @@ export const useArticleReg = () => {
     submitArticleError: error,
     handleChangeForm,
     handleChangeTags,
-    handleAddTag,
-    handleRemoveTag,
     handleSubmitArticle,
   };
 };

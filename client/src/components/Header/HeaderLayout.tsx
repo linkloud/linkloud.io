@@ -9,14 +9,14 @@ const layouts = {
   grid: "grid grid-flow-col",
 };
 
-export interface HeaderContentsProps {
+export interface HeaderLayoutProps {
   layout?: keyof typeof layouts;
 }
 
-export const Header = ({
+export const HeaderLayout = ({
   layout = "start",
   children,
-}: StrictPropsWithChildren<HeaderContentsProps>) => {
+}: StrictPropsWithChildren<HeaderLayoutProps>) => {
   return (
     <header className="sticky top-0 h-20 bg-white border-b border-neutral-100 z-10 transition-all">
       <div

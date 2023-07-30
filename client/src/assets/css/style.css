@@ -1,0 +1,24 @@
+@import url("./reset.css");
+@import url("./util.css");
+@import url("./tailwind.css");
+
+@font-face {
+  font-family: "SUIT-Variable";
+  src: url("/fonts/SUIT-Variable.woff2") format("woff2");
+}
+
+html,
+body,
+#app {
+  height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: "SUIT-Variable", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
+}

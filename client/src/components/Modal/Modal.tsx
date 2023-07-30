@@ -31,7 +31,7 @@ export const Modal = ({
     <Portal elementId="modal">
       <div className={isOpened ? "block" : "hidden"}>
         <Dimmed>
-          <section className="fixed inset-0 sm:inset-auto sm:top-1/4 z-50 bg-white rounded-md link-shadow-xl animate-fade-up animate-once animate-duration-300 animate-ease-out">
+          <section className="fixed inset-0 sm:inset-auto sm:top-1/4 z-50 bg-white rounded-xl link-shadow-xl animate-fade-up animate-once animate-duration-300 animate-ease-out">
             <h1 className="sr-only">{name}</h1>
 
             <header className="flex justify-end pt-5 px-6">

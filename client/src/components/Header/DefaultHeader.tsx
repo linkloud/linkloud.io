@@ -3,23 +3,23 @@ import { Link } from "react-router-dom";
 
 import useHeader from "./hooks/useHeader";
 
-import { Header } from "./Header";
+import { HeaderLayout } from "./HeaderLayout";
 import { NavLink } from "./NavLink";
 import { SearchMenu } from "./SearchMenu";
 import { Button } from "../Button";
-import { AuthModal } from "../Auth";
 import { Avatar } from "../Avatar";
 import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 
 import { HeartIcon, InboxIcon, Logo, SearchIcon, UserIcon } from "@/assets/svg";
+
+import { ROUTE_PATH } from "@/routes/constants";
 
 export const DefaultHeader = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const {
     userInfo,
-    isAuthModalVisible,
-    handleAuthModal,
+    handleClickLogin,
     isActionMenuVisible,
     handleRegisterLink,
     handleClickAvatar,
@@ -48,7 +48,7 @@ export const DefaultHeader = () => {
 
   return (
     <>
-      <Header layout="between">
+      <HeaderLayout layout="between">
         <h1>
           <Link to="/">
             <Logo className="h-14 w-14" />
@@ -85,14 +85,10 @@ export const DefaultHeader = () => {
                 <NavLink
                   to="#"
                   className="bg-primary-medium hover:bg-primary-high text-white rounded-md transition-colors"
-                  onClick={() => handleAuthModal(true)}
+                  onClick={handleClickLogin}
                 >
                   로그인
                 </NavLink>
-                <AuthModal
-                  isOpened={isAuthModalVisible}
-                  onClose={() => handleAuthModal(false)}
-                />
               </li>
             )}
             {userInfo.role !== "USER" && (
@@ -111,10 +107,11 @@ export const DefaultHeader = () => {
                     onMouseLeave={handleLeaveAvatar}
                   >
                     <ActionMenu>
-                      {/* <ActionMenuItem to="/box">
-                        <InboxIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
-                        보관함
+                      <ActionMenuItem to={ROUTE_PATH.LIBRARY.LINKS}>
+                        <InboxIcon className="mr-2 h-4 w-4 fill-neutral-800" />
+                        내 링크
                       </ActionMenuItem>
+                      {/* 
                       <ActionMenuItem to="/profile">
                         <UserIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
                         내정보
@@ -133,7 +130,7 @@ export const DefaultHeader = () => {
             )}
           </ul>
         </nav>
-      </Header>
+      </HeaderLayout>
     </>
   );
 };

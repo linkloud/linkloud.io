@@ -1,38 +1,34 @@
-import { useState, MouseEvent } from "react";
+import { MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useAuthStore from "@/stores/useAuthStore";
+import useModalStore from "@/stores/useModalStore";
+
+import { ROUTE_PATH } from "@/routes/constants";
 
 const useMobileNavigation = () => {
-  const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
-
-  const userInfo = useAuthStore((state) => state.userInfo);
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const openModal = useModalStore((state) => state.openModal);
   const navigate = useNavigate();
 
-  const isAuth = () => {
-    return userInfo.role !== "USER";
-  };
+  const handleClickLink =
+    (path: string) => (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
 
-  const handleAuthModal = (state: boolean) => {
-    setIsAuthModalVisible(state);
-  };
+      const links = [ROUTE_PATH.LINK.REG, ROUTE_PATH.LIBRARY.LINKS];
 
-  const handleRegisterLink = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+      if (!links.includes(path)) return;
 
-    if (userInfo.role === "USER") {
-      setIsAuthModalVisible(true);
-      return;
-    }
+      if (!isAuth) {
+        openModal("auth");
+        return;
+      }
 
-    navigate("/links/reg");
-  };
+      navigate(path);
+    };
 
   return {
-    isAuthModalVisible,
-    isAuth,
-    handleAuthModal,
-    handleRegisterLink,
+    handleClickLink,
   };
 };
 

@@ -1,4 +1,4 @@
-import { MouseEvent, MouseEventHandler } from "react";
+import { useState, MouseEventHandler } from "react";
 
 import { ChipProps } from "@/components/Chip";
 import { Chip } from "@/components/Chip";
@@ -13,12 +13,20 @@ export interface TagItemProps {
 }
 
 export const TagItem = ({ name, size, onClick, onRemove }: TagItemProps) => {
+  const [isHover, setIsHover] = useState(false);
+
+  const handleHover = (value: boolean) => {
+    setIsHover(value);
+  };
+
   return (
     <Chip
-      styleName="neutral"
+      styleName={isHover ? "primary" : "neutral"}
       size={size}
-      className="inline-flex  hover:text-primary-medium hover:bg-primary-low transition-colors duration-300 cursor-pointer"
+      className="inline-flex transition-colors duration-50 cursor-pointer"
       onClick={onClick}
+      onMouseEnter={() => handleHover(true)}
+      onMouseLeave={() => handleHover(false)}
     >
       #{name}{" "}
       {onRemove && (
