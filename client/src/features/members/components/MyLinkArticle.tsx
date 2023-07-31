@@ -15,7 +15,7 @@ import {
   TrashIcon,
 } from "@/assets/svg";
 import memberApi from "../apis";
-import useAuthStore from "@/stores/useAuthStore";
+import { useUser } from "@/stores/useAuthStore";
 
 interface MyLinkArticleProps {
   article: Article;
@@ -29,7 +29,7 @@ export const MyLinkArticle = ({
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
 
   const { articleError, handleClickArticle } = useArticle();
-  const { id: memberId } = useAuthStore((state) => state.userInfo);
+  const { id: memberId } = useUser();
 
   const handleActionMenu = (value: boolean) => {
     setIsActionMenuVisible(value);

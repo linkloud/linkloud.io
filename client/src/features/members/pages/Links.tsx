@@ -1,5 +1,5 @@
 import { useMyArticles, useMyTags } from "../hooks";
-import useAuthStore from "@/stores/useAuthStore";
+import { useUser } from "@/stores/useAuthStore";
 
 import { MyArticleSort } from "../apis";
 
@@ -40,7 +40,7 @@ const Links = () => {
     },
   ];
 
-  const userInfo = useAuthStore((state) => state.userInfo);
+  const user = useUser();
   const {
     articles,
     articlesPageInfo,
@@ -52,8 +52,8 @@ const Links = () => {
     handlePrevArticles,
     handleChangeSort,
     handleReadStatus,
-  } = useMyArticles(userInfo.id);
-  const { tags, tagsLoading, tagsError } = useMyTags(userInfo.id);
+  } = useMyArticles(user.id);
+  const { tags, tagsLoading, tagsError } = useMyTags(user.id);
 
   const prevButtonVisible = articlesPageInfo.page > 1;
   const nextButtonVisible = articlesPageInfo.page < articlesPageInfo.totalPages;
