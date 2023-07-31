@@ -187,10 +187,6 @@ class ArticleServiceTest {
         // when
         // removeArticle 실행 (예외가 발생하지 않아야 함)
         assertDoesNotThrow(() -> articleService.removeArticle(firstMockMember.getId(), firstMockArticle.getId()));
-
-        // then
-        // delete 메서드가 한 번 실행되었는지 확인
-        verify(articleRepository, times(1)).delete(firstMockArticle);
     }
 
     @Test

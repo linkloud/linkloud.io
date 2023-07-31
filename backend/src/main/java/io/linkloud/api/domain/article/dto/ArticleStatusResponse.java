@@ -9,11 +9,11 @@ public class ArticleStatusResponse {
 
     private final Long articleId;
 
-    private final String articleStatus;
+    private final String readStatus;
 
-    public ArticleStatusResponse(Long articleId, String articleStatus) {
+    public ArticleStatusResponse(Long articleId, String readStatus) {
         this.articleId = articleId;
-        this.articleStatus = articleStatus;
+        this.readStatus = readStatus;
 
     }
 

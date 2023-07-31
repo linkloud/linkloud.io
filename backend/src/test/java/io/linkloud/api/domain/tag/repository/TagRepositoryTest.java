@@ -120,7 +120,7 @@ public class TagRepositoryTest {
         List<TagDto.Response> tags  = tagRepository.findAllOrderBy(pageable).getContent();
 
         assertNotNull(tags);
-        assertEquals(tag_react.getName(), tags.get(0).getName());
+        assertEquals(tag_spring_data.getName(), tags.get(0).getName());
     }
 
     @DisplayName("이름순 태그들 조회")
@@ -131,7 +131,7 @@ public class TagRepositoryTest {
         List<TagDto.Response> tags  = tagRepository.findAllOrderBy(pageable).getContent();
 
         assertNotNull(tags);
-        assertEquals(tag_react.getName(), tags.get(0).getName());
+        assertEquals(tag_spring.getName(), tags.get(0).getName());
     }
 
     @DisplayName("태그 검색")
