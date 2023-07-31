@@ -1,13 +1,13 @@
 import { MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-import useAuthStore from "@/stores/useAuthStore";
+import { useAuthActions } from "@/stores/useAuthStore";
 import useModalStore from "@/stores/useModalStore";
 
 import { ROUTE_PATH } from "@/routes/constants";
 
 const useMobileNavigation = () => {
-  const isAuth = useAuthStore((state) => state.isAuth);
+  const { isLoggedIn } = useAuthActions();
   const openModal = useModalStore((state) => state.openModal);
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const useMobileNavigation = () => {
 
       if (!links.includes(path)) return;
 
-      if (!isAuth) {
+      if (!isLoggedIn()) {
         openModal("auth");
         return;
       }

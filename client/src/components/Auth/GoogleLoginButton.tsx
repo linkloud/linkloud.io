@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
 
-import useAuthStore from "@/stores/useAuthStore";
+import { useAuthActions } from "@/stores/useAuthStore";
 
 import { GoogleIcon } from "@/assets/svg";
 
@@ -10,17 +10,19 @@ interface GoogleLoginButtonProps {
 }
 
 const GoogleLoginButton = ({ onLoginFinish }: GoogleLoginButtonProps) => {
-  const socialLogin = useAuthStore((state) => state.socialLogin);
+  const socialLogin = useAuthActions().socialLogin;
 
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {
-      try {
-        await socialLogin({ socialType: "google", code: codeResponse.code });
-      } catch (e) {
+      const isSuccess = await socialLogin({
+        socialType: "google",
+        code: codeResponse.code,
+      });
+
+      if (!isSuccess)
         toast.error("로그인에 실패했습니다. 잠시후에 다시 시도해주세요");
-      } finally {
-        onLoginFinish();
-      }
+
+      onLoginFinish();
     },
     flow: "auth-code",
   });
