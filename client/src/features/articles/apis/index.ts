@@ -1,7 +1,7 @@
 import { request } from "@/lib/axios";
+import { MultiDataResponse } from "@/types";
 
 import { Article } from "../types";
-import { MultiDataResponse } from "@/types";
 
 export interface CreateArticleRequest {
   title: string;

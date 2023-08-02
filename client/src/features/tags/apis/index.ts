@@ -1,7 +1,7 @@
 import { request } from "@/lib/axios";
+import { MultiDataResponse } from "@/types";
 
 import { Tag, TagSort } from "../types";
-import { MultiDataResponse } from "@/types";
 
 export interface GetTagsReqeust {
   page: number;

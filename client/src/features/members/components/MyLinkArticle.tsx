@@ -1,21 +1,20 @@
 import { useState, useEffect, MouseEvent } from "react";
 import { toast } from "react-toastify";
 
-import { Article, ReadStatus as Status } from "@/features/articles/types";
-import { LinkArticle, useArticle } from "@/features/articles";
-
-import { ReadStatus } from "./ReadStatus";
-import { ActionMenu, ActionMenuItem } from "@/components/ActionMenu";
 import {
   BookIcon,
   BookOpenCheckIcon,
   BookOpenIcon,
-  EditIcon,
   MoreHorizonIcon,
-  TrashIcon,
 } from "@/assets/svg";
+import { ActionMenu, ActionMenuItem } from "@/components/ActionMenu";
+import { LinkArticle, useArticle } from "@/features/articles";
+import { Article, ReadStatus as Status } from "@/features/articles/types";
+import { useUser } from "@/stores/useAuthStore";
+
 import memberApi from "../apis";
-import useAuthStore from "@/stores/useAuthStore";
+
+import { ReadStatus } from "./ReadStatus";
 
 interface MyLinkArticleProps {
   article: Article;
@@ -29,7 +28,7 @@ export const MyLinkArticle = ({
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
 
   const { articleError, handleClickArticle } = useArticle();
-  const { id: memberId } = useAuthStore((state) => state.userInfo);
+  const { id: memberId } = useUser();
 
   const handleActionMenu = (value: boolean) => {
     setIsActionMenuVisible(value);
@@ -42,11 +41,11 @@ export const MyLinkArticle = ({
         await memberApi.updateReadStatus({ id: memberId, articleId, status });
         onUpdateReadStatus(articleId, status);
         handleActionMenu(false);
-        toast.success("읽기 상태가 업데이트되었습니다.");
+        toast.success("읽기 상태가 업데이트되었습니다.", { autoClose: 1000 });
       } catch (e) {
         console.log(e);
         toast.error(
-          "읽기 상태 업데이트에 실패했습니다. 잠시 후 다시 시도해 주세요."
+          "읽기 상태 업데이트에 실패했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     };
@@ -57,7 +56,7 @@ export const MyLinkArticle = ({
   }, [articleError]);
 
   let ReadActionItems = null;
-  switch (article.articleStatus) {
+  switch (article.readStatus) {
     case "UNREAD":
       ReadActionItems = (
         <>
@@ -80,13 +79,22 @@ export const MyLinkArticle = ({
       break;
     case "READ":
       ReadActionItems = (
-        <ActionMenuItem
-          to="#"
-          onClick={(e) => handleReadStatus(e)(article.id, "UNREAD")}
-        >
-          <BookIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
-          읽기 해제
-        </ActionMenuItem>
+        <>
+          <ActionMenuItem
+            to="#"
+            onClick={(e) => handleReadStatus(e)(article.id, "READING")}
+          >
+            <BookOpenIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
+            읽는 중
+          </ActionMenuItem>
+          <ActionMenuItem
+            to="#"
+            onClick={(e) => handleReadStatus(e)(article.id, "UNREAD")}
+          >
+            <BookIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
+            읽기 해제
+          </ActionMenuItem>
+        </>
       );
       break;
     case "READING":
@@ -130,7 +138,8 @@ export const MyLinkArticle = ({
           {isActionMenuVisible && (
             <>
               <div
-                className="fixed inset-0"
+                className="fixed inset-0 content-none"
+                aria-hidden="true"
                 onClick={() => handleActionMenu(false)}
               ></div>
               <div
@@ -151,7 +160,7 @@ export const MyLinkArticle = ({
               </div>
             </>
           )}
-          <ReadStatus status={article.articleStatus} />
+          <ReadStatus status={article.readStatus} />
         </>
       }
       onClick={() => handleClickArticle(article.id)}

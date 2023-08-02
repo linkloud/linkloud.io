@@ -1,31 +1,24 @@
-import { lazy, useEffect } from "react";
+import { lazy } from "react";
 import { RouteObject, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import useAuthStore from "@/stores/useAuthStore";
-
 import { DefaultLayout } from "@/components/Layout";
+import { useAuthActions } from "@/stores/useAuthStore";
 import { StrictPropsWithChildren } from "@/types";
+
+import { ROUTE_PATH } from "./constants";
 
 const LinksReg = lazy(() => import("@/features/articles/pages/Reg"));
 const LibraryLinks = lazy(() => import("@/features/members/pages/Links"));
 
-import { ROUTE_PATH } from "./constants";
-
 const PrivateRoute = ({ children }: StrictPropsWithChildren) => {
-  const { token, isAuthLoading } = useAuthStore((state) => ({
-    token: state.token,
-    isAuthLoading: state.loading,
-  }));
-
+  const { isLoggedIn } = useAuthActions();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isAuthLoading && !token) {
-      toast.error("로그인이 필요합니다.");
-      navigate("/", { replace: true });
-    }
-  }, [token, isAuthLoading]);
+  if (!isLoggedIn()) {
+    toast.error("로그인이 필요합니다.", { autoClose: 3000 });
+    navigate("/", { replace: true });
+  }
 
   return children;
 };

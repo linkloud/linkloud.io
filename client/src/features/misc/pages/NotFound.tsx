@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/Button";
-
 import { ROUTE_PATH } from "@/routes/constants";
 
 const NotFound = () => {

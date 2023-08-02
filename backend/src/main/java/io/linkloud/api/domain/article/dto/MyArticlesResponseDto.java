@@ -1,7 +1,7 @@
 package io.linkloud.api.domain.article.dto;
 
 import io.linkloud.api.domain.article.model.Article;
-import io.linkloud.api.domain.article.model.ArticleStatus;
+import io.linkloud.api.domain.article.model.ReadStatus;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class MyArticlesResponseDto {
     private Integer hearts;
 
     private List<String> tags;
-    private final ArticleStatus articleStatus;
+    private final ReadStatus readStatus;
 
 
 
@@ -45,7 +45,7 @@ public class MyArticlesResponseDto {
         if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
             article.getArticleTags().forEach(at -> this.tags.add(at.getTag().getName()));
         }
-        this.articleStatus = article.getArticleStatus();
+        this.readStatus = article.getReadStatus();
     }
 
 }

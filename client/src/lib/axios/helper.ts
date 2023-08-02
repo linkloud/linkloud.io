@@ -6,9 +6,9 @@ import {
 } from "axios";
 
 import useAuthStore from "@/stores/useAuthStore";
+import { log } from "@/utils/log";
 
 import { request } from ".";
-import { log } from "@/utils/log";
 
 // ---------------------------------------------------------------------------
 // 토큰 관리
@@ -18,7 +18,6 @@ interface QueueItem {
   reject: (value?: unknown) => void;
 }
 
-let isRefreshing = false; // 리프레시 중인지 여부
 let failedApiQueue: QueueItem[] = []; // 리프레시 중 쌓인 API 큐
 
 const processQueue = (error: any, token: string | null) => {
@@ -34,7 +33,7 @@ const processQueue = (error: any, token: string | null) => {
 };
 
 const requestWithInstance = async (
-  config: AxiosRequestConfig
+  config: AxiosRequestConfig,
 ): Promise<AxiosResponse> => {
   try {
     const response = await request(config);
@@ -47,18 +46,14 @@ const requestWithInstance = async (
 // 토큰 만료 처리
 export const handleExpiredToken = async (
   error: any,
-  request: InternalAxiosRequestConfig
+  request: InternalAxiosRequestConfig,
 ): Promise<AxiosResponse | void> => {
-  if (isRefreshing) {
-    return handleApiRefreshing(error, request);
-  }
+  const isRefreshing = useAuthStore.getState().isRefreshing;
+
+  if (isRefreshing) return handleApiRefreshing(error, request);
 
   log("🍪 try refresh ");
-  isRefreshing = true;
-  const initToken = useAuthStore.getState().initToken;
-  initToken();
-
-  const refresh = useAuthStore.getState().refresh;
+  const refresh = useAuthStore.getState().actions.refresh;
 
   return new Promise((resolve, reject) => {
     refresh()
@@ -71,9 +66,6 @@ export const handleExpiredToken = async (
       .catch((err) => {
         processQueue(err, null);
         reject(err);
-      })
-      .finally(() => {
-        isRefreshing = false;
       });
   });
 };

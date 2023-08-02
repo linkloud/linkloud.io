@@ -1,23 +1,24 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 import authApi, { SocialLoginRequest } from "@/features/auth/apis";
 import memberApi from "@/features/members/apis";
-
 import { Member } from "@/features/members/types";
 
-import { log } from "@/utils/log";
-
-interface AuthState {
-  loading: boolean;
+interface AuthStore {
   token: string;
-  userInfo: Member;
-  initToken: () => void;
-  socialLogin: (data: SocialLoginRequest) => Promise<void>;
-  refresh: () => Promise<void>;
-  logout: () => Promise<void>;
-  fetchUserInfo: () => Promise<void>;
-  setToken: (token: string) => void;
-  isAuth: () => boolean;
+  user: Member;
+  isRefreshing: boolean;
+  actions: AuthAction;
+}
+
+interface AuthAction {
+  isLoggedIn: () => boolean;
+  reset: () => void;
+  socialLogin: (data: SocialLoginRequest) => Promise<boolean>;
+  refresh: () => Promise<{ success: boolean; error?: Error }>;
+  fetchUserInfo: (token: string) => Promise<void>;
+  logout: () => Promise<{ success: boolean; error?: Error }>;
 }
 
 const initialUserInfo: Member = {
@@ -27,48 +28,87 @@ const initialUserInfo: Member = {
   role: "USER",
 };
 
-const useAuthStore = create<AuthState>()((set, get) => ({
-  loading: true,
-  token: "",
-  userInfo: {
-    ...initialUserInfo,
-  },
-  initToken: () => {
-    get().setToken("");
-  },
-  socialLogin: async ({ socialType, code }: SocialLoginRequest) => {
-    const { data } = await authApi.socialLogin({ socialType, code });
-    get().setToken(data.accessToken);
-    get().fetchUserInfo();
-    return;
-  },
-  refresh: async () => {
-    try {
-      set({ loading: true });
+const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, get) => ({
+      token: "",
+      user: {
+        id: 0,
+        nickname: "",
+        picture: "",
+        role: "USER",
+      },
+      isRefreshing: false,
 
-      const { data } = await authApi.refresh();
-      get().setToken(data.accessToken);
+      actions: {
+        isLoggedIn: () => {
+          return get().user.role !== "USER";
+        },
+        reset: () =>
+          set((state) => ({
+            ...state,
+            token: "",
+            user: { ...initialUserInfo },
+          })),
+        socialLogin: async ({ socialType, code }: SocialLoginRequest) => {
+          try {
+            const { data } = await authApi.socialLogin({ socialType, code });
+            const token = data.accessToken;
+            set((state) => ({ ...state, token }));
+            get().actions.fetchUserInfo(token);
+            return true;
+          } catch (e) {
+            return false;
+          }
+        },
+        refresh: async () => {
+          try {
+            if (get().isRefreshing) {
+              throw new Error("already refreshing");
+            }
 
-      await get().fetchUserInfo();
-    } catch (e: any) {
-      throw new Error(e.message);
-    } finally {
-      set({ loading: false });
-    }
-  },
-  logout: async () => {
-    await authApi.logout();
-    set({ token: "", userInfo: { ...initialUserInfo } });
-  },
-  fetchUserInfo: async () => {
-    const token = get().token;
-    const { data } = await memberApi.me(token);
-    set((state) => ({ ...state, userInfo: { ...data } }));
-  },
-  setToken: (token) => set((state) => ({ ...state, token })),
-  isAuth: () => {
-    return get().userInfo.role !== "USER";
-  },
-}));
+            set((state) => ({ ...state, isRefreshing: true }));
+            const { data } = await authApi.refresh();
+            const token = data.accessToken;
+            set((state) => ({ ...state, token }));
+            return { success: true };
+          } catch (e) {
+            if (e instanceof Error && e.message === "already refreshing") {
+              return { success: true };
+            }
+
+            return { success: false, error: e as Error };
+          } finally {
+            set((state) => ({ ...state, isRefreshing: false }));
+          }
+        },
+        fetchUserInfo: async (token: string) => {
+          const { data } = await memberApi.me(token);
+          set((state) => ({ ...state, user: { ...data } }));
+        },
+        logout: async () => {
+          try {
+            get().actions.reset();
+            await authApi.logout();
+            return { success: true };
+          } catch (e) {
+            return { success: false, error: e as Error };
+          }
+        },
+      },
+    }),
+    {
+      name: "auth",
+      partialize: (state) => ({ user: state.user }),
+    },
+  ),
+);
+
+export const useIsRefreshing = () =>
+  useAuthStore((state) => state.isRefreshing);
+export const useToken = () => useAuthStore((state) => state.token);
+export const useUser = () => useAuthStore((state) => state.user);
+
+export const useAuthActions = () => useAuthStore((state) => state.actions);
 
 export default useAuthStore;

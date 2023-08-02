@@ -1,14 +1,13 @@
-import { useMyArticles, useMyTags } from "../hooks";
-import useAuthStore from "@/stores/useAuthStore";
+import { Button } from "@/components/Button";
+import { SelectableChip } from "@/components/Chip";
+import { Head } from "@/components/Head";
+import { Spinner } from "@/components/Spinner";
+import { useUser } from "@/stores/useAuthStore";
 
 import { MyArticleSort } from "../apis";
-
-import { Head } from "@/components/Head";
-import { SelectableChip } from "@/components/Chip";
-import { Spinner } from "@/components/Spinner";
-import { Button } from "@/components/Button";
-import { MyTags } from "../components/MyTags";
 import { MyLinkArticles } from "../components/MyLinkArticles";
+import { MyTags } from "../components/MyTags";
+import { useMyArticles, useMyTags } from "../hooks";
 
 interface SortOption {
   id: number;
@@ -40,7 +39,7 @@ const Links = () => {
     },
   ];
 
-  const userInfo = useAuthStore((state) => state.userInfo);
+  const user = useUser();
   const {
     articles,
     articlesPageInfo,
@@ -50,10 +49,11 @@ const Links = () => {
     sortBy,
     handleNextArticles,
     handlePrevArticles,
+    handleChangeTag,
     handleChangeSort,
     handleReadStatus,
-  } = useMyArticles(userInfo.id);
-  const { tags, tagsLoading, tagsError } = useMyTags(userInfo.id);
+  } = useMyArticles(user.id);
+  const { tags, tagsLoading, tagsError } = useMyTags(user.id);
 
   const prevButtonVisible = articlesPageInfo.page > 1;
   const nextButtonVisible = articlesPageInfo.page < articlesPageInfo.totalPages;
@@ -64,8 +64,7 @@ const Links = () => {
       <section className="w-full max-w-7xl px-6 pb-20">
         <h1 className="sr-only">내 링크</h1>
 
-        {!tagsLoading && tags.length === 0 && <div className="py-8"></div>}
-        {/* {!tagsLoading && tags.length > 0 && <MyTags tags={tags} />} */}
+        {!tagsLoading && <MyTags tags={tags} onClickTag={handleChangeTag} />}
 
         <ul className="flex gap-2 pb-3">
           {sortOptions.map((option) => (
@@ -88,17 +87,11 @@ const Links = () => {
           </div>
         )}
 
-        {!articlesLoading && articles.length > 0 && (
+        {!articlesLoading && (
           <MyLinkArticles
             articles={articles}
             onUpdateReadStatus={handleReadStatus}
           />
-        )}
-
-        {!articlesLoading && articles.length === 0 && (
-          <div className="flex justify-center items-center h-44 w-full">
-            <span>링크가 없습니다.</span>
-          </div>
         )}
 
         <div className="flex justify-between pt-8">

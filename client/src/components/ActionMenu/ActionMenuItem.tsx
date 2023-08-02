@@ -1,5 +1,6 @@
-import { StrictPropsWithChildren } from "@/types";
 import { Link, LinkProps } from "react-router-dom";
+
+import { StrictPropsWithChildren } from "@/types";
 
 export const ActionMenuItem = ({
   children,

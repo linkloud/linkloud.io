@@ -116,7 +116,7 @@ public class ArticleService {
 
         // 요청한 회원ID, 삭제하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
-        articleRepository.delete(article);
+        article.deleteArticle();
     }
 
     // 태그 연관 관계 추가

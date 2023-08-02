@@ -5,7 +5,7 @@ interface Return<T> {
 }
 
 const useScrollToElement = <T extends HTMLElement>(
-  dependencies: DependencyList
+  dependencies: DependencyList,
 ): Return<T> => {
   const ref = useRef<T>(null);
   const [isMounted, setIsMounted] = useState(false);

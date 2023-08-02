@@ -1,7 +1,9 @@
-import { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
-import { Spinner, SpinnerProps } from "../Spinner";
+import { ButtonHTMLAttributes } from "react";
+
 import { StrictPropsWithChildren } from "@/types";
+
+import { Spinner, SpinnerProps } from "../Spinner";
 
 const styleNames = {
   solid:
@@ -49,11 +51,12 @@ export const Button = ({
   return (
     <button
       aria-label={name}
+      type={type}
       className={clsx(
         "flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed border rounded-md font-medium",
         sizes[size],
         styleNames[styleName],
-        className
+        className,
       )}
       {...props}
     >

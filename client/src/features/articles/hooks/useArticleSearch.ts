@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import articleApi, { SearchArticleReqeust } from "../apis";
-
-import { Article } from "../types";
 import { PageInfo } from "@/types";
+
+import articleApi, { SearchArticleReqeust } from "../apis";
+import { Article } from "../types";
 
 export const useArticleSearch = ({ page = 1 }) => {
   const [currentPage, setCurrentPage] = useState(page);

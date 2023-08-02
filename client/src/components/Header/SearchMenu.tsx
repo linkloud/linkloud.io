@@ -66,7 +66,7 @@ export const SearchMenu = ({ onSearch, onClose }: SearchMenuProps) => {
 
       <Portal elementId="root">
         <div
-          className="fixed inset-0 h-full w-full blur backdrop-blur-sm z-[5] animate-fade animate-once animate-duration-300 animate-ease-linear"
+          className="fixed inset-0 h-full w-full blur backdrop-blur-sm z-[5] animate-fade animate-once animate-duration-300 animate-ease-linear content-none"
           onClick={onClose}
         ></div>
       </Portal>

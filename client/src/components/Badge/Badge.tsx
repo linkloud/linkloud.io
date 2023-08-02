@@ -1,5 +1,6 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "clsx";
+import { DetailedHTMLProps, HTMLAttributes } from "react";
+
 import { StrictPropsWithChildren } from "@/types";
 
 const styleNames = {
@@ -27,7 +28,7 @@ export const Badge = ({
       className={clsx(
         "py-1 px-2 rounded-full text-xs font-semibold",
         styleNames[styleName],
-        className
+        className,
       )}
       {...props}
     >

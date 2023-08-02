@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import articleApi, { GetArticlesRequest } from "../apis";
-
-import { Article } from "../types";
 import { PageInfo } from "@/types";
+
+import articleApi, { GetArticlesRequest } from "../apis";
+import { Article } from "../types";
 
 export const useArticles = ({ page = 1 }: GetArticlesRequest) => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -22,7 +22,7 @@ export const useArticles = ({ page = 1 }: GetArticlesRequest) => {
       const { data, pageInfo } = await articleApi.getList({ page });
       setArticles(data);
       setPageInfo(pageInfo);
-    } catch (e: any) {
+    } catch (e) {
       setError(e);
     } finally {
       setLoading(false);

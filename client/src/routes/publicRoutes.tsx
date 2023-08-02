@@ -1,15 +1,14 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
 
+import { DefaultLayout } from "@/components/Layout";
 import Landing from "@/features/misc/pages/Landing";
 
-import { DefaultLayout } from "@/components/Layout";
+import { ROUTE_PATH } from "./constants";
 
 const Serach = lazy(() => import("@/features/articles/pages/Search"));
 const Tags = lazy(() => import("@/features/tags/pages/Tags"));
 const NofFound = lazy(() => import("@/features/misc/pages/NotFound"));
-
-import { ROUTE_PATH } from "./constants";
 
 export const publicRoutes: RouteObject[] = [
   {

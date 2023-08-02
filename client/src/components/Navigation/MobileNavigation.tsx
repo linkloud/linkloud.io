@@ -1,8 +1,6 @@
+import clsx from "clsx";
 import { HTMLAttributes } from "react";
 import { Link, useLocation } from "react-router-dom";
-import clsx from "clsx";
-
-import useMobileNavigation from "./hooks/useMobileNavigation";
 
 import {
   HomeIcon,
@@ -15,8 +13,9 @@ import {
   UserIcon,
   UserFillIcon,
 } from "@/assets/svg";
-
 import { ROUTE_PATH } from "@/routes/constants";
+
+import useMobileNavigation from "./hooks/useMobileNavigation";
 
 const activeColor = "stroke-primary-high fill-primary-high";
 const inactiveColor = "fill-gray-400";
@@ -77,7 +76,7 @@ export const MobileNavigation = ({ ...props }: NavigationProps) => {
             <Link
               to={link.to}
               className={clsx(
-                "flex flex-col justify-center items-center h-full w-full"
+                "flex flex-col justify-center items-center h-full w-full",
               )}
               onClick={link.id !== 1 ? handleClickLink(link.to) : undefined}
             >

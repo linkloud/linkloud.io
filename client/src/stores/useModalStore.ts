@@ -8,7 +8,7 @@ interface ModalState {
   closeModal: (type: Modal) => void;
 }
 
-const useModalStore = create<ModalState>()((set, get) => ({
+const useModalStore = create<ModalState>()((set) => ({
   items: {
     auth: false,
   },

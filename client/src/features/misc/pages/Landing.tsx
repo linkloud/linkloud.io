@@ -1,17 +1,15 @@
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
-import { useTags } from "@/features/tags";
-import { useArticles } from "@/features/articles";
-import { useArticle } from "@/features/articles";
-
-import { Counter } from "@/components/Counter";
-import { Link } from "@/components/Link";
-import { Button } from "@/components/Button";
-import { TagItems } from "@/features/tags/components/TagItems";
-import { LinkArticle } from "@/features/articles";
 import { ChevronRightIcon } from "@/assets/svg";
+import { Button } from "@/components/Button";
+import { Counter } from "@/components/Counter";
 import { Head } from "@/components/Head";
+import { Link } from "@/components/Link";
+import { LinkArticle, useArticle, useArticles } from "@/features/articles";
+import { LinkArticleNotFound } from "@/features/articles/components/LinkArticleNotFound";
+import { useTags } from "@/features/tags";
+import { TagItems } from "@/features/tags/components/TagItems";
 
 const Landing = () => {
   const isFristMounted = useRef(true);
@@ -107,6 +105,8 @@ const Landing = () => {
             ))}
           </ul>
         )}
+
+        {!articlesLoading && articles.length === 0 && <LinkArticleNotFound />}
 
         <div className="flex justify-between pt-8">
           {prevButtonVisible && (

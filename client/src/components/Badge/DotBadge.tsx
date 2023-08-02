@@ -1,5 +1,5 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "clsx";
+import { DetailedHTMLProps, HTMLAttributes } from "react";
 
 const styleNames = {
   primary: "bg-primary-high",
@@ -20,7 +20,7 @@ export const DotBadge = ({
     <span
       className={clsx(
         "inline-block h-3 w-3 rounded-full",
-        styleNames[styleName]
+        styleNames[styleName],
       )}
       {...props}
     ></span>

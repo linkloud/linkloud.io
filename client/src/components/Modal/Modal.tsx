@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 
+import { XIcon } from "@/assets/svg";
 import { StrictPropsWithChildren } from "@/types";
 
-import { Portal } from "../Portal";
 import { Dimmed } from "../Dimmed";
-
-import { XIcon } from "@/assets/svg";
+import { Portal } from "../Portal";
 
 export interface ModalProps {
   name: string;

@@ -1,31 +1,43 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import useHeader from "./hooks/useHeader";
-
-import { HeaderLayout } from "./HeaderLayout";
-import { NavLink } from "./NavLink";
-import { SearchMenu } from "./SearchMenu";
-import { Button } from "../Button";
-import { Avatar } from "../Avatar";
-import { ActionMenu, ActionMenuItem } from "../ActionMenu";
-
-import { HeartIcon, InboxIcon, Logo, SearchIcon, UserIcon } from "@/assets/svg";
-
+import {
+  HeartIcon,
+  InboxIcon,
+  LogoIcon,
+  SearchIcon,
+  UserIcon,
+} from "@/assets/svg";
 import { ROUTE_PATH } from "@/routes/constants";
 
+import { ActionMenu, ActionMenuItem } from "../ActionMenu";
+import { Avatar } from "../Avatar";
+import { Button } from "../Button";
+
+import { HeaderLayout } from "./HeaderLayout";
+import useHeader from "./hooks/useHeader";
+import { NavLink } from "./NavLink";
+import { SearchMenu } from "./SearchMenu";
+
 export const DefaultHeader = () => {
+  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const {
-    userInfo,
+    user,
+    isLoggedIn,
     handleClickLogin,
-    isActionMenuVisible,
     handleRegisterLink,
-    handleClickAvatar,
-    handleLeaveAvatar,
     handleLogout,
   } = useHeader();
+
+  const handleClickAvatar = () => {
+    setIsActionMenuVisible(true);
+  };
+
+  const handleLeaveAvatar = () => {
+    setIsActionMenuVisible(false);
+  };
 
   const handleCloseSearch = () => {
     setIsSearchVisible(false);
@@ -51,7 +63,7 @@ export const DefaultHeader = () => {
       <HeaderLayout layout="between">
         <h1>
           <Link to="/">
-            <Logo className="h-14 w-14" />
+            <LogoIcon className="h-14 w-14" />
             <span className="sr-only">링클라우드</span>
           </Link>
         </h1>
@@ -80,26 +92,15 @@ export const DefaultHeader = () => {
                 링크 등록
               </NavLink>
             </li>
-            {userInfo.role === "USER" && (
-              <li>
-                <NavLink
-                  to="#"
-                  className="bg-primary-medium hover:bg-primary-high text-white rounded-md transition-colors"
-                  onClick={handleClickLogin}
-                >
-                  로그인
-                </NavLink>
-              </li>
-            )}
-            {userInfo.role !== "USER" && (
+            {isLoggedIn() && (
               <li
                 className="relative px-2 hidden md:block"
                 onClick={handleClickAvatar}
               >
                 <Avatar
                   aria-expanded={isActionMenuVisible}
-                  nickname={userInfo.nickname}
-                  profileImage={userInfo.picture}
+                  nickname={user.nickname}
+                  profileImage={user.picture}
                 />
                 {isActionMenuVisible && (
                   <div
@@ -114,7 +115,7 @@ export const DefaultHeader = () => {
                       {/* 
                       <ActionMenuItem to="/profile">
                         <UserIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
-                        내정보
+                        내 정보
                       </ActionMenuItem>
                       <ActionMenuItem to="/likes">
                         <HeartIcon className="mr-2 h-4 w-4 stroke-neutral-800" />
@@ -126,6 +127,17 @@ export const DefaultHeader = () => {
                     </ActionMenu>
                   </div>
                 )}
+              </li>
+            )}
+            {!isLoggedIn() && (
+              <li>
+                <NavLink
+                  to="#"
+                  className="bg-primary-medium hover:bg-primary-high text-white rounded-md transition-colors"
+                  onClick={handleClickLogin}
+                >
+                  로그인
+                </NavLink>
               </li>
             )}
           </ul>

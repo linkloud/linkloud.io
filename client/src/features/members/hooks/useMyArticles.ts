@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import memberApi, { GetMemeberArticlesReqeust, MyArticleSort } from "../apis";
-
-import { PageInfo } from "@/types";
 import { Article, ReadStatus } from "@/features/articles/types";
+import { PageInfo } from "@/types";
+
+import memberApi, { GetMemeberArticlesReqeust, MyArticleSort } from "../apis";
 
 export const useMyArticles = (memberId: number) => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -70,8 +70,8 @@ export const useMyArticles = (memberId: number) => {
   const handleReadStatus = (id: number, newStatus: ReadStatus) => {
     setArticles((prev) =>
       prev.map((article) =>
-        article.id === id ? { ...article, articleStatus: newStatus } : article
-      )
+        article.id === id ? { ...article, readStatus: newStatus } : article,
+      ),
     );
   };
 

@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.model.ArticleStatus;
+import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.global.utils.QueryDslUtils;
@@ -60,49 +61,20 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             .from(article)
             .leftJoin(article.member, member).fetchJoin()
             // 나중에 상태도 추가하기
-//            .where(article.state.eq(article.State.ACTIVE), builder)
-            .where(builder)
+            .where(builder, article.articleStatus.eq(ArticleStatus.ACTIVE))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
 
         JPAQuery<Long> countQuery = query.select(article.count())
-            .from(article);
-//            .where(article.state.eq(Posts.State.ACTIVE), builder);
+            .from(article)
+            .where(builder, article.articleStatus.eq(ArticleStatus.ACTIVE));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-
-//        BooleanBuilder builder = new BooleanBuilder();
-//
-//        if (StringUtils.hasText(keyword)) {
-//            builder.and(article.title.containsIgnoreCase(keyword)
-//                .or(article.description.containsIgnoreCase(keyword)));
-//        }
-//
-//        if (tags != null && !tags.isEmpty()) {
-//            BooleanBuilder tagsBuilder = new BooleanBuilder();
-//            for (String tagName : tags) {
-//                tagsBuilder.or(tag.name.eq(tagName));
-//            }
-//            builder.and(tagsBuilder);
-//        }
-//
-//        List<ArticleResponseDto> content = query.selectDistinct(Projections.constructor(ArticleResponseDto.class, article))
-//            .from(article)
-//            .leftJoin(articleTag).on(article.id.eq(articleTag.article.id))
-//            .leftJoin(tag).on(articleTag.tag.eq(tag))
-//            .where(builder)
-//            .fetch();
-//
-//        JPAQuery<Long> countQuery = query.select(article.count())
-//            .from(article)
-//            .where(builder);
-//
-//        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-
     }
+
     @Override
-    public Page<MyArticlesResponseDto> findMyArticleByTag(Member m, String t, String articleStatus, Pageable pageable) {
+    public Page<MyArticlesResponseDto> findMyArticleByTag(Member m, String t, String readStatus, Pageable pageable) {
         // 정렬 기준 변환
         OrderSpecifier[] orders = queryDslUtils.getAllOrderSpecifiers(pageable, article);
 
@@ -123,21 +95,22 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             builder.and(article.id.in(sub));
         }
 
-        if (!articleStatus.equals("")) {
-            builder.and(article.articleStatus.eq(ArticleStatus.valueOf(articleStatus.toUpperCase())));
+        if (!readStatus.equals("")) {
+            builder.and(article.readStatus.eq(ReadStatus.valueOf(readStatus.toUpperCase())));
         }
 
         List<MyArticlesResponseDto> content = query.selectDistinct(Projections.constructor(MyArticlesResponseDto.class, article))
             .from(article)
             .leftJoin(article.member, member).fetchJoin()
-            .where(builder.and(article.member.eq(m)))
+            .where(builder, article.member.eq(m), article.articleStatus.eq(ArticleStatus.ACTIVE))
             .orderBy(orders)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
 
         JPAQuery<Long> countQuery = query.select(article.count())
-            .from(article);
+            .from(article)
+            .where(builder, article.articleStatus.eq(ArticleStatus.ACTIVE));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }

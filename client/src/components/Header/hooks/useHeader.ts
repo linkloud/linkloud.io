@@ -1,17 +1,14 @@
-import { useState, MouseEvent } from "react";
+import { useEffect, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import useAuthStore from "@/stores/useAuthStore";
+import { ROUTE_PATH } from "@/routes/constants";
+import { useUser, useAuthActions } from "@/stores/useAuthStore";
 import useModalStore from "@/stores/useModalStore";
 
-import { ROUTE_PATH } from "@/routes/constants";
-
 const useHeader = () => {
-  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
-
-  const userInfo = useAuthStore((state) => state.userInfo);
-  const logout = useAuthStore((state) => state.logout);
+  const user = useUser();
+  const authActions = useAuthActions();
   const openModal = useModalStore((state) => state.openModal);
   const navigate = useNavigate();
 
@@ -22,7 +19,7 @@ const useHeader = () => {
   const handleRegisterLink = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
 
-    if (userInfo.role === "USER") {
+    if (!authActions.isLoggedIn()) {
       openModal("auth");
       return;
     }
@@ -30,29 +27,29 @@ const useHeader = () => {
     navigate(ROUTE_PATH.LINK.REG);
   };
 
-  const handleClickAvatar = () => {
-    setIsActionMenuVisible(true);
+  const handleLogout = () => {
+    authActions.logout();
+    navigate(ROUTE_PATH.LANDING);
   };
 
-  const handleLeaveAvatar = () => {
-    setIsActionMenuVisible(false);
-  };
+  useEffect(() => {
+    if (user.role !== "USER") {
+      authActions.refresh().then(({ success, error }) => {
+        if (error) authActions.reset();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (e) {
-      toast.error("로그아웃에 실패했습니다");
+        if (error?.message === "Expired refresh token") {
+          toast("로그인이 만료 되었습니다", { autoClose: 3000 });
+          navigate(ROUTE_PATH.LANDING);
+        }
+      });
     }
-  };
+  }, [user.role, authActions.refresh, navigate]);
 
   return {
-    userInfo,
+    user,
+    isLoggedIn: authActions.isLoggedIn,
     handleClickLogin,
-    isActionMenuVisible,
     handleRegisterLink,
-    handleClickAvatar,
-    handleLeaveAvatar,
     handleLogout,
   };
 };

@@ -1,5 +1,5 @@
-import { Link, LinkProps } from "react-router-dom";
 import clsx from "clsx";
+import { Link, LinkProps } from "react-router-dom";
 
 import { StrictPropsWithChildren } from "@/types";
 
@@ -14,7 +14,7 @@ export const NavLink = ({
       to={to}
       className={clsx(
         "inline-flex justify-center items-center h-10 px-5 font-medium",
-        className
+        className,
       )}
       onClick={onClick}
     >

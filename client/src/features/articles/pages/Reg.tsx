@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-import { useArticleReg } from "../hooks";
-
 import { Button } from "@/components/Button";
+import { Head } from "@/components/Head";
 import { InputText } from "@/components/Input";
 import { TagItem } from "@/features/tags";
-import { Head } from "@/components/Head";
+
+import { useArticleReg } from "../hooks";
 
 const Reg = () => {
   const {
