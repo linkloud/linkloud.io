@@ -410,7 +410,7 @@ class MemberControllerTest {
                                 fieldWithPath("data[].memberId").description("해당 게시글의 회원 식별자"),
                                 fieldWithPath("data[].memberNickname").description("해당 게시글의 회원 별명"),
                                 fieldWithPath("data[].views").description("해당 게시글의 조회수"),
-                                fieldWithPath("data[].bookmarks").description("해당 게시글의 북마크수"),
+                                fieldWithPath("data[].hearts").description("해당 게시글의 좋아요수"),
                                 fieldWithPath("data[].title").description("해당 회원의 게시글 제목"),
                                 fieldWithPath("data[].url").description("해당 회원의 게시글 url"),
                                 fieldWithPath("data[].description").description("해당 회원의 게시글 설명"),
