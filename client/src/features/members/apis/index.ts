@@ -1,9 +1,9 @@
+import { Article, ReadStatus } from "@/features/articles/types";
+import { Tag } from "@/features/tags/types";
 import { request } from "@/lib/axios";
+import { MultiDataResponse, SingleDataResponse } from "@/types";
 
 import { Member } from "../types";
-import { Article, ReadStatus } from "@/features/articles/types";
-import { MultiDataResponse, SingleDataResponse } from "@/types";
-import { Tag } from "@/features/tags/types";
 
 export type MyArticleSort = "latest" | "title" | "read" | "reading";
 

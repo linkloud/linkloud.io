@@ -1,5 +1,6 @@
-import { AnchorHTMLAttributes } from "react";
 import clsx from "clsx";
+import { AnchorHTMLAttributes } from "react";
+
 import { StrictPropsWithChildren } from "@/types";
 
 const styleNames = {
@@ -23,7 +24,7 @@ export const CapsuleButton = ({
       className={clsx(
         "flex justify-center items-center h-10 px-2.5 rounded-full link-shadow-lg cursor-pointer",
         styleNames[styleName],
-        className
+        className,
       )}
       {...props}
     >

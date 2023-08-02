@@ -1,10 +1,9 @@
 import { MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { ROUTE_PATH } from "@/routes/constants";
 import { useAuthActions } from "@/stores/useAuthStore";
 import useModalStore from "@/stores/useModalStore";
-
-import { ROUTE_PATH } from "@/routes/constants";
 
 const useMobileNavigation = () => {
   const { isLoggedIn } = useAuthActions();

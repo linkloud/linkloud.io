@@ -1,6 +1,5 @@
-import { Tag } from "@/features/tags/types";
-
 import { TagItem } from "@/features/tags";
+import { Tag } from "@/features/tags/types";
 
 interface MyTagsProps {
   tags: Tag[];

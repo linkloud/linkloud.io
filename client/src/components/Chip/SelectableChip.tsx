@@ -1,6 +1,8 @@
-import { MouseEventHandler } from "react";
 import clsx from "clsx";
+import { MouseEventHandler } from "react";
+
 import { StrictPropsWithChildren } from "@/types";
+
 import { ChipProps } from "./Chip";
 
 const styleNames = {
@@ -32,7 +34,7 @@ export const SelectableChip = ({
         "flex justify-center items-center font-semibold rounded-full link-shadow-sm cursor-pointer transition-colors",
         styleNames[styleName],
         sizes[size],
-        className
+        className,
       )}
       onClick={onClick}
     >

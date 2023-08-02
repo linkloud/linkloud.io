@@ -1,5 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
+
 import { useArticleSearchNavigation } from "../useArticleSearchNavigation";
 
 jest.mock("react-router-dom", () => ({
@@ -25,7 +26,7 @@ describe("useArticleSearchNavigation TEST", () => {
     });
 
     expect(useNavigate()).toHaveBeenCalledWith(
-      "/search?keyword=test&tags=tag1&tags=tag2"
+      "/search?keyword=test&tags=tag1&tags=tag2",
     );
   });
 
@@ -47,7 +48,7 @@ describe("useArticleSearchNavigation TEST", () => {
     });
 
     expect(useNavigate()).toHaveBeenCalledWith(
-      "/search?keyword=test&tags=tag1"
+      "/search?keyword=test&tags=tag1",
     );
   });
 });

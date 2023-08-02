@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, MouseEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import articleApi from "../apis";
-
 import { ROUTE_PATH } from "@/routes/constants";
+
+import articleApi from "../apis";
 
 interface Form {
   title: string;
@@ -31,7 +31,7 @@ export const useArticleReg = () => {
   const navigate = useNavigate();
 
   const validateForm = ({ title, url, description, tags }: Form) => {
-    let errorMessages = {
+    const errorMessages = {
       title: "",
       url: "",
       description: "",
@@ -60,7 +60,7 @@ export const useArticleReg = () => {
 
     setFormErrorMessage(errorMessages);
     return !Object.values(errorMessages).some(
-      (errorMessage) => errorMessage !== ""
+      (errorMessage) => errorMessage !== "",
     );
   };
 

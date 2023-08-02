@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
 import { DefaultHeader } from "../Header";
+import { Modals } from "../Modal";
 import { MobileNavigation } from "../Navigation";
 import { Spinner } from "../Spinner";
-import { Modals } from "../Modal";
 
 export const DefaultLayout = () => {
   return (

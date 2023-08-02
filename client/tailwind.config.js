@@ -1,4 +1,5 @@
-const plugin = require("tailwindcss/plugin");
+import plugin from "tailwindcss/plugin";
+import animated from "tailwindcss-animated";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -41,7 +42,7 @@ export default {
     },
   },
   plugins: [
-    require("tailwindcss-animated"),
+    animated,
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".link-shadow-xs": {

@@ -1,5 +1,5 @@
-import { useState, InputHTMLAttributes } from "react";
 import clsx from "clsx";
+import { useState, InputHTMLAttributes } from "react";
 
 const styleNames = {
   base: "mt-1 border-b transition-colors duration-200",
@@ -54,7 +54,7 @@ export const InputText = ({
       <span
         className={clsx(
           "mt-1 border-b transition-colors duration-200",
-          isFocused ? styleNames.focused : styleNames.unfocused
+          isFocused ? styleNames.focused : styleNames.unfocused,
         )}
       ></span>
 
@@ -63,7 +63,7 @@ export const InputText = ({
           "md:text-base",
           errorMessage
             ? "animate-shake animate-thrice animate-duration-100 animate-ease-out text-red-500"
-            : "text-transparent min-h-[1rem]"
+            : "text-transparent min-h-[1rem]",
         )}
       >
         {errorMessage || " "}

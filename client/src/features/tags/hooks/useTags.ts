@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import tagApi, { GetTagsReqeust } from "../apis";
-
-import { Tag, TagSort } from "../types";
 import { PageInfo } from "@/types";
+
+import tagApi, { GetTagsReqeust } from "../apis";
+import { Tag, TagSort } from "../types";
 
 export const useTags = ({
   page = 1,

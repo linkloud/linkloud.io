@@ -1,7 +1,7 @@
 import { request } from "@/lib/axios";
+import { SingleDataResponse } from "@/types";
 
 import { SocialType, TokenResponse } from "../types";
-import { SingleDataResponse } from "@/types";
 
 export interface SocialLoginRequest {
   socialType: SocialType;

@@ -1,21 +1,20 @@
 import { useState, useEffect, MouseEvent } from "react";
 import { toast } from "react-toastify";
 
-import { Article, ReadStatus as Status } from "@/features/articles/types";
-import { LinkArticle, useArticle } from "@/features/articles";
-
-import { ReadStatus } from "./ReadStatus";
-import { ActionMenu, ActionMenuItem } from "@/components/ActionMenu";
 import {
   BookIcon,
   BookOpenCheckIcon,
   BookOpenIcon,
-  EditIcon,
   MoreHorizonIcon,
-  TrashIcon,
 } from "@/assets/svg";
-import memberApi from "../apis";
+import { ActionMenu, ActionMenuItem } from "@/components/ActionMenu";
+import { LinkArticle, useArticle } from "@/features/articles";
+import { Article, ReadStatus as Status } from "@/features/articles/types";
 import { useUser } from "@/stores/useAuthStore";
+
+import memberApi from "../apis";
+
+import { ReadStatus } from "./ReadStatus";
 
 interface MyLinkArticleProps {
   article: Article;
@@ -46,7 +45,7 @@ export const MyLinkArticle = ({
       } catch (e) {
         console.log(e);
         toast.error(
-          "읽기 상태 업데이트에 실패했습니다. 잠시 후 다시 시도해 주세요."
+          "읽기 상태 업데이트에 실패했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     };

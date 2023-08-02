@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import useHeader from "./hooks/useHeader";
-
-import { HeaderLayout } from "./HeaderLayout";
-import { NavLink } from "./NavLink";
-import { SearchMenu } from "./SearchMenu";
-import { Button } from "../Button";
-import { Avatar } from "../Avatar";
-import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 import {
   HeartIcon,
   InboxIcon,
@@ -16,8 +8,16 @@ import {
   SearchIcon,
   UserIcon,
 } from "@/assets/svg";
-
 import { ROUTE_PATH } from "@/routes/constants";
+
+import { ActionMenu, ActionMenuItem } from "../ActionMenu";
+import { Avatar } from "../Avatar";
+import { Button } from "../Button";
+
+import { HeaderLayout } from "./HeaderLayout";
+import useHeader from "./hooks/useHeader";
+import { NavLink } from "./NavLink";
+import { SearchMenu } from "./SearchMenu";
 
 export const DefaultHeader = () => {
   const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);

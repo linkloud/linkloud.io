@@ -1,8 +1,9 @@
 import axios from "axios";
-import qs from "qs";
+import * as qs from "qs";
 
 import useAuthStore from "@/stores/useAuthStore";
 import { log } from "@/utils/log";
+
 import {
   handleExpiredToken,
   logError,
@@ -63,5 +64,5 @@ request.interceptors.response.use(
     error.status = 500;
 
     return Promise.reject(error);
-  }
+  },
 );

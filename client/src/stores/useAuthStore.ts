@@ -1,10 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { Member } from "@/features/members/types";
-
 import authApi, { SocialLoginRequest } from "@/features/auth/apis";
 import memberApi from "@/features/members/apis";
+import { Member } from "@/features/members/types";
 
 interface AuthStore {
   token: string;
@@ -101,8 +100,8 @@ const useAuthStore = create<AuthStore>()(
     {
       name: "auth",
       partialize: (state) => ({ user: state.user }),
-    }
-  )
+    },
+  ),
 );
 
 export const useIsRefreshing = () =>

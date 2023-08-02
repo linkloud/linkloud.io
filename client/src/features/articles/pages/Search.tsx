@@ -1,9 +1,9 @@
-import { useArticleSearch, useArticle } from "../hooks";
-
-import { TagItems } from "@/features/tags";
 import { Button } from "@/components/Button";
 import { Head } from "@/components/Head";
+import { TagItems } from "@/features/tags";
+
 import { LinkArticle } from "../components/LinkArticle";
+import { useArticleSearch, useArticle } from "../hooks";
 
 const Search = () => {
   const {
@@ -18,7 +18,7 @@ const Search = () => {
 
   const generateDescription = (
     searchKeyword: string | null,
-    searchTags: string[] | null
+    searchTags: string[] | null,
   ) => {
     const searchTagsString = searchTags?.join(", ");
 

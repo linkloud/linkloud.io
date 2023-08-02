@@ -1,9 +1,8 @@
-import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
-
-import { useAuthActions } from "@/stores/useAuthStore";
+import { toast } from "react-toastify";
 
 import { GoogleIcon } from "@/assets/svg";
+import { useAuthActions } from "@/stores/useAuthStore";
 
 interface GoogleLoginButtonProps {
   onLoginFinish: () => void;
@@ -31,6 +30,8 @@ const GoogleLoginButton = ({ onLoginFinish }: GoogleLoginButtonProps) => {
     <a
       onClick={() => login()}
       role="button"
+      href="#"
+      tabIndex={0}
       className="flex items-center justify-center py-3 px-5 border border-gray-300 rounded w-full cursor-pointer transition hover:bg-zinc-50"
     >
       <GoogleIcon className="mr-2" />

@@ -22,7 +22,7 @@ export const HeaderLayout = ({
       <div
         className={clsx(
           "mx-auto px-6 h-full w-full max-w-7xl",
-          layouts[layout]
+          layouts[layout],
         )}
       >
         {children}

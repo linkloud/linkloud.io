@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 
 import { Article } from "../types";
 
-import { LinkArticleContent } from "./LinkArticleContent";
-import { LikeButton } from "./LikeButton";
 import { CopyButton } from "./CopyButton";
+import { LikeButton } from "./LikeButton";
+import { LinkArticleContent } from "./LinkArticleContent";
 
 export interface LinkArticleProps {
   article: Article;

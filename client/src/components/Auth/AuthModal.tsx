@@ -1,7 +1,8 @@
-import GoogleLoginButton from "./GoogleLoginButton";
+import { LogoIcon } from "@/assets/svg";
+
 import { Modal, ModalProps } from "../Modal";
 
-import { LogoIcon } from "@/assets/svg";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 export const AuthModal = ({ isOpened, onClose }: Omit<ModalProps, "name">) => {
   return (

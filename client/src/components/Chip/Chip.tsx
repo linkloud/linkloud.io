@@ -1,5 +1,6 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "clsx";
+import { DetailedHTMLProps, HTMLAttributes } from "react";
+
 import { StrictPropsWithChildren } from "@/types";
 
 const styleNames = {
@@ -32,7 +33,7 @@ export const Chip = ({
         "flex justify-center items-center rounded",
         styleNames[styleName],
         sizes[size],
-        className
+        className,
       )}
       {...props}
     >

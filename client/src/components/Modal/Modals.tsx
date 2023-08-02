@@ -1,5 +1,5 @@
-import useModalStore from "@/stores/useModalStore";
 import { useAuthActions } from "@/stores/useAuthStore";
+import useModalStore from "@/stores/useModalStore";
 
 import { AuthModal } from "../Auth";
 

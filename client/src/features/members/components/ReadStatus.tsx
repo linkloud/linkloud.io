@@ -1,6 +1,5 @@
-import { ReadStatus as Status } from "@/features/articles/types";
-
 import { DotBadge } from "@/components/Badge";
+import { ReadStatus as Status } from "@/features/articles/types";
 
 export interface ReadStatusProps {
   status: Status;

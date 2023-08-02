@@ -1,6 +1,6 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { RouterProvider } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./assets/css/style.css";

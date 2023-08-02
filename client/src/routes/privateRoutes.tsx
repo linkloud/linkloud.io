@@ -1,16 +1,15 @@
-import { lazy, useEffect } from "react";
+import { lazy } from "react";
 import { RouteObject, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { useAuthActions } from "@/stores/useAuthStore";
-
 import { DefaultLayout } from "@/components/Layout";
+import { useAuthActions } from "@/stores/useAuthStore";
 import { StrictPropsWithChildren } from "@/types";
+
+import { ROUTE_PATH } from "./constants";
 
 const LinksReg = lazy(() => import("@/features/articles/pages/Reg"));
 const LibraryLinks = lazy(() => import("@/features/members/pages/Links"));
-
-import { ROUTE_PATH } from "./constants";
 
 const PrivateRoute = ({ children }: StrictPropsWithChildren) => {
   const { isLoggedIn } = useAuthActions();

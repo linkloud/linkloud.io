@@ -2,10 +2,9 @@ import { useEffect, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import useModalStore from "@/stores/useModalStore";
-import { useUser, useAuthActions } from "@/stores/useAuthStore";
-
 import { ROUTE_PATH } from "@/routes/constants";
+import { useUser, useAuthActions } from "@/stores/useAuthStore";
+import useModalStore from "@/stores/useModalStore";
 
 const useHeader = () => {
   const user = useUser();

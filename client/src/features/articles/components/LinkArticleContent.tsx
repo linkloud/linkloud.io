@@ -1,9 +1,9 @@
 import { MouseEventHandler } from "react";
 
-import { Article } from "../types";
-
 import { Link } from "@/components/Link";
 import { TagItems } from "@/features/tags/components/TagItems";
+
+import { Article } from "../types";
 
 export interface LinkArticleContentProps {
   article: Article;

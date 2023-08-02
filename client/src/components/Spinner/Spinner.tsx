@@ -1,4 +1,5 @@
 import clsx from "clsx";
+
 import { LoadingIcon } from "@/assets/svg";
 
 const styleNames = {
@@ -31,7 +32,7 @@ export const Spinner = ({
           "animate-spin opacity-90",
           styleNames[styleName],
           sizes[size],
-          className
+          className,
         )}
       />
       <span className="sr-only">loading</span>

@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react";
 
-import { useTags } from "../hooks";
-
-import { TagSort } from "../types";
-
-import { TagCard } from "../components/TagCard";
 import { Button } from "@/components/Button";
 import { SelectableChip } from "@/components/Chip";
 import { Head } from "@/components/Head";
+
+import { TagCard } from "../components/TagCard";
+import { useTags } from "../hooks";
+import { TagSort } from "../types";
 
 interface TagSortOption {
   id: number;

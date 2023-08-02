@@ -1,9 +1,7 @@
 import { useState, MouseEventHandler } from "react";
 
-import { ChipProps } from "@/components/Chip";
-import { Chip } from "@/components/Chip";
-
 import { XIcon } from "@/assets/svg";
+import { ChipProps, Chip } from "@/components/Chip";
 
 export interface TagItemProps {
   name: string;
