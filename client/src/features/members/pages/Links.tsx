@@ -49,6 +49,7 @@ const Links = () => {
     sortBy,
     handleNextArticles,
     handlePrevArticles,
+    handleChangeTag,
     handleChangeSort,
     handleReadStatus,
   } = useMyArticles(user.id);
@@ -63,8 +64,7 @@ const Links = () => {
       <section className="w-full max-w-7xl px-6 pb-20">
         <h1 className="sr-only">내 링크</h1>
 
-        {!tagsLoading && tags.length === 0 && <div className="py-8"></div>}
-        {/* {!tagsLoading && tags.length > 0 && <MyTags tags={tags} />} */}
+        {!tagsLoading && <MyTags tags={tags} onClickTag={handleChangeTag} />}
 
         <ul className="flex gap-2 pb-3">
           {sortOptions.map((option) => (
@@ -87,17 +87,11 @@ const Links = () => {
           </div>
         )}
 
-        {!articlesLoading && articles.length > 0 && (
+        {!articlesLoading && (
           <MyLinkArticles
             articles={articles}
             onUpdateReadStatus={handleReadStatus}
           />
-        )}
-
-        {!articlesLoading && articles.length === 0 && (
-          <div className="flex justify-center items-center h-44 w-full">
-            <span>링크가 없습니다.</span>
-          </div>
         )}
 
         <div className="flex justify-between pt-8">

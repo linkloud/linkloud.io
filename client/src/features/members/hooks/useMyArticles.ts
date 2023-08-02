@@ -70,7 +70,7 @@ export const useMyArticles = (memberId: number) => {
   const handleReadStatus = (id: number, newStatus: ReadStatus) => {
     setArticles((prev) =>
       prev.map((article) =>
-        article.id === id ? { ...article, articleStatus: newStatus } : article,
+        article.id === id ? { ...article, readStatus: newStatus } : article,
       ),
     );
   };
