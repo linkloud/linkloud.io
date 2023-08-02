@@ -56,7 +56,7 @@ const memberApi = {
 
   updateReadStatus({ id, articleId, status }: UpdateArticleReadStatus) {
     return request.patch(`/member/${id}/article-status/${articleId}`, {
-      articleStatus: status,
+      readStatus: status,
     });
   },
 };

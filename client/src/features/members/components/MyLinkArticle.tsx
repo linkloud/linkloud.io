@@ -41,7 +41,7 @@ export const MyLinkArticle = ({
         await memberApi.updateReadStatus({ id: memberId, articleId, status });
         onUpdateReadStatus(articleId, status);
         handleActionMenu(false);
-        toast.success("읽기 상태가 업데이트되었습니다.");
+        toast.success("읽기 상태가 업데이트되었습니다.", { autoClose: 1000 });
       } catch (e) {
         console.log(e);
         toast.error(
@@ -56,7 +56,7 @@ export const MyLinkArticle = ({
   }, [articleError]);
 
   let ReadActionItems = null;
-  switch (article.articleStatus) {
+  switch (article.readStatus) {
     case "UNREAD":
       ReadActionItems = (
         <>
@@ -79,13 +79,22 @@ export const MyLinkArticle = ({
       break;
     case "READ":
       ReadActionItems = (
-        <ActionMenuItem
-          to="#"
-          onClick={(e) => handleReadStatus(e)(article.id, "UNREAD")}
-        >
-          <BookIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
-          읽기 해제
-        </ActionMenuItem>
+        <>
+          <ActionMenuItem
+            to="#"
+            onClick={(e) => handleReadStatus(e)(article.id, "READING")}
+          >
+            <BookOpenIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
+            읽는 중
+          </ActionMenuItem>
+          <ActionMenuItem
+            to="#"
+            onClick={(e) => handleReadStatus(e)(article.id, "UNREAD")}
+          >
+            <BookIcon className="mr-2 stroke-neutral-800 h-5 w-5" />
+            읽기 해제
+          </ActionMenuItem>
+        </>
       );
       break;
     case "READING":
@@ -129,7 +138,8 @@ export const MyLinkArticle = ({
           {isActionMenuVisible && (
             <>
               <div
-                className="fixed inset-0"
+                className="fixed inset-0 content-none"
+                aria-hidden="true"
                 onClick={() => handleActionMenu(false)}
               ></div>
               <div
@@ -150,7 +160,7 @@ export const MyLinkArticle = ({
               </div>
             </>
           )}
-          <ReadStatus status={article.articleStatus} />
+          <ReadStatus status={article.readStatus} />
         </>
       }
       onClick={() => handleClickArticle(article.id)}
