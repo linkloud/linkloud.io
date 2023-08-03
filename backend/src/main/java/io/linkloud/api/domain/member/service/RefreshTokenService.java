@@ -55,8 +55,8 @@ public class RefreshTokenService {
     private RefreshToken findRefreshTokenByMemberId(Long memberId) {
         return refreshTokenRepository.findById(memberId)
             .orElseThrow(() -> {
-                log.error("해당{}의 리프레시토큰이 DB에 존재하지 않습니다.", memberId);
-                return new CustomException(AuthExceptionCode.INVALID_TOKEN);
+                log.error("Member[{}]의 리프레시토큰이 DB에 존재하지 않습니다.", memberId);
+                return new CustomException(AuthExceptionCode.EXPIRED_REFRESH_TOKEN);
             });
     }
 

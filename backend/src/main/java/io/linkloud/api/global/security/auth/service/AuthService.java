@@ -81,11 +81,11 @@ public class AuthService {
         try {
             refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
-            log.error("리프레시 토큰이 변조되었습니다={}",e.getMessage());
+            log.error("리프레시 토큰 에러={}",e.getMessage());
             refreshTokenService.removeRefreshToken(memberId);
             Cookie removedCookie = removeRefreshCookie();
             response.addCookie(removedCookie);
-            throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
+            throw new CustomException(e.getExceptionCode());
         }
 
         Member member = memberService.fetchMemberById(memberId);
