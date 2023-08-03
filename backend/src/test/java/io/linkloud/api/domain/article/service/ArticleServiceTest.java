@@ -56,7 +56,7 @@ class ArticleServiceTest {
         .url("url")
         .description("desc")
         .views(1)
-        .bookmarks(1)
+        .hearts(1)
         .build();
 
     ArticleRequestDto articleRequestDto = new ArticleRequestDto(

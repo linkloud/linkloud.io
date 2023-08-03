@@ -26,7 +26,7 @@ public class ArticleResponseDto {
 
     private Integer views;
 
-    private Integer bookmarks;
+    private Integer hearts;
 
     private List<String> tags;
 
@@ -39,7 +39,7 @@ public class ArticleResponseDto {
         this.url = article.getUrl();
         this.description = article.getDescription();
         this.views = article.getViews();
-        this.bookmarks = article.getBookmarks();
+        this.hearts = article.getHearts();
         this.tags = new ArrayList<>();
         if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
             article.getArticleTags().forEach(at -> this.tags.add(at.getTag().getName()));
