@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.article.dto;
 
 import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.tag.dto.TagDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -14,10 +15,6 @@ public class ArticleResponseDto {
 
     private Long id;
 
-    private Long memberId;
-
-    private String memberNickname;
-
     private String title;
 
     private String url;
@@ -28,13 +25,13 @@ public class ArticleResponseDto {
 
     private Integer hearts;
 
-    private List<String> tags;
+    private List<TagDto.ArticleTagsResponse> tags;
 
-    /** Entity -> Dto */
+    /**
+     * Entity -> Dto
+     */
     public ArticleResponseDto(Article article) {
         this.id = article.getId();
-        this.memberId = article.getMember().getId();    // article.getMember_id()에서 Member형의 member_id를 가져온 후, Member 아티클의 getter를 이용.
-        this.memberNickname = article.getMember().getNickname();
         this.title = article.getTitle();
         this.url = article.getUrl();
         this.description = article.getDescription();
@@ -42,7 +39,7 @@ public class ArticleResponseDto {
         this.hearts = article.getHearts();
         this.tags = new ArrayList<>();
         if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
-            article.getArticleTags().forEach(at -> this.tags.add(at.getTag().getName()));
+            article.getArticleTags().forEach(at -> this.tags.add(new TagDto.ArticleTagsResponse(at.getTag().getId(),at.getTag().getName())));
         }
     }
 
