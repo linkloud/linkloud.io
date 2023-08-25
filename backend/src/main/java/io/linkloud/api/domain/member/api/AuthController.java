@@ -25,21 +25,21 @@ public class AuthController {
 
 
     @PostMapping("/{socialType}")
-    public ResponseEntity<SingleDataResponse<AuthResponseDto>> authenticate(
+    public ResponseEntity<AuthResponseDto> authenticate(
         @RequestBody AuthRequestDto dto, HttpServletResponse response) {
         AuthResponseDto responseDto = authService.authenticate(dto,response);
         log.info("첫 토큰 생성");
         log.info("AccessToken={}",responseDto.getAccessToken());
-        return ResponseEntity.ok(new SingleDataResponse<>(responseDto));
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<SingleDataResponse<AuthResponseDto>> refreshAccessToken(
+    public ResponseEntity<AuthResponseDto> refreshAccessToken(
         @CookieValue("refreshToken") String refreshToken,
         HttpServletResponse response) {
         AuthResponseDto responseDto = authService.refreshTokenAndAccessToken(refreshToken,response);
         log.info("토큰 재생성");
         log.info("AccessToken={} ", responseDto.getAccessToken());
-        return ResponseEntity.ok(new SingleDataResponse<>(responseDto));
+        return ResponseEntity.ok(responseDto);
     }
 }

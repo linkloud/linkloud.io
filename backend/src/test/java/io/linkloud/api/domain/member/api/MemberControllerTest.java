@@ -208,17 +208,17 @@ class MemberControllerTest {
         actions
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.nickname").value(member.getNickname()))
-            .andExpect(jsonPath("$.data.picture").value(member.getPicture()))
-            .andExpect(jsonPath("$.data.role").value(member.getRole().name()))
+            .andExpect(jsonPath("$.nickname").value(member.getNickname()))
+            .andExpect(jsonPath("$.picture").value(member.getPicture()))
+            .andExpect(jsonPath("$.role").value(member.getRole().name()))
             .andDo(document("member/me/success/newMember",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 responseFields(
-                    fieldWithPath("data.id").description("회원의 PK ID"),
-                    fieldWithPath("data.nickname").description("회원의 닉네임."),
-                    fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
-                    fieldWithPath("data.role").description("가입한지 3일 이내 회원의 권한")
+                    fieldWithPath("id").description("회원의 PK ID"),
+                    fieldWithPath("nickname").description("회원의 닉네임."),
+                    fieldWithPath("picture").description("회원의 프로필 사진 URI."),
+                    fieldWithPath("role").description("가입한지 3일 이내 회원의 권한")
                 )));
     }
 
@@ -239,10 +239,10 @@ class MemberControllerTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 responseFields(
-                    fieldWithPath("data.id").description("회원의 PK ID"),
-                    fieldWithPath("data.nickname").description("회원의 닉네임."),
-                    fieldWithPath("data.picture").description("회원의 프로필 사진 URI."),
-                    fieldWithPath("data.role").description("가입한지 3일 지난 회원의 권한")
+                    fieldWithPath("id").description("회원의 PK ID"),
+                    fieldWithPath("nickname").description("회원의 닉네임."),
+                    fieldWithPath("picture").description("회원의 프로필 사진 URI."),
+                    fieldWithPath("role").description("가입한지 3일 지난 회원의 권한")
                 )));
     }
 
@@ -498,8 +498,8 @@ class MemberControllerTest {
                                 fieldWithPath("readStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
-                                fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
-                                fieldWithPath("data.readStatus").description("변경된 게시글 상태")
+                                fieldWithPath("articleId").description("변경된 게시글PK ID"),
+                                fieldWithPath("readStatus").description("변경된 게시글 상태")
                         )));
 
         // READING
@@ -527,8 +527,8 @@ class MemberControllerTest {
                                 fieldWithPath("readStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
-                                fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
-                                fieldWithPath("data.readStatus").description("변경된 게시글 상태")
+                                fieldWithPath("articleId").description("변경된 게시글PK ID"),
+                                fieldWithPath("readStatus").description("변경된 게시글 상태")
                         )));
 
         // READ
@@ -556,8 +556,8 @@ class MemberControllerTest {
                                 fieldWithPath("readStatus").description("변경할 게시글의 상태")
                         ),
                         responseFields(
-                                fieldWithPath("data.articleId").description("변경된 게시글PK ID"),
-                                fieldWithPath("data.readStatus").description("변경된 게시글 상태")
+                                fieldWithPath("articleId").description("변경된 게시글PK ID"),
+                                fieldWithPath("readStatus").description("변경된 게시글 상태")
                         )));
 
     }

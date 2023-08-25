@@ -35,10 +35,10 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/me")
-    public ResponseEntity<SingleDataResponse<MemberLoginResponse>> findMe(
+    public ResponseEntity<MemberLoginResponse> findMe(
             @NonNull @LoginMemberId Long loginMemberId) {
         MemberLoginResponse memberLoginResponse = memberService.fetchPrincipal(loginMemberId);
-        return ResponseEntity.ok(new SingleDataResponse<>(memberLoginResponse));
+        return ResponseEntity.ok(memberLoginResponse);
     }
 
     @PatchMapping("/nickname")
@@ -64,13 +64,13 @@ public class MemberController {
     }
 
     @PatchMapping("{memberId}/article-status/{articleId}")
-    public ResponseEntity<SingleDataResponse<ArticleStatusResponse>> updateMyArticlesStatus(
+    public ResponseEntity<ArticleStatusResponse> updateMyArticlesStatus(
             @PathVariable Long memberId,
             @PathVariable Long articleId,
             @LoginMemberId Long extractedMemberId,
             @RequestBody ArticleStatusRequest articleStatusRequest) {
         ArticleStatusResponse article = memberService.updateMyArticleStatus(memberId, extractedMemberId, articleId, articleStatusRequest);
-        return ResponseEntity.ok(new SingleDataResponse<>(article));
+        return ResponseEntity.ok(article);
     }
 
     @GetMapping("/{memberId}/tags")
