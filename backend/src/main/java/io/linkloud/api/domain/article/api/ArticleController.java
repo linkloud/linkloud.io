@@ -43,21 +43,21 @@ public class ArticleController {
 
     /** 아티클 한 개 조회 */
     @GetMapping("/{id}")
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> getOneArticle(@PathVariable @Valid Long id) {
+    public ResponseEntity<ArticleResponseDto> getOneArticle(@PathVariable @Valid Long id) {
         ArticleResponseDto getOneArticleDto = articleService.fetchArticleById(id);
-
-        return ResponseEntity.ok(new SingleDataResponse<>(getOneArticleDto));
+        return ResponseEntity.ok((getOneArticleDto));
     }
+
 
     /** 아티클 작성 */
     @PostMapping
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> createArticle(
+    public ResponseEntity<ArticleResponseDto> createArticle(
         @LoginMemberId Long memberId,
         @RequestBody @Valid ArticleRequestDto articleRequestDto) {
 
         ArticleResponseDto createdArticleDto = articleService.addArticle(memberId, articleRequestDto);
 
-        return ResponseEntity.ok(new SingleDataResponse<>(createdArticleDto));
+        return ResponseEntity.ok(createdArticleDto);
 
     }
 
@@ -65,13 +65,13 @@ public class ArticleController {
     // PutMapping   : 해당 리소스를 대체하는 메소드
     // PatchMapping : 리소스의 일부를 바꾸는 메소드
     @PutMapping("/{articleId}")
-    public ResponseEntity<SingleDataResponse<ArticleResponseDto>> putArticle(
+    public ResponseEntity<ArticleResponseDto> putArticle(
         @PathVariable Long articleId,
         @LoginMemberId Long memberId,
         @RequestBody @Valid ArticleUpdateDto articleUpdateDto) {
         ArticleResponseDto updatedArticleDto = articleService.updateArticle(articleId, memberId, articleUpdateDto);
 
-        return ResponseEntity.ok(new SingleDataResponse<>(updatedArticleDto));
+        return ResponseEntity.ok(updatedArticleDto);
 
     }
 
@@ -85,7 +85,7 @@ public class ArticleController {
 
     /** 검색 */
     @GetMapping("search")
-    public ResponseEntity<MultiDataResponse> getArticleBySearch(
+    public ResponseEntity<MultiDataResponse<ArticleResponseDto>> getArticleBySearch(
         @RequestParam String keyword,
         @RequestParam(required = false) List<String> tags,
         @Positive @RequestParam int page) {

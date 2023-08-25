@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/api/v1/likes")
+@RequestMapping("a")
 public class HeartController {
 
     private final HeartService heartService;
 
     /** 좋아요 추가 */
     @PostMapping("/{articleId}")
-    public ResponseEntity<SingleDataResponse<HeartResponseDto>> createHeart(
+    public ResponseEntity<HeartResponseDto> createHeart(
         @LoginMemberId Long memberId,
         @PathVariable @Valid Long articleId,
         @RequestBody @Valid HeartRequestDto heartRequestDto) {
@@ -35,7 +35,7 @@ public class HeartController {
         // 좋아요 추가, 좋아요 삭제를 따로 나눠서 할 수 있음
         HeartResponseDto heartResponseDto = heartService.addHeart(memberId, articleId, heartRequestDto);
 
-        return ResponseEntity.ok(new SingleDataResponse<>(heartResponseDto));
+        return ResponseEntity.ok(heartResponseDto);
     }
 
     /** 좋아요 취소 */

@@ -41,6 +41,6 @@ public class TagController {
     @GetMapping("/search")
     public ResponseEntity<?> getTagListBySearch(@RequestParam String keyword) {
         List<Response> tags = tagService.fetchTagListBySearch(keyword);
-        return ResponseEntity.ok().body(new SingleDataResponse<>(tags));
+        return ResponseEntity.ok().body(tags);
     }
 }
