@@ -85,7 +85,7 @@ class AuthControllerTest {
                     fieldWithPath("code").description("일회용 oauth 액세스 토큰 요청 인가 코드")
                 ),
                     responseFields(
-                            fieldWithPath("data.accessToken").description("Access Token")
+                            fieldWithPath("accessToken").description("Access Token")
                     )
             ));
         verify(authService).authenticate(any(),any());
@@ -201,7 +201,7 @@ class AuthControllerTest {
                                         fieldWithPath("refreshToken").description("리프레시 토큰")
                                 ),
                                 responseFields(
-                                        fieldWithPath("data.accessToken").description("새로 발급된 액세스 토큰")
+                                        fieldWithPath("accessToken").description("새로 발급된 액세스 토큰")
                                 )
                         )
                 );
