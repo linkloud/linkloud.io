@@ -5,7 +5,6 @@ import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.service.ArticleService;
 import io.linkloud.api.global.common.MultiDataResponse;
-import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +35,6 @@ public class ArticleController {
     @GetMapping
     public ResponseEntity<MultiDataResponse<ArticleResponseDto>> getAllArticle(@Positive @RequestParam int page) {
         Page<ArticleResponseDto> getAllArticleDto = articleService.fetchAllArticle(page);
-
         return ResponseEntity.ok(new MultiDataResponse<>(getAllArticleDto));
     }
 

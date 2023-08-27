@@ -7,11 +7,11 @@ import org.springframework.data.domain.Page;
 
 @Getter
 public class MultiDataResponse<T> {
-    private List<T> data;
-    private PageInfo pageInfo;
+    private final List<T> items;
+    private final PageInfo pageInfo;
 
-    public MultiDataResponse(Page page) {
-        this.data = page.getContent();
+    public MultiDataResponse(Page<T> page) {
+        this.items = page.getContent();
         this.pageInfo = new PageInfo(page.getNumber() + 1,
             page.getSize(), page.getTotalElements(), page.getTotalPages());
     }
