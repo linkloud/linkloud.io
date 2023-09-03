@@ -18,4 +18,7 @@ public interface ArticleRepositoryCustom {
     Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
         SortBy sortBy);
 
+    Slice<ArticleResponseDto> findMyArticlesWithNoOffset(Long memberId,Long lastArticleId, Pageable pageable,
+        SortBy sortBy);
+
 }

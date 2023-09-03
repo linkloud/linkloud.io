@@ -152,6 +152,33 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    @Override
+    public Slice<ArticleResponseDto> findMyArticlesWithNoOffset(Long memberId,Long lastArticleId, Pageable pageable,
+        SortBy sortBy) {
+        OrderSpecifier<?>[] orderSpecifiers = createOrderSpecifier(sortBy);
+
+        List<Article> fetch = query
+            .selectFrom(article)
+            .leftJoin(article.member, member).fetchJoin()
+            .leftJoin(article.articleTags, articleTag).fetchJoin()
+            .leftJoin(articleTag.tag, tag).fetchJoin()
+            .where(article.member.id.eq(memberId),getWhereLastArticleIdLowerThan(lastArticleId))
+            .orderBy(orderSpecifiers)
+            .limit(pageable.getPageSize() + 1)
+            .fetch();
+
+        List<ArticleResponseDto> content = fetch.stream()
+            .map(ArticleResponseDto::new)
+            .collect(Collectors.toList());
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
 
     // 더보기 누를 경우
     // 이전 페이지나 데이터를 제공해야되는데
@@ -176,6 +203,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         switch (sortBy) {
             case LATEST -> orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.createdAt));
             case HEARTS -> orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.hearts));
+            case TITLE -> orderSpecifiers.add(new OrderSpecifier<>(Order.ASC,article.title));
             default ->
                 // 기본 정렬 : 날짜순
                 orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.createdAt));
