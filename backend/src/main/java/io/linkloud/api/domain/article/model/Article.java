@@ -58,6 +58,7 @@ public class Article extends Auditable {
     public enum SortBy {
         LATEST("createdAt"),
         TITLE("title"),
+        HEARTS("hearts"),
         READING("reading"),
         READ("read");
 
