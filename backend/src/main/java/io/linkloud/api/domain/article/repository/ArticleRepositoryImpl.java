@@ -6,22 +6,30 @@ import static io.linkloud.api.domain.tag.model.QArticleTag.articleTag;
 import static io.linkloud.api.domain.tag.model.QTag.tag;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.global.utils.QueryDslUtils;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
@@ -114,4 +122,71 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
+
+    @Override
+    public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId,
+        Pageable pageable,SortBy sortBy) {
+
+        OrderSpecifier[] orderSpecifier = createOrderSpecifier(sortBy);
+
+        // fetchJoin 을 사용하여 한번에 쿼리문 날림
+        List<Article> fetch = query.selectFrom(article)
+            .leftJoin(article.member, member).fetchJoin() // Member 엔터티 fetchJoin 적용하지 않음
+            .leftJoin(article.articleTags, articleTag).fetchJoin() // ArticleTag 엔터티 fetchJoin 적용
+            .leftJoin(articleTag.tag, tag).fetchJoin() // Tag 엔터티 fetchJoin 적용
+            .where(getWhereLastArticleIdLowerThan(lastArticleId))
+            .orderBy(orderSpecifier)
+            .limit(pageable.getPageSize() + 1)
+            .fetch();
+
+
+        List<ArticleResponseDto> content = fetch.stream()
+            .map(ArticleResponseDto::new)
+            .collect(Collectors.toList());
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+
+    // 더보기 누를 경우
+    // 이전 페이지나 데이터를 제공해야되는데
+    // 이전 데이터를 가져오기 위한 기준
+    // 즉, 가장 최근에 작성된 게시글을 보여주려 가장 큰 ID 값을가진 게시글들을 가져와야 함
+    // 스크롤을 내리면서 게시글을 계속 볼 때,
+    // 스크롤 중간에 위치한 게시글의 ID 값을 기준으로 그보다 작은 ID 값을 가진 이전 게시글들을 보여줘야 함
+    private BooleanExpression getWhereLastArticleIdLowerThan(Long lastArticleId) {
+        if (lastArticleId != null) {
+            // article.id 값이 lastArticleId 보다 작은지 비교
+            // 즉 마지막으로 본 게시글 보다 ID 가 작은 게시글 불러오기
+            return article.id.lt(lastArticleId);
+        }
+        return null;
+    }
+
+
+    // 게시글 목록 정렬 동적 쿼리
+    public OrderSpecifier<?>[] createOrderSpecifier(SortBy sortBy) {
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+
+        switch (sortBy) {
+            case LATEST -> orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.createdAt));
+            case HEARTS -> orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.hearts));
+            default ->
+                // 기본 정렬 : 날짜순
+                orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.createdAt));
+        }
+
+        return orderSpecifiers.toArray(new OrderSpecifier[0]);
+    }
 }
+
+
+
+
+
+
