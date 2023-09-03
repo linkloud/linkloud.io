@@ -3,8 +3,10 @@ package io.linkloud.api.domain.article.service;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_FOUND;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
@@ -15,9 +17,13 @@ import io.linkloud.api.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ArticleServiceV2Impl implements ArticleServiceV2{
@@ -42,6 +48,13 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
         Long id = articleRepository.save(article).getId();
         return new ArticleSave(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
+        SortBy sortBy) {
+        return articleRepository.findArticlesWithNoOffset(lastArticleId, pageable,sortBy);
     }
 
     private List<ArticleTag> addArticleTagList(List<String> tagNames) {
