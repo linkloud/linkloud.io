@@ -10,6 +10,7 @@ import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.domain.tag.service.TagService;
@@ -31,6 +32,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
     private final TagService tagService;
+    private final MemberService memberService;
 
     @Transactional
     @Override
@@ -56,6 +58,14 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         SortBy sortBy) {
         return articleRepository.findArticlesWithNoOffset(lastArticleId, pageable,sortBy);
     }
+
+    @Transactional(readOnly = true)
+    public Slice<ArticleResponseDto> findMyArticles(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
+        SortBy sortBy) {
+        memberService.validateMember(memberId, loginMemberId);
+        return articleRepository.findMyArticlesWithNoOffset(memberId,lastArticleId, pageable,sortBy);
+    }
+
 
     private List<ArticleTag> addArticleTagList(List<String> tagNames) {
         List<Tag> tags = addTags(tagNames);

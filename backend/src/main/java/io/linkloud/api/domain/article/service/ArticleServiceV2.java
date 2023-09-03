@@ -14,4 +14,6 @@ public interface ArticleServiceV2 {
     Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
         SortBy sortBy);
 
+    Slice<ArticleResponseDto> findMyArticles(Long loginMemberId,Long memberId,Long lastArticleId, Pageable pageable, SortBy sortBy);
+
 }
