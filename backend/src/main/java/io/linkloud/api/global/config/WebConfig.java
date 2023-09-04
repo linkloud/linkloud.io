@@ -1,6 +1,7 @@
 package io.linkloud.api.global.config;
 
 import io.linkloud.api.global.converter.StringToArticleSortByConverter;
+import io.linkloud.api.global.converter.StringToArticleStatusByConverter;
 import io.linkloud.api.global.converter.StringToTagSortByConverter;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import io.linkloud.api.global.security.resolver.LoginMemberIdArgumentResolver;
@@ -29,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
         // config에 converter 등록
         registry.addConverter(new StringToTagSortByConverter());
         registry.addConverter(new StringToArticleSortByConverter());
+        registry.addConverter(new StringToArticleStatusByConverter());
     }
 
     @Override
