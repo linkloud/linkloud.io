@@ -5,8 +5,11 @@ import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
+import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
@@ -52,6 +55,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return new ArticleSave(id);
     }
 
+    // 게시글 목록 조회
     @Transactional(readOnly = true)
     @Override
     public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
@@ -59,11 +63,20 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return articleRepository.findArticlesWithNoOffset(lastArticleId, pageable,sortBy);
     }
 
+    // 게시글 목록 최신순,인기순 정렬 조회
     @Transactional(readOnly = true)
-    public Slice<ArticleResponseDto> findMyArticles(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
+    public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
         SortBy sortBy) {
         memberService.validateMember(memberId, loginMemberId);
-        return articleRepository.findMyArticlesWithNoOffset(memberId,lastArticleId, pageable,sortBy);
+        return articleRepository.findArticlesByMemberSorted(memberId, lastArticleId, pageable, sortBy);
+    }
+
+    // 게시글 목록 상태(읽음,읽는중)순 정렬
+    @Transactional(readOnly = true)
+    public Slice<MemberArticlesSortedByStatus> findArticlesByReadStatus(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
+        ReadStatus readStatus) {
+        memberService.validateMember(memberId, loginMemberId);
+        return articleRepository.findArticlesByReadStatus(memberId, lastArticleId, pageable,readStatus);
     }
 
 
