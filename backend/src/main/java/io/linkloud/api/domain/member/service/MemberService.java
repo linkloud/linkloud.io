@@ -182,6 +182,7 @@ public class MemberService {
 
     /** 요청한 회원 ID 와 액세스토큰에서 추출한 ID 가 같은지 비교*/
     public void validateMember(Long memberId, Long extractedMemberId) {
+        fetchMemberById(memberId);
         if (!memberId.equals(extractedMemberId)) {
             throw new CustomException(LogicExceptionCode.MEMBER_NOT_MATCH);
         }
