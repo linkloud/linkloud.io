@@ -2,11 +2,11 @@ package io.linkloud.api.domain.article.repository;
 
 import static io.linkloud.api.domain.article.model.QArticle.article;
 import static io.linkloud.api.domain.member.model.QMember.member;
+import static io.linkloud.api.domain.member.model.QMemberArticleStatus.memberArticleStatus;
 import static io.linkloud.api.domain.tag.model.QArticleTag.articleTag;
 import static io.linkloud.api.domain.tag.model.QTag.tag;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -15,15 +15,19 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
+import io.linkloud.api.domain.member.model.MemberArticleStatus;
 import io.linkloud.api.global.utils.QueryDslUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -127,7 +131,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId,
         Pageable pageable,SortBy sortBy) {
 
-        OrderSpecifier[] orderSpecifier = createOrderSpecifier(sortBy);
+        OrderSpecifier<?>[] orderSpecifier = createOrderSpecifier(sortBy);
 
         // fetchJoin 을 사용하여 한번에 쿼리문 날림
         List<Article> fetch = query.selectFrom(article)
@@ -153,22 +157,31 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     }
 
     @Override
-    public Slice<ArticleResponseDto> findMyArticlesWithNoOffset(Long memberId,Long lastArticleId, Pageable pageable,
+    public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long memberId,Long lastArticleId, Pageable pageable,
         SortBy sortBy) {
-        OrderSpecifier<?>[] orderSpecifiers = createOrderSpecifier(sortBy);
+
+        BooleanExpression whereClause = article.member.id.eq(memberId);
+        if (lastArticleId != null) {
+            whereClause = whereClause.and(article.id.lt(lastArticleId));
+        }
+
+        OrderSpecifier<?>[] orderSpecifiers = createOrderSpecifier(Objects.requireNonNullElse(sortBy, SortBy.LATEST));
 
         List<Article> fetch = query
             .selectFrom(article)
-            .leftJoin(article.member, member).fetchJoin()
-            .leftJoin(article.articleTags, articleTag).fetchJoin()
-            .leftJoin(articleTag.tag, tag).fetchJoin()
-            .where(article.member.id.eq(memberId),getWhereLastArticleIdLowerThan(lastArticleId))
+            .leftJoin(article.articleTags, articleTag).fetchJoin()  // ArticleTag를 즉시 로딩
+            .where(whereClause)
             .orderBy(orderSpecifiers)
             .limit(pageable.getPageSize() + 1)
             .fetch();
 
-        List<ArticleResponseDto> content = fetch.stream()
-            .map(ArticleResponseDto::new)
+        // TODO : 게시글 상태 Null 값 이므로 생성자 변경
+//        List<ArticleResponseDto> content = fetch.stream()
+//            .map(ArticleResponseDto::new)
+//            .collect(Collectors.toList());
+
+        List<MemberArticlesSortedResponse> content = fetch.stream()
+            .map(MemberArticlesSortedResponse::new)
             .collect(Collectors.toList());
 
         boolean hasNext = false;
@@ -176,8 +189,49 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             content.remove(pageable.getPageSize());
             hasNext = true;
         }
+
+        return new SliceImpl<>(content, pageable, hasNext);
+
+    }
+
+
+    @Override
+    public Slice<MemberArticlesSortedByStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId, Pageable pageable,
+        ReadStatus readStatus) {
+        BooleanExpression whereClause = memberArticleStatus.member.id.eq(memberId);
+        if (lastArticleId != null) {
+            whereClause = whereClause.and(memberArticleStatus.article.id.lt(lastArticleId));
+        }
+        if (readStatus != null) {
+            whereClause = whereClause.and(memberArticleStatus.readStatus.eq(readStatus));
+        }
+
+        // TODO : N+1문제 DTO 로 해야함
+        List<MemberArticleStatus> fetch = query
+            .selectFrom(memberArticleStatus)
+            .leftJoin(memberArticleStatus.article, article).fetchJoin()
+            .leftJoin(memberArticleStatus.member, member).fetchJoin()  // 추가
+            .leftJoin(article.articleTags, articleTag).fetchJoin() // ArticleTag 엔터티 fetchJoin 적용
+            .where(whereClause)
+            .orderBy(article.createdAt.desc())
+            .limit(pageable.getPageSize() + 1)
+            .fetch();
+
+
+        List<MemberArticlesSortedByStatus> content = fetch.stream()
+            .map(status -> new MemberArticlesSortedByStatus(status.getArticle(), status.getReadStatus()))
+            .collect(Collectors.toList());
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
         return new SliceImpl<>(content, pageable, hasNext);
     }
+
+
 
 
     // 더보기 누를 경우
@@ -195,18 +249,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return null;
     }
 
-
-    // 게시글 목록 정렬 동적 쿼리
-    public OrderSpecifier<?>[] createOrderSpecifier(SortBy sortBy) {
+    // 게시글 동적 정렬
+    private OrderSpecifier<?>[] createOrderSpecifier(SortBy sortBy) {
         List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
         switch (sortBy) {
-            case LATEST -> orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.createdAt));
-            case HEARTS -> orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.hearts));
-            case TITLE -> orderSpecifiers.add(new OrderSpecifier<>(Order.ASC,article.title));
-            default ->
-                // 기본 정렬 : 날짜순
-                orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, article.createdAt));
+            case HEARTS -> orderSpecifiers.add(article.hearts.desc());
+            case TITLE -> orderSpecifiers.add(article.title.asc());
+            default -> orderSpecifiers.add(article.createdAt.desc());
         }
 
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
