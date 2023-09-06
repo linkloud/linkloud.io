@@ -1,8 +1,12 @@
 package io.linkloud.api.domain.article.dto;
 
 
+import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.member.model.MemberArticleStatus;
+import io.linkloud.api.domain.tag.dto.TagDto;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
 public class ArticleResponseDtoV2 {
@@ -27,4 +31,66 @@ public class ArticleResponseDtoV2 {
     }
 
 
+    // 내 게시글 최신순,인기순 정렬
+    @Getter
+    public static class MemberArticlesSortedResponse {
+
+        private final Long id;
+
+        private final String title;
+
+        private final String url;
+
+        private final String description;
+
+        private final Integer views;
+
+        private final Integer hearts;
+
+        private final List<TagDto.ArticleTagsResponse> tags;
+
+        public MemberArticlesSortedResponse(Article article) {
+            this.id = article.getId();
+            this.title = article.getTitle();
+            this.url = article.getUrl();
+            this.description = article.getDescription();
+            this.views = article.getViews();
+            this.hearts = article.getHearts();
+            this.tags = new ArrayList<>();
+            if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
+                article.getArticleTags().forEach(at -> this.tags.add(
+                    new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
+            }
+        }
+
+        // 내가 설정한 다른 사람의 게시글 상태별 목록 조회
+        @Getter
+        public static class MemberArticlesSortedByStatus {
+
+            private final Long id;
+            private final String title;
+            private final String url;
+            private final String description;
+            private final Integer views;
+            private final Integer hearts;
+            private final String readStatus;
+            private final List<TagDto.ArticleTagsResponse> tags;
+
+            public MemberArticlesSortedByStatus(Article article, ReadStatus readStatus) {
+                this.id = article.getId();
+                this.title = article.getTitle();
+                this.url = article.getUrl();
+                this.description = article.getDescription();
+                this.views = article.getViews();
+                this.hearts = article.getHearts();
+                this.readStatus = readStatus.name();
+                this.tags = new ArrayList<>();
+                if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
+                    article.getArticleTags().forEach(at -> this.tags.add(
+                        new TagDto.ArticleTagsResponse(at.getTag().getId(),
+                            at.getTag().getName())));
+                }
+            }
+        }
+    }
 }
