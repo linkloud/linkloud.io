@@ -2,6 +2,7 @@ package io.linkloud.api.domain.member.model;
 
 
 import io.linkloud.api.domain.article.model.Article;
+import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.global.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -53,6 +54,9 @@ public class Member extends Auditable {
 
     @OneToMany(mappedBy = "member")
     private final List<Article> myArticles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<MemberArticleStatus> articleStatuses = new ArrayList<>();
     // 닉네임 변경
     public void updateNickname(String nickname) {
         this.nickname = nickname;
