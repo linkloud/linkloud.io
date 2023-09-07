@@ -2,7 +2,7 @@ package io.linkloud.api.domain.article.repository;
 
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
@@ -23,7 +23,7 @@ public interface ArticleRepositoryCustom {
     Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long memberId,Long lastArticleId, Pageable pageable,
         SortBy sortBy);
     // 게시글 상태순 정렬
-    Slice<MemberArticlesSortedByStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId,
+    Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId,
         Pageable pageable, ReadStatus readStatus);
 
 }

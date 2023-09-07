@@ -39,8 +39,8 @@ public class ArticleResponseDto {
         this.hearts = article.getHearts();
         this.tags = new ArrayList<>();
         if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
-            article.getArticleTags().forEach(at -> this.tags.add(new TagDto.ArticleTagsResponse(at.getTag().getId(),at.getTag().getName())));
+            article.getArticleTags().forEach(at -> this.tags.add(
+                new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
         }
     }
-
-}
+ }

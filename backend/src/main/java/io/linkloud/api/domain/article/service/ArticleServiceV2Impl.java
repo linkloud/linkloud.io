@@ -6,7 +6,7 @@ import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequest
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
@@ -73,7 +73,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
     // 게시글 목록 상태(읽음,읽는중)순 정렬
     @Transactional(readOnly = true)
-    public Slice<MemberArticlesSortedByStatus> findArticlesByReadStatus(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
+    public Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
         ReadStatus readStatus) {
         memberService.validateMember(memberId, loginMemberId);
         return articleRepository.findArticlesByReadStatus(memberId, lastArticleId, pageable,readStatus);

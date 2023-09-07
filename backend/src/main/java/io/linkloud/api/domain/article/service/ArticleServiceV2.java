@@ -4,7 +4,7 @@ import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequest
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,7 @@ public interface ArticleServiceV2 {
     Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId, Long memberId,
         Long lastArticleId, Pageable pageable, SortBy sortBy);
 
-    Slice<MemberArticlesSortedByStatus> findArticlesByReadStatus(Long loginMemberId, Long memberId, Long lastArticleId,
+    Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long loginMemberId, Long memberId, Long lastArticleId,
         Pageable pageable,ReadStatus readStatus);
 
 

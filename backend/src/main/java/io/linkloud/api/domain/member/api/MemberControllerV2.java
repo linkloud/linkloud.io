@@ -2,7 +2,7 @@ package io.linkloud.api.domain.member.api;
 
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticleStatusResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.service.ArticleServiceV2;
@@ -47,14 +47,14 @@ public class MemberControllerV2 {
 
     // 내가 변경한 다른 사람의 게시글 상태로 조회
     @GetMapping("/{memberId}/read-status")
-    public ResponseEntity<SliceResponse<MemberArticlesSortedByStatus>> test(
+    public ResponseEntity<SliceResponse<MemberArticlesByReadStatus>> test(
         @RequestParam Long lastArticleId,
         Pageable pageable,
         @LoginMemberId Long loginMemberId,
         @PathVariable Long memberId,
         @RequestParam ReadStatus readStatus) {
 
-        Slice<MemberArticlesSortedByStatus> myArticles = articleServiceV2.findArticlesByReadStatus(loginMemberId,
+        Slice<MemberArticlesByReadStatus> myArticles = articleServiceV2.findArticlesByReadStatus(loginMemberId,
             memberId, lastArticleId, pageable, readStatus);
         return ResponseEntity.ok(new SliceResponse<>(myArticles));
     }

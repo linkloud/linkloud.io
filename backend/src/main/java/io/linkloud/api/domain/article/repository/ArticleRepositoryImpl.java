@@ -16,7 +16,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesSortedByStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ArticleStatus;
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -37,6 +38,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
@@ -130,7 +132,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     @Override
     public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId,
         Pageable pageable,SortBy sortBy) {
-
+        log.info("게시글 목록 조회 실행");
         OrderSpecifier<?>[] orderSpecifier = createOrderSpecifier(sortBy);
 
         // fetchJoin 을 사용하여 한번에 쿼리문 날림
@@ -196,7 +198,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
 
     @Override
-    public Slice<MemberArticlesSortedByStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId, Pageable pageable,
+    public Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId, Pageable pageable,
         ReadStatus readStatus) {
         BooleanExpression whereClause = memberArticleStatus.member.id.eq(memberId);
         if (lastArticleId != null) {
@@ -218,8 +220,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             .fetch();
 
 
-        List<MemberArticlesSortedByStatus> content = fetch.stream()
-            .map(status -> new MemberArticlesSortedByStatus(status.getArticle(), status.getReadStatus()))
+        List<MemberArticlesByReadStatus> content = fetch.stream()
+            .map(status -> new MemberArticlesByReadStatus(status.getArticle(), status.getReadStatus()))
             .collect(Collectors.toList());
 
         boolean hasNext = false;

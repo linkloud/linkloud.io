@@ -65,7 +65,7 @@ public class ArticleResponseDtoV2 {
 
         // 내가 설정한 다른 사람의 게시글 상태별 목록 조회
         @Getter
-        public static class MemberArticlesSortedByStatus {
+        public static class MemberArticlesByReadStatus {
 
             private final Long id;
             private final String title;
@@ -76,7 +76,7 @@ public class ArticleResponseDtoV2 {
             private final String readStatus;
             private final List<TagDto.ArticleTagsResponse> tags;
 
-            public MemberArticlesSortedByStatus(Article article, ReadStatus readStatus) {
+            public MemberArticlesByReadStatus(Article article, ReadStatus readStatus) {
                 this.id = article.getId();
                 this.title = article.getTitle();
                 this.url = article.getUrl();
