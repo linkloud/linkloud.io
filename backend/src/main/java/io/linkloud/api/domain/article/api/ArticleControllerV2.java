@@ -5,11 +5,8 @@ import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.service.ArticleServiceV2;
-import io.linkloud.api.global.common.MultiDataResponse;
 import io.linkloud.api.global.common.SliceResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
-import jakarta.annotation.PostConstruct;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +55,7 @@ public class ArticleControllerV2 {
     public ResponseEntity<ArticleSave> createArticle(
         @RequestBody ArticleSaveRequestDto articleSaveRequestDto,
         @LoginMemberId Long memberId) {
+
         ArticleSave articleSave = articleServiceV2.addArticle(articleSaveRequestDto, memberId);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleSave);
     }
@@ -80,8 +78,4 @@ public class ArticleControllerV2 {
         return null;
     }
 
-    @GetMapping("/{id}/read")
-    public ResponseEntity<?> updateArticleStatus(@PathVariable("id") Long id) {
-        return null;
-    }
 }
