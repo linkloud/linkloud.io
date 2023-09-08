@@ -1,10 +1,14 @@
 package io.linkloud.api.domain.article.service;
 
+import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.ARTICLE_NOT_FOUND;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_FOUND;
+import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_MATCH;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
+import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article;
@@ -40,7 +44,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     @Transactional
     @Override
     public ArticleSave addArticle(ArticleSaveRequestDto articleSaveRequestDto,Long memberId) {
-        Member member = fetchMemberById(memberId);
+        Member member = findMemberById(memberId);
 
         // 태그 조회 및 저장
         List<ArticleTag> articleTags = new ArrayList<>();
@@ -53,6 +57,26 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
         Long id = articleRepository.save(article).getId();
         return new ArticleSave(id);
+    }
+
+    @Override
+    @Transactional
+    public ArticleUpdate updateArticle(ArticleUpdateRequestDto updateDto,
+        Long articleId, Long loginMemberId) {
+        Member member = findMemberById(loginMemberId);
+        Article article = findArticleById(articleId);
+
+        validateMemberArticleMatch(member, article);
+        article.articleUpdate(updateDto);
+
+        List<ArticleTag> articleTags = new ArrayList<>();
+        if (updateDto.getTags() != null && !updateDto.getTags().isEmpty()) {
+            articleTags = addArticleTagList(updateDto.getTags());
+        }
+
+        article.getArticleTags().clear();
+        article.addArticleTag(articleTags);
+        return new ArticleUpdate(article);
     }
 
     // 게시글 목록 조회
@@ -97,8 +121,21 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return tagService.addTags(tagNames);
     }
 
-    private Member fetchMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
             .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
     }
+
+    private Article findArticleById(Long id) {
+        return articleRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
+    }
+
+    private void validateMemberArticleMatch(Member member, Article article) {
+        if (!article.getMember().getId().equals(member.getId())) {
+            throw new CustomException(MEMBER_NOT_MATCH);
+        }
+    }
+
+
 }
