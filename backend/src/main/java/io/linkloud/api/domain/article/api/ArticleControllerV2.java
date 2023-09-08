@@ -1,12 +1,16 @@
 package io.linkloud.api.domain.article.api;
 
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
+import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.model.Article.SortBy;
+import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.article.service.ArticleServiceV2;
 import io.linkloud.api.global.common.SliceResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -61,9 +65,16 @@ public class ArticleControllerV2 {
     }
 
     // 게시글 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateArticle(@PathVariable("id") Long id) {
-        return null;
+    @PutMapping("/{articleId}")
+    public ResponseEntity<ArticleUpdate> updateArticle(
+        @PathVariable("articleId") Long articleId,
+//        @LoginMemberId Long loginMemberId,
+        @RequestBody @Valid ArticleUpdateRequestDto updateRequestDto) {
+        Long loginMemberId = 1L;
+        ArticleUpdate articleUpdate = articleServiceV2.updateArticle(updateRequestDto, articleId,
+            loginMemberId);
+
+        return ResponseEntity.ok(articleUpdate);
     }
 
     // 게시글 삭제
