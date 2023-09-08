@@ -1,5 +1,6 @@
 package io.linkloud.api.domain.article.model;
 
+import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.member.model.Member;
@@ -80,6 +81,13 @@ public class Article extends Auditable {
 
     /** 아티클 수정 */
     public void articleUpdate(ArticleUpdateDto updateDto) {
+        this.title = updateDto.getTitle();
+        this.url = updateDto.getUrl();
+        this.description = updateDto.getDescription();
+    }
+
+    /** 아티클 수정 V2*/
+    public void articleUpdate(ArticleUpdateRequestDto updateDto) {
         this.title = updateDto.getTitle();
         this.url = updateDto.getUrl();
         this.description = updateDto.getDescription();
