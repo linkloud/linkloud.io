@@ -6,7 +6,6 @@ import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.model.Article.SortBy;
-import io.linkloud.api.domain.article.repository.ArticleRepository;
 import io.linkloud.api.domain.article.service.ArticleServiceV2;
 import io.linkloud.api.global.common.SliceResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
@@ -51,7 +50,8 @@ public class ArticleControllerV2 {
     // 게시글 한 개 조회
     @GetMapping("/{id}")
     public ResponseEntity<?> getArticle(@PathVariable("id") Long id) {
-        return null;
+        ArticleResponseDto getArticle = articleServiceV2.getArticleById(id);
+        return ResponseEntity.ok(getArticle);
     }
 
     // 게시글 생성
@@ -68,9 +68,8 @@ public class ArticleControllerV2 {
     @PutMapping("/{articleId}")
     public ResponseEntity<ArticleUpdate> updateArticle(
         @PathVariable("articleId") Long articleId,
-//        @LoginMemberId Long loginMemberId,
+        @LoginMemberId Long loginMemberId,
         @RequestBody @Valid ArticleUpdateRequestDto updateRequestDto) {
-        Long loginMemberId = 1L;
         ArticleUpdate articleUpdate = articleServiceV2.updateArticle(updateRequestDto, articleId,
             loginMemberId);
 
