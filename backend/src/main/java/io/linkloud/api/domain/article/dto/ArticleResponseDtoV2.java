@@ -14,7 +14,44 @@ public class ArticleResponseDtoV2 {
     // 게시글 저장 responseDTO
     public record ArticleSave(Long id) {}
 
-    // 특정 회원의 게시글 상태 response
+    // 게시글 수정 responseDTO
+    @Getter
+    public static class ArticleUpdate {
+
+        private Long id;
+
+        private String title;
+
+        private String url;
+
+        private String description;
+
+        private Integer views;
+
+        private Integer hearts;
+
+        private List<TagDto.ArticleTagsResponse> tags;
+
+        /**
+         * Entity -> Dto
+         */
+        public ArticleUpdate(Article article) {
+            this.id = article.getId();
+            this.title = article.getTitle();
+            this.url = article.getUrl();
+            this.description = article.getDescription();
+            this.views = article.getViews();
+            this.hearts = article.getHearts();
+            this.tags = new ArrayList<>();
+            if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
+                article.getArticleTags().forEach(at -> this.tags.add(
+                    new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
+            }
+        }
+    }
+
+
+    // 특정 회원의 게시글 상태 responseDTO
     @Getter
     public static class MemberArticleStatusResponse {
         private final Long statusId;
