@@ -20,6 +20,8 @@ public interface ArticleServiceV2 {
 
     ArticleUpdate updateArticle(ArticleUpdateRequestDto articleUpdateRequestDto,Long articleId ,Long loginMemberId);
 
+    void deleteArticle(Long loginMemberId, Long articleId);
+
     // TODO : update return V2 DTO Version
     Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
         SortBy sortBy);

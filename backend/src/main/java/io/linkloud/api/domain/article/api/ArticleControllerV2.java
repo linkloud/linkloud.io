@@ -78,8 +78,10 @@ public class ArticleControllerV2 {
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteArticle(@PathVariable("id") Long id) {
-        return null;
+    public ResponseEntity<?> deleteArticle(@PathVariable("id") Long articleId) {
+        Long loginMemberId = 1L;
+        articleServiceV2.deleteArticle(loginMemberId, articleId);
+        return ResponseEntity.noContent().build();
     }
 
     // 게시글 검색

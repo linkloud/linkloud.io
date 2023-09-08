@@ -41,6 +41,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final TagService tagService;
     private final MemberService memberService;
 
+
     // 게시글 한 개 조회
     // TODO : return V2 Dto
     @Transactional
@@ -90,6 +91,17 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         article.getArticleTags().clear();
         article.addArticleTag(articleTags);
         return new ArticleUpdate(article);
+    }
+
+    // 게시글 삭제
+    @Transactional
+    @Override
+    public void deleteArticle(Long loginMemberId, Long articleId) {
+        Member member = findMemberById(loginMemberId);
+        Article article = findArticleById(articleId);
+        validateMemberArticleMatch(member, article);
+
+        article.deleteArticle();
     }
 
     // 게시글 목록 조회
