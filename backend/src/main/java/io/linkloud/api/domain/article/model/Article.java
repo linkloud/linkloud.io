@@ -98,6 +98,10 @@ public class Article extends Auditable {
         this.views = views;
     }
 
+    public void increaseViewCount() {
+        this.views += 1;
+    }
+
     /** 좋아요 변동 */
     public void articleHeartChange(Integer hearts) {
         this.hearts = hearts;
