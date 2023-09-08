@@ -14,11 +14,13 @@ import org.springframework.data.domain.Slice;
 
 public interface ArticleServiceV2 {
 
+    ArticleResponseDto getArticleById(Long id);
+
     ArticleSave addArticle(ArticleSaveRequestDto articleSaveRequestDto, Long memberId);
 
     ArticleUpdate updateArticle(ArticleUpdateRequestDto articleUpdateRequestDto,Long articleId ,Long loginMemberId);
 
-
+    // TODO : update return V2 DTO Version
     Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
         SortBy sortBy);
 

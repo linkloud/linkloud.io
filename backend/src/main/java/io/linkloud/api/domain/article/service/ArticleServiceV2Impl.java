@@ -41,6 +41,18 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final TagService tagService;
     private final MemberService memberService;
 
+    // 게시글 한 개 조회
+    // TODO : return V2 Dto
+    @Transactional
+    @Override
+    public ArticleResponseDto getArticleById(Long id) {
+        Article getArticle = findArticleById(id);
+        getArticle.increaseViewCount();  // 조회수 증가
+
+        return new ArticleResponseDto(getArticle);
+    }
+
+    // 게시글 생성
     @Transactional
     @Override
     public ArticleSave addArticle(ArticleSaveRequestDto articleSaveRequestDto,Long memberId) {
@@ -59,6 +71,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return new ArticleSave(id);
     }
 
+    // 게시글 수정
     @Override
     @Transactional
     public ArticleUpdate updateArticle(ArticleUpdateRequestDto updateDto,
