@@ -141,6 +141,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             .leftJoin(article.articleTags, articleTag).fetchJoin() // ArticleTag 엔터티 fetchJoin 적용
             .leftJoin(articleTag.tag, tag).fetchJoin() // Tag 엔터티 fetchJoin 적용
             .where(getWhereLastArticleIdLowerThan(lastArticleId))
+            .where(article.articleStatus.eq(ArticleStatus.ACTIVE))
             .orderBy(orderSpecifier)
             .limit(pageable.getPageSize() + 1)
             .fetch();
