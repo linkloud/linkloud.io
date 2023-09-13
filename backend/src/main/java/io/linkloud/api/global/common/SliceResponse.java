@@ -1,5 +1,6 @@
 package io.linkloud.api.global.common;
 
+import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import java.util.List;
 import lombok.Getter;
 import org.springframework.data.domain.Slice;
@@ -9,13 +10,25 @@ public class SliceResponse<T> {
     private final List<T> items;
     private final int currentPage;
     private final int size;
-    private final boolean isFirst;
-    private final boolean isLast;
+    private final boolean isLastPage; // 마지막 페이지가 아닐경우 false 반환, 즉 마지막 페이지가 아니다
+    private final long itemsSize;
+    private Long nextItemId;
     public SliceResponse(Slice<T> sliceContent) {
         this.items = sliceContent.getContent();
         this.currentPage = sliceContent.getNumber() + 1;
         this.size = sliceContent.getSize();
-        this.isFirst = sliceContent.isFirst();
-        this.isLast = sliceContent.isLast();
+        this.isLastPage = sliceContent.isLast();
+        this.itemsSize = sliceContent.getNumberOfElements();
+        if (!isLastPage && !items.isEmpty()) {
+            T item = items.get(0);
+            this.nextItemId = ((ArticleResponseDto) item).getId();
+        } else {
+            nextItemId = null;
+        }
     }
 }
+
+
+
+
+
