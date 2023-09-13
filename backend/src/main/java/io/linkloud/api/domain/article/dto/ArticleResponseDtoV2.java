@@ -54,13 +54,10 @@ public class ArticleResponseDtoV2 {
     // 특정 회원의 게시글 상태 responseDTO
     @Getter
     public static class MemberArticleStatusResponse {
-        private final Long statusId;
         private final ReadStatus readStatus;
         private final Long memberId;
         private final Long articleId;
-
         public MemberArticleStatusResponse(MemberArticleStatus memberArticleStatus) {
-            this.statusId = memberArticleStatus.getId();
             this.readStatus = memberArticleStatus.getReadStatus();
             this.memberId = memberArticleStatus.getMember().getId();
             this.articleId = memberArticleStatus.getArticle().getId();
@@ -102,7 +99,7 @@ public class ArticleResponseDtoV2 {
 
         // 내가 설정한 다른 사람의 게시글 상태별 목록 조회
         @Getter
-        public static class MemberArticlesByReadStatus {
+        public static class MemberArticlesByReadStatus{
 
             private final Long id;
             private final String title;
