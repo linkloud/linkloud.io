@@ -47,13 +47,12 @@ public class MemberControllerV2 {
 
     // 내가 변경한 다른 사람의 게시글 상태로 조회
     @GetMapping("/{memberId}/read-status")
-    public ResponseEntity<SliceResponse<MemberArticlesByReadStatus>> test(
+    public ResponseEntity<SliceResponse<MemberArticlesByReadStatus>> getMemberArticlesByStatus(
         @RequestParam Long lastArticleId,
         Pageable pageable,
         @LoginMemberId Long loginMemberId,
         @PathVariable Long memberId,
         @RequestParam ReadStatus readStatus) {
-
         Slice<MemberArticlesByReadStatus> myArticles = articleServiceV2.findArticlesByReadStatus(loginMemberId,
             memberId, lastArticleId, pageable, readStatus);
         return ResponseEntity.ok(new SliceResponse<>(myArticles));
@@ -61,7 +60,7 @@ public class MemberControllerV2 {
 
     // 게시글 상태 변경
     @PatchMapping("/{memberId}/articles/{articleId}/status")
-    public ResponseEntity<MemberArticleStatusResponse> patchArticleStatusByMember(
+    public ResponseEntity<MemberArticleStatusResponse> updateArticleStatusByMember(
         @PathVariable Long memberId,
         @PathVariable Long articleId,
         @LoginMemberId Long loginMemberId,
