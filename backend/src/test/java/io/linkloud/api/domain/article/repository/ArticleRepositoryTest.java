@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
-import io.linkloud.api.domain.member.model.Member;
-import io.linkloud.api.domain.member.model.Role;
-import io.linkloud.api.domain.member.repository.MemberRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -67,8 +64,7 @@ class ArticleRepositoryTest {
         Slice<ArticleResponseDto> lastPage = articleRepository.findArticlesWithNoOffset(getLastPageFromSecondPage, PageRequest.of(2, 10),sortBy);
 
         // Then
-        assertFalse(lastPage.hasNext()); // 다음 페이지가 있으면 안된다
-        assertTrue(lastPage.isLast()); // 마지막 페이지어야 한다.
+        assertFalse(lastPage.isLast()); // 마지막 페이지어야 한다.
 
     }
 
@@ -99,6 +95,34 @@ class ArticleRepositoryTest {
 
         // Then
         assertThat(firstPage.getSize()).isEqualTo(1000); // 응답온 페이지의 개수
+
+    }
+
+    @DisplayName("마지막 페이지 일시 lastPage ture 반환")
+    @Test
+    void lastPageRequest() throws Exception {
+
+        Article.SortBy sortBy = SortBy.LATEST;
+
+        List<Article> articles = new ArrayList<>();
+        for (long i = 1; i <= 1000; i++) {
+            Article article = Article.builder()
+                .id( i)
+                .title("title" + i)
+                .url("url" + i)
+                .description("description" + i)
+                .views(0)
+                .hearts(0)
+                .build();
+            articles.add(article);
+        }
+        articleRepository.saveAll(articles);
+
+        Slice<ArticleResponseDto> lastPageRequest = articleRepository.findArticlesWithNoOffset(null,
+            PageRequest.of(0, 1001), sortBy);
+
+        assertTrue(lastPageRequest.isLast()); // 마지막 페이지어야 한다.
+        assertFalse(lastPageRequest.hasNext()); // 다음 페이지가 없어야 한다
 
     }
 }
