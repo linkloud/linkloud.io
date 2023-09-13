@@ -10,6 +10,7 @@ import io.linkloud.api.domain.article.service.ArticleServiceV2;
 import io.linkloud.api.global.common.SliceResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +50,7 @@ public class ArticleControllerV2 {
 
     // 게시글 한 개 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getArticle(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getArticleById(@PathVariable("id") Long id) {
         ArticleResponseDto getArticle = articleServiceV2.getArticleById(id);
         return ResponseEntity.ok(getArticle);
     }
@@ -58,9 +59,9 @@ public class ArticleControllerV2 {
     @PostMapping
     public ResponseEntity<ArticleSave> createArticle(
         @RequestBody ArticleSaveRequestDto articleSaveRequestDto,
-        @LoginMemberId Long memberId) {
-
-        ArticleSave articleSave = articleServiceV2.addArticle(articleSaveRequestDto, memberId);
+        @LoginMemberId Long loginMemberId
+        ) {
+        ArticleSave articleSave = articleServiceV2.addArticle(articleSaveRequestDto, loginMemberId);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleSave);
     }
 
@@ -70,6 +71,7 @@ public class ArticleControllerV2 {
         @PathVariable("articleId") Long articleId,
         @LoginMemberId Long loginMemberId,
         @RequestBody @Valid ArticleUpdateRequestDto updateRequestDto) {
+
         ArticleUpdate articleUpdate = articleServiceV2.updateArticle(updateRequestDto, articleId,
             loginMemberId);
 
@@ -78,15 +80,22 @@ public class ArticleControllerV2 {
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteArticle(@LoginMemberId Long loginMemberId,@PathVariable("id") Long articleId) {
+    public ResponseEntity<?> deleteArticle(
+        @LoginMemberId Long loginMemberId,
+        @PathVariable("id") Long articleId) {
         articleServiceV2.deleteArticle(loginMemberId, articleId);
         return ResponseEntity.noContent().build();
     }
 
-    // 게시글 검색
+    // 게시글 키워드로 검색 or 태그로 검색
     @GetMapping("/search")
-    public ResponseEntity<?> searchArticle() {
-        return null;
+    public ResponseEntity<SliceResponse<ArticleResponseDto>> searchArticleByKeywordOrTags(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) List<String> tags,
+        Pageable pageable) {
+        Slice<ArticleResponseDto> searchResponse = articleServiceV2.searchArticleByKeywordOrTags(
+            keyword, tags, pageable);
+        return ResponseEntity.ok(new SliceResponse<>(searchResponse));
     }
 
 }
