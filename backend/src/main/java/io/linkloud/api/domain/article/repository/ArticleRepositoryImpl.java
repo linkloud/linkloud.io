@@ -56,20 +56,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         // posts.title 조건 생성
         builder.and(article.title.containsIgnoreCase(keyword));
 
-        if (tags != null && !tags.isEmpty()) {
-            // tag 조건 생성
-            JPQLQuery<Long> sub = JPAExpressions.select(articleTag.article.id)
-                .distinct()
-                .from(articleTag)
-                .join(articleTag.article, article)
-                .join(articleTag.tag, tag)
-                .where(tag.name.in(tags))
-                .groupBy(articleTag.article.id)
-                .having(articleTag.article.id.count().goe(tags.size()));
-
-            // tag 조건 생성
-            builder.and(article.id.in(sub));
-        }
+        createTagSubQuery(tags, builder);
 
         List<ArticleResponseDto> content = query.selectDistinct(Projections.constructor(ArticleResponseDto.class, article))
             .from(article)
@@ -132,7 +119,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     @Override
     public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId,
         Pageable pageable,SortBy sortBy) {
-        log.info("게시글 목록 조회 실행");
         OrderSpecifier<?>[] orderSpecifier = createOrderSpecifier(sortBy);
 
         // fetchJoin 을 사용하여 한번에 쿼리문 날림
@@ -225,6 +211,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             .map(status -> new MemberArticlesByReadStatus(status.getArticle(), status.getReadStatus()))
             .collect(Collectors.toList());
 
+
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
             content.remove(pageable.getPageSize());
@@ -234,8 +221,52 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    // 게시글 keyword || tags 검색
+    @Override
+    public Slice<ArticleResponseDto> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // posts.title 조건 생성
+        if (keyword != null && !keyword.isEmpty()) {
+            builder.and(article.title.containsIgnoreCase(keyword));
+        }
+
+        createTagSubQuery(tags, builder);
+
+        List<ArticleResponseDto> content = query.selectDistinct(Projections.constructor(ArticleResponseDto.class, article))
+            .from(article)
+            .leftJoin(article.member, member).fetchJoin()
+            // 나중에 상태도 추가하기
+            .where(builder, article.articleStatus.eq(ArticleStatus.ACTIVE))
+            .limit(pageable.getPageSize()+1)
+            .fetch();
 
 
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    // tags 에 해당하는 tag 목록 검색
+    private void createTagSubQuery(List<String> tags, BooleanBuilder builder) {
+        if (tags != null && !tags.isEmpty()) {
+            // tag 조건 생성
+            JPQLQuery<Long> sub = JPAExpressions.select(articleTag.article.id)
+                .distinct()
+                .from(articleTag)
+                .join(articleTag.article, article)
+                .join(articleTag.tag, tag)
+                .where(tag.name.in(tags))
+                .groupBy(articleTag.article.id)
+                .having(articleTag.article.id.count().goe(tags.size()));
+            // tag 조건 생성
+            builder.and(article.id.in(sub));
+        }
+    }
 
     // 더보기 누를 경우
     // 이전 페이지나 데이터를 제공해야되는데
@@ -244,6 +275,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     // 스크롤을 내리면서 게시글을 계속 볼 때,
     // 스크롤 중간에 위치한 게시글의 ID 값을 기준으로 그보다 작은 ID 값을 가진 이전 게시글들을 보여줘야 함
     private BooleanExpression getWhereLastArticleIdLowerThan(Long lastArticleId) {
+
         if (lastArticleId != null) {
             // article.id 값이 lastArticleId 보다 작은지 비교
             // 즉 마지막으로 본 게시글 보다 ID 가 작은 게시글 불러오기

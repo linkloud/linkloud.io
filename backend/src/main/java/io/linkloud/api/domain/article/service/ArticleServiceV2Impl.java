@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.article.service;
 
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.ARTICLE_NOT_FOUND;
+import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.BAD_REQUEST;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_FOUND;
 import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.MEMBER_NOT_MATCH;
 
@@ -72,7 +73,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return new ArticleSave(id);
     }
 
-    // 게시글 수정
+    // 게시글 수정 TODO : 태그 중복 버그 수정 해야 함
     @Override
     @Transactional
     public ArticleUpdate updateArticle(ArticleUpdateRequestDto updateDto,
@@ -128,6 +129,22 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return articleRepository.findArticlesByReadStatus(memberId, lastArticleId, pageable,readStatus);
     }
 
+    // 게시글 검색
+    @Override
+    public Slice<ArticleResponseDto> searchArticleByKeywordOrTags(String keyword,
+        List<String> tags, Pageable pageable) {
+        validateSearch(keyword, tags);
+        return articleRepository.findArticlesByKeywordOrTags(keyword, tags, pageable);
+    }
+
+    private void validateSearch(String keyword, List<String> tags) {
+        if ((keyword == null || keyword.isEmpty()) && (tags == null || tags.isEmpty())) {
+            throw new CustomException(BAD_REQUEST);
+        }
+        if (tags != null && tags.size() > 5) {
+            throw new CustomException(BAD_REQUEST);
+        }
+    }
 
     private List<ArticleTag> addArticleTagList(List<String> tagNames) {
         List<Tag> tags = addTags(tagNames);

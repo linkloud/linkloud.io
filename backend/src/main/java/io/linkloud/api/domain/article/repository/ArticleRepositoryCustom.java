@@ -15,15 +15,22 @@ import org.springframework.data.domain.Slice;
 public interface ArticleRepositoryCustom {
     // 목록 조회 : 검색
     Page<ArticleResponseDto> findArticleListBySearch(String keyword, List<String> tags, Pageable pageable);
-    Page<MyArticlesResponseDto> findMyArticleByTag(Member m, String t, String articleStatus, Pageable pageable);
+
+    Page<MyArticlesResponseDto> findMyArticleByTag(Member m, String t, String articleStatus,
+        Pageable pageable);
+
     // 게시글 목록 : 무한 스크롤
     Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
         SortBy sortBy);
+
     // 게시글 최신순,인기순 정렬
     Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long memberId,Long lastArticleId, Pageable pageable,
         SortBy sortBy);
+
     // 게시글 상태순 정렬
     Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId,
         Pageable pageable, ReadStatus readStatus);
 
+    // 게시글 검색어, tags 로 검색
+    Slice<ArticleResponseDto> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable);
 }

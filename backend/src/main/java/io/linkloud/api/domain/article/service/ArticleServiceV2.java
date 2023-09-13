@@ -9,6 +9,7 @@ import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSor
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -33,4 +34,5 @@ public interface ArticleServiceV2 {
         Pageable pageable,ReadStatus readStatus);
 
 
+    Slice<ArticleResponseDto> searchArticleByKeywordOrTags(String keyword, List<String> tags,Pageable pageable);
 }
