@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
 @Getter
-public class SliceResponse<T> {
+public class SliceResponse<T extends HasId> {
     private final List<T> items;
     private final int currentPage;
     private final int size;
@@ -21,7 +21,7 @@ public class SliceResponse<T> {
         this.itemsSize = sliceContent.getNumberOfElements();
         if (!isLastPage && !items.isEmpty()) {
             T item = items.get(0);
-            this.nextItemId = ((ArticleResponseDto) item).getId();
+            this.nextItemId = item.getId();
         } else {
             nextItemId = null;
         }

@@ -66,9 +66,9 @@ public class ArticleControllerV2 {
     }
 
     // 게시글 수정
-    @PutMapping("/{articleId}")
+    @PutMapping("/{id}")
     public ResponseEntity<ArticleUpdate> updateArticle(
-        @PathVariable("articleId") Long articleId,
+        @PathVariable("id") Long articleId,
         @LoginMemberId Long loginMemberId,
         @RequestBody @Valid ArticleUpdateRequestDto updateRequestDto) {
 

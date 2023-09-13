@@ -5,6 +5,7 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.member.model.MemberArticleStatus;
 import io.linkloud.api.domain.tag.dto.TagDto;
+import io.linkloud.api.global.common.HasId;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -67,7 +68,7 @@ public class ArticleResponseDtoV2 {
 
     // 내 게시글 최신순,인기순 정렬
     @Getter
-    public static class MemberArticlesSortedResponse {
+    public static class MemberArticlesSortedResponse implements HasId {
 
         private final Long id;
 
@@ -82,6 +83,11 @@ public class ArticleResponseDtoV2 {
         private final Integer hearts;
 
         private final List<TagDto.ArticleTagsResponse> tags;
+
+        @Override
+        public Long getId() {
+            return this.id;
+        }
 
         public MemberArticlesSortedResponse(Article article) {
             this.id = article.getId();
@@ -99,7 +105,7 @@ public class ArticleResponseDtoV2 {
 
         // 내가 설정한 다른 사람의 게시글 상태별 목록 조회
         @Getter
-        public static class MemberArticlesByReadStatus{
+        public static class MemberArticlesByReadStatus implements HasId {
 
             private final Long id;
             private final String title;
@@ -109,6 +115,11 @@ public class ArticleResponseDtoV2 {
             private final Integer hearts;
             private final String readStatus;
             private final List<TagDto.ArticleTagsResponse> tags;
+
+            @Override
+            public Long getId() {
+                return this.id;
+            }
 
             public MemberArticlesByReadStatus(Article article, ReadStatus readStatus) {
                 this.id = article.getId();
