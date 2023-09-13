@@ -2,6 +2,7 @@ package io.linkloud.api.domain.article.dto;
 
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.tag.dto.TagDto;
+import io.linkloud.api.global.common.HasId;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ArticleResponseDto {
+public class ArticleResponseDto implements HasId {
 
     private Long id;
 
@@ -27,6 +28,10 @@ public class ArticleResponseDto {
 
     private List<TagDto.ArticleTagsResponse> tags;
 
+    @Override
+    public Long getId() {
+        return this.id;
+    }
     /**
      * Entity -> Dto
      */
@@ -39,8 +44,8 @@ public class ArticleResponseDto {
         this.hearts = article.getHearts();
         this.tags = new ArrayList<>();
         if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
-            article.getArticleTags().forEach(at -> this.tags.add(new TagDto.ArticleTagsResponse(at.getTag().getId(),at.getTag().getName())));
+            article.getArticleTags().forEach(at -> this.tags.add(
+                new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
         }
     }
-
-}
+ }

@@ -1,5 +1,6 @@
 package io.linkloud.api.domain.article.model;
 
+import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleUpdateDto;
 import io.linkloud.api.domain.article.dto.ArticleStatusRequest;
 import io.linkloud.api.domain.member.model.Member;
@@ -58,6 +59,7 @@ public class Article extends Auditable {
     public enum SortBy {
         LATEST("createdAt"),
         TITLE("title"),
+        HEARTS("hearts"),
         READING("reading"),
         READ("read");
 
@@ -84,9 +86,20 @@ public class Article extends Auditable {
         this.description = updateDto.getDescription();
     }
 
+    /** 아티클 수정 V2*/
+    public void articleUpdate(ArticleUpdateRequestDto updateDto) {
+        this.title = updateDto.getTitle();
+        this.url = updateDto.getUrl();
+        this.description = updateDto.getDescription();
+    }
+
     /** 조회수 변동 */
     public void articleViewIncrease(Integer views) {
         this.views = views;
+    }
+
+    public void increaseViewCount() {
+        this.views += 1;
     }
 
     /** 좋아요 변동 */
