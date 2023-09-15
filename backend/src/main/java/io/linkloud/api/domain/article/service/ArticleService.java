@@ -96,7 +96,6 @@ public class ArticleService {
         if (updateDto.getTags() != null && !updateDto.getTags().isEmpty()) {
             articleTags = addArticleTagList(updateDto.getTags());
         }
-
         article.getArticleTags().clear();
         article.addArticleTag(articleTags);
 
