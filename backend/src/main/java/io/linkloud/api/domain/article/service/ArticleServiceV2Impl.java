@@ -73,26 +73,26 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return new ArticleSave(id);
     }
 
-    // 게시글 수정 TODO : 태그 중복 버그 수정 해야 함
     @Override
     @Transactional
     public ArticleUpdate updateArticle(ArticleUpdateRequestDto updateDto,
         Long articleId, Long loginMemberId) {
+
         Member member = findMemberById(loginMemberId);
         Article article = findArticleById(articleId);
 
+
+        // 요청한 회원ID, 수정하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
+
         article.articleUpdate(updateDto);
 
-        List<ArticleTag> articleTags = new ArrayList<>();
         if (updateDto.getTags() != null && !updateDto.getTags().isEmpty()) {
-            articleTags = addArticleTagList(updateDto.getTags());
+            tagService.tagFilterAndSave(updateDto, article);
         }
-
-        article.getArticleTags().clear();
-        article.addArticleTag(articleTags);
         return new ArticleUpdate(article);
     }
+
 
     // 게시글 삭제
     @Transactional
