@@ -55,6 +55,8 @@ public class Article extends Auditable {
     @Enumerated(EnumType.STRING)
     private ReadStatus readStatus = ReadStatus.UNREAD;
 
+    @Column(nullable = true)
+    private String ogImage;
     @AllArgsConstructor
     public enum SortBy {
         LATEST("createdAt"),
@@ -69,12 +71,13 @@ public class Article extends Auditable {
 
     /** 생성자 */
     @Builder
-    public Article(Long id, Member member, String title, String url, String description, Integer views, Integer hearts) {
+    public Article(Long id, Member member, String title, String url, String description, Integer views, Integer hearts,String ogImage) {
         this.id = id;
         this.member = member;
         this.title = title;
         this.url = url;
         this.description = description;
+        this.ogImage = ogImage;
         this.views = views == null ? 0 : views; // 기본값 0으로 설정
         this.hearts = hearts == null ? 0 : hearts;
     }
