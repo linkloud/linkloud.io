@@ -71,6 +71,10 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.h2database:h2' // 테스트용 인 메모리 DB
     implementation 'com.google.code.gson:gson'
+
+    // jsoup
+    implementation 'org.jsoup:jsoup:1.16.1'
+
 }
 
 // querydsl 시작

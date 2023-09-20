@@ -33,6 +33,8 @@ public class ArticleResponseDtoV2 {
 
         private List<TagDto.ArticleTagsResponse> tags;
 
+        private String ogImage;
+
         /**
          * Entity -> Dto
          */
@@ -48,6 +50,7 @@ public class ArticleResponseDtoV2 {
                 article.getArticleTags().forEach(at -> this.tags.add(
                     new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
             }
+            this.ogImage = article.getOgImage();
         }
     }
 

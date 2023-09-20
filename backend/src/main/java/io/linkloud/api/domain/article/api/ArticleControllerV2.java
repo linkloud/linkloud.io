@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -69,8 +68,8 @@ public class ArticleControllerV2 {
     @PutMapping("/{id}")
     public ResponseEntity<ArticleUpdate> updateArticle(
         @PathVariable("id") Long articleId,
+        @LoginMemberId Long loginMemberId,
         @RequestBody @Valid ArticleUpdateRequestDto updateRequestDto) {
-        Long loginMemberId = 1L;
         ArticleUpdate articleUpdate = articleServiceV2.updateArticle(updateRequestDto, articleId,
             loginMemberId);
 

@@ -24,6 +24,8 @@ public class ArticleRequestDtoV2 {
         @Size(max = 255, message = "본문은 255자 이하로 작성해야 합니다.")
         String description,
 
+        String ogImage,
+
         @Size(max = 5)
         List<@Pattern(regexp = "^[0-9A-Za-z가-힣-]*$")
         @NotBlank
@@ -36,6 +38,7 @@ public class ArticleRequestDtoV2 {
                 .title(title)
                 .url(url)
                 .description(description)
+                .ogImage(ogImage)
                 .build();
         }
     }
@@ -55,6 +58,8 @@ public class ArticleRequestDtoV2 {
         @NotBlank(message = "본문은 빈칸으로 둘 수 없습니다.")
         @Size(max = 255, message = "본문은 255자 이하로 작성해야 합니다.")
         private String description;
+
+        private String ogImage;
 
         @Size(max = 5)
         private List<

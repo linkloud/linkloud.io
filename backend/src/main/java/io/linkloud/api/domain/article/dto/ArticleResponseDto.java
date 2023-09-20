@@ -28,6 +28,8 @@ public class ArticleResponseDto implements HasId {
 
     private List<TagDto.ArticleTagsResponse> tags;
 
+    private String ogImage;
+
     @Override
     public Long getId() {
         return this.id;
@@ -47,5 +49,6 @@ public class ArticleResponseDto implements HasId {
             article.getArticleTags().forEach(at -> this.tags.add(
                 new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
         }
+        this.ogImage = article.getOgImage();
     }
  }
