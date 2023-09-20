@@ -59,6 +59,8 @@ public class ArticleRequestDtoV2 {
         @Size(max = 255, message = "본문은 255자 이하로 작성해야 합니다.")
         private String description;
 
+        private String ogImage;
+
         @Size(max = 5)
         private List<
             @Pattern(regexp = "^[0-9A-Za-z가-힣-]*$")

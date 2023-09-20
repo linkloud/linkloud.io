@@ -94,6 +94,7 @@ public class Article extends Auditable {
         this.title = updateDto.getTitle();
         this.url = updateDto.getUrl();
         this.description = updateDto.getDescription();
+        this.ogImage = updateDto.getOgImage();
     }
 
     /** 조회수 변동 */
