@@ -36,7 +36,7 @@ public class OpenGraphService {
             return OpenGraphDto.builder()
                 .title(title)
                 .description(description)
-                .image(image)
+                .ogImage(image)
                 .url(url)
                 .build();
 
