@@ -37,14 +37,17 @@ public class ArticleControllerV2 {
 
     private final ArticleServiceV2 articleServiceV2;
 
+    //lastArticleId -> nextId
+    //lastId 없으면 1페이지 조회, 즉최신순부터 요청 개수만큼 조회
+
     // 게시글 목록 조회
     @GetMapping
     public ResponseEntity<SliceResponse<ArticleResponseDto>> getArticles(
-        @RequestParam Long lastArticleId,
+        @RequestParam(required = false) Long nextId,
         Pageable pageable,
         @RequestParam(required = false,defaultValue = "latest") SortBy sortBy) {
         Slice<ArticleResponseDto> articlesSlice = articleServiceV2.findArticlesWithNoOffset(
-            lastArticleId, pageable,sortBy);
+            nextId, pageable,sortBy);
         return ResponseEntity.ok(new SliceResponse<>(articlesSlice));
     }
 
