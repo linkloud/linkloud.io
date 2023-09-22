@@ -3,6 +3,7 @@ package io.linkloud.api.domain.member.repository;
 import io.linkloud.api.domain.member.model.Member;
 
 
+import io.linkloud.api.domain.member.model.SocialType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,8 @@ public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepo
      * 이메일,소셜 ID(PK) 으로 멤버 찾기
      */
     Optional<Member> findByEmailAndSocialId(String email, String socialId);
+
+    Optional<Member>findMemberBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
     /**
      * 중복된 닉네임
