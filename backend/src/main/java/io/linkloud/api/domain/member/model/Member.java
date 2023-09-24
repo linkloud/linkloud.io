@@ -30,7 +30,7 @@ public class Member extends Auditable {
     private String email;
 
     //  닉네임
-    @Column(length = 20, unique = true)
+    @Column(length = 30, unique = true)
     private String nickname;
 
     // google

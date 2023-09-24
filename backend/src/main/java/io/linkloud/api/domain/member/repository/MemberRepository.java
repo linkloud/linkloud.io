@@ -3,6 +3,7 @@ package io.linkloud.api.domain.member.repository;
 import io.linkloud.api.domain.member.model.Member;
 
 
+import io.linkloud.api.domain.member.model.SocialType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,10 @@ public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepo
      */
     Optional<Member> findByEmailAndSocialId(String email, String socialId);
 
+    Optional<Member>findMemberBySocialTypeAndSocialId(SocialType socialType, String socialId);
+
+    Optional<Member> findMemberByIdAndEmail(Long memberId,String email);
+
     /**
      * 중복된 닉네임
      */
@@ -33,4 +38,6 @@ public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepo
      * @return            권한이 변경된 회원들
      */
     List<Member> findByCreatedAtBeforeAndRole(LocalDateTime threeDaysAgo, Role role);
+
+    Optional<Member> findByEmail(String email);
 }
