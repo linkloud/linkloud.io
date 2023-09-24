@@ -61,4 +61,20 @@ class MemberRepositoryTest {
 
 
     }
+
+    @Test
+    void findMemberByIdAndEmail() {
+        // given
+        Long memberId = 1L;
+        String email = "email";
+
+        // when
+        Member member = memberRepository.findMemberByIdAndEmail(memberId, email)
+            .orElseThrow(() -> new IllegalArgumentException("해당 회원 없다"));
+
+        // then
+        Assertions.assertThat(memberId).isEqualTo(member.getId());
+        Assertions.assertThat(email).isEqualTo(member.getEmail());
+
+    }
 }
