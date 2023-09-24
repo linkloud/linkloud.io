@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.linkloud.api.domain.member.dto.AuthV2Dto.AccessTokenRequest;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -71,6 +72,22 @@ public class JwtProvider {
             .compact();
     }
 
+    /**
+     * create a AccessToken V2
+     */
+    public String generateAccessTokenV2(Long memberId, String email) {
+        log.info("create a accessTokenV2 from JwtProvider");
+        Instant now = Instant.now();
+        Instant expiration = now.plusSeconds(getAccessTokenExpiration());
+
+        return Jwts.builder()
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(expiration))
+            .signWith(secretKey, SignatureAlgorithm.HS256)
+            .claim("email", email)
+            .claim("memberId", memberId)
+            .compact();
+    }
 
     /**
      * token 을 검증하고, 정상적인 토큰일 경우에만 해당 클레임 리턴(ID,Expiration,,,)
@@ -84,6 +101,7 @@ public class JwtProvider {
         final Claims claims = extractClaimsFromJwt(token);
         return claimsResolver.apply(claims);
     }
+
 
     /**
      * 토큰 검증
@@ -127,5 +145,6 @@ public class JwtProvider {
     public long getRefreshTokenExpiration() {
         return jwtProperties.getRefreshTokenExpiration();
     }
+
 
 }
