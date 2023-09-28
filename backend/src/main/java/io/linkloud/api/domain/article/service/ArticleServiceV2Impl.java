@@ -8,6 +8,7 @@ import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
@@ -23,6 +24,7 @@ import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.exception.CustomException;
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +75,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return new ArticleSave(id);
     }
 
+
     @Override
     @Transactional
     public ArticleUpdate updateArticle(ArticleUpdateRequestDto updateDto,
@@ -108,10 +111,22 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     // 게시글 목록 조회
     @Transactional(readOnly = true)
     @Override
-    public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
+    public Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId,Long loginMemberId, Pageable pageable,
         SortBy sortBy) {
-        return articleRepository.findArticlesWithNoOffset(lastArticleId, pageable,sortBy);
+
+        Slice<ArticleListResponse> articlesWithNoOffset = articleRepository.findArticlesWithNoOffset(
+            lastArticleId, pageable, sortBy);
+
+        // 로그인한 회원이라면,
+        // 게시글 목록중에 로그인 회원pk 와 게시글 작성자 pk 를 비교하여 같을경우 true
+        isMyArticle(loginMemberId, articlesWithNoOffset);
+
+
+        return articlesWithNoOffset;
     }
+
+
+
 
     // 게시글 목록 최신순,인기순 정렬 조회
     @Transactional(readOnly = true)
@@ -158,6 +173,8 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return articleTags;
     }
 
+
+
     // 태그들 저장
     private List<Tag> addTags(List<String> tagNames) {
         return tagService.addTags(tagNames);
@@ -179,5 +196,23 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         }
     }
 
+    // 내 게시글 있는지 확인
+    private void isMyArticle(Long loginMemberId,Slice<ArticleListResponse> articlesWithNoOffset) {
+        if (loginMemberId != null) {
+            articlesWithNoOffset.getContent().stream()
+                .filter(articleDto -> articleDto.getMemberId().equals(loginMemberId))
+                .forEach(articleDto -> articleDto.setAuthor(true));
+        }
+
+        /** Stream 으로 변경
+         if (loginMemberId != null) {
+             for (ArticleListResponse articleDto : articlesWithNoOffset) {
+                 if (articleDto.getMemberId().equals(loginMemberId)) {
+                     articleDto.setAuthor(true);
+                 }
+             }
+         }
+         **/
+    }
 
 }

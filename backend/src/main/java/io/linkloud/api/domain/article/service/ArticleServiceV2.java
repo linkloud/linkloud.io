@@ -3,6 +3,7 @@ package io.linkloud.api.domain.article.service;
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
@@ -23,8 +24,8 @@ public interface ArticleServiceV2 {
 
     void deleteArticle(Long loginMemberId, Long articleId);
 
-    // TODO : update return V2 DTO Version
-    Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
+    //
+    Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId,Long LoginMemberId ,Pageable pageable,
         SortBy sortBy);
 
     Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId, Long memberId,
