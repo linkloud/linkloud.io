@@ -15,6 +15,7 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article;
@@ -117,15 +118,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     }
 
     @Override
-    public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId,
-        Pageable pageable,SortBy sortBy) {
+    public Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,SortBy sortBy) {
         OrderSpecifier<?>[] orderSpecifier = createOrderSpecifier(sortBy);
 
         // fetchJoin 을 사용하여 한번에 쿼리문 날림
         List<Article> fetch = query.selectFrom(article)
-            .leftJoin(article.member, member).fetchJoin() // Member 엔터티 fetchJoin 적용하지 않음
-            .leftJoin(article.articleTags, articleTag).fetchJoin() // ArticleTag 엔터티 fetchJoin 적용
-            .leftJoin(articleTag.tag, tag).fetchJoin() // Tag 엔터티 fetchJoin 적용
+            .leftJoin(article.member, member).fetchJoin()
+            .leftJoin(article.articleTags, articleTag).fetchJoin()
+            .leftJoin(articleTag.tag, tag).fetchJoin()
             .where(getWhereLastArticleIdLowerThan(lastArticleId))
             .where(article.articleStatus.eq(ArticleStatus.ACTIVE))
             .orderBy(orderSpecifier)
@@ -133,8 +133,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             .fetch();
 
 
-        List<ArticleResponseDto> content = fetch.stream()
-            .map(ArticleResponseDto::new)
+        List<ArticleListResponse> content = fetch.stream()
+            .map(ArticleListResponse::new)
             .collect(Collectors.toList());
 
         boolean hasNext = false;

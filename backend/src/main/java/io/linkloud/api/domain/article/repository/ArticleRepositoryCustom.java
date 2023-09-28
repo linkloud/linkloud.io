@@ -1,6 +1,7 @@
 package io.linkloud.api.domain.article.repository;
 
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
@@ -20,7 +21,7 @@ public interface ArticleRepositoryCustom {
         Pageable pageable);
 
     // 게시글 목록 : 무한 스크롤
-    Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
+    Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
         SortBy sortBy);
 
     // 게시글 최신순,인기순 정렬

@@ -15,6 +15,58 @@ public class ArticleResponseDtoV2 {
     // 게시글 저장 responseDTO
     public record ArticleSave(Long id) {}
 
+    // 게시글 목록 responseDto
+    @Getter
+    public static class ArticleListResponse implements HasId {
+
+        private final Long id;
+
+        private final Long memberId;
+
+        private final String title;
+
+        private final String url;
+
+        private final String description;
+
+        private final Integer views;
+
+        private final Integer hearts;
+
+        private List<TagDto.ArticleTagsResponse> tags;
+
+        private final String ogImage;
+
+        private boolean isAuthor;
+
+        public void setAuthor(boolean isAuthor) {
+            this.isAuthor = isAuthor;
+        }
+        @Override
+        public Long getId() {
+            return this.id;
+        }
+        /**
+         * Entity -> Dto
+         */
+        public ArticleListResponse(Article article) {
+            this.id = article.getId();
+            this.memberId = article.getMember().getId();
+            this.title = article.getTitle();
+            this.url = article.getUrl();
+            this.description = article.getDescription();
+            this.views = article.getViews();
+            this.hearts = article.getHearts();
+            this.tags = new ArrayList<>();
+            if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
+                article.getArticleTags().forEach(at -> this.tags.add(
+                    new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
+            }
+            this.ogImage = article.getOgImage();
+        }
+    }
+
+
     // 게시글 수정 responseDTO
     @Getter
     public static class ArticleUpdate {
