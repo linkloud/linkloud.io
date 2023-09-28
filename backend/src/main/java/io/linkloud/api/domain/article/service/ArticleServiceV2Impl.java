@@ -24,7 +24,6 @@ import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
 import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.exception.CustomException;
-import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -117,9 +116,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         Slice<ArticleListResponse> articlesWithNoOffset = articleRepository.findArticlesWithNoOffset(
             lastArticleId, pageable, sortBy);
 
-        // 로그인한 회원이라면,
-        // 게시글 목록중에 로그인 회원pk 와 게시글 작성자 pk 를 비교하여 같을경우 true
-        isMyArticle(loginMemberId, articlesWithNoOffset);
+        flagMyArticle(loginMemberId, articlesWithNoOffset);
 
 
         return articlesWithNoOffset;
@@ -128,7 +125,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
 
 
-    // 게시글 목록 최신순,인기순 정렬 조회
+    // 내 게시글 목록 최신순,인기순 정렬 조회
     @Transactional(readOnly = true)
     public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
         SortBy sortBy) {
@@ -145,11 +142,19 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     }
 
     // 게시글 검색
+    @Transactional(readOnly = true)
     @Override
-    public Slice<ArticleResponseDto> searchArticleByKeywordOrTags(String keyword,
+    public Slice<ArticleListResponse> searchArticleByKeywordOrTags(Long loginMemberId, String keyword,
         List<String> tags, Pageable pageable) {
+
         validateSearch(keyword, tags);
-        return articleRepository.findArticlesByKeywordOrTags(keyword, tags, pageable);
+
+        Slice<ArticleListResponse> articlesByKeywordOrTags = articleRepository.findArticlesByKeywordOrTags(
+            keyword, tags, pageable);
+
+        flagMyArticle(loginMemberId, articlesByKeywordOrTags);
+
+        return articlesByKeywordOrTags;
     }
 
     private void validateSearch(String keyword, List<String> tags) {
@@ -196,8 +201,8 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         }
     }
 
-    // 내 게시글 있는지 확인
-    private void isMyArticle(Long loginMemberId,Slice<ArticleListResponse> articlesWithNoOffset) {
+    // 내 게시글이 존재하면 author = true
+    private void flagMyArticle(Long loginMemberId,Slice<ArticleListResponse> articlesWithNoOffset) {
         if (loginMemberId != null) {
             articlesWithNoOffset.getContent().stream()
                 .filter(articleDto -> articleDto.getMemberId().equals(loginMemberId))

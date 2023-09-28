@@ -93,12 +93,15 @@ public class ArticleControllerV2 {
     // 게시글 키워드로 검색 or 태그로 검색
     // TODO : 링크 목록 조회시 내 게시글 여부 (x)
     @GetMapping("/search")
-    public ResponseEntity<SliceResponse<ArticleResponseDto>> searchArticleByKeywordOrTags(
+    public ResponseEntity<SliceResponse<ArticleListResponse>> searchArticleByKeywordOrTags(
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) List<String> tags,
+        @LoginMemberId(required = false) Long loginMemberId,
         Pageable pageable) {
-        Slice<ArticleResponseDto> searchResponse = articleServiceV2.searchArticleByKeywordOrTags(
-            keyword, tags, pageable);
+
+        Slice<ArticleListResponse> searchResponse = articleServiceV2.searchArticleByKeywordOrTags(
+            loginMemberId,keyword, tags, pageable);
+
         return ResponseEntity.ok(new SliceResponse<>(searchResponse));
     }
 

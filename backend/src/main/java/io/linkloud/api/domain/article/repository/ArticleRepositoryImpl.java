@@ -223,7 +223,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
     // 게시글 keyword || tags 검색
     @Override
-    public Slice<ArticleResponseDto> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable) {
+    public Slice<ArticleListResponse> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -234,11 +234,12 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         createTagSubQuery(tags, builder);
 
-        List<ArticleResponseDto> content = query.selectDistinct(Projections.constructor(ArticleResponseDto.class, article))
+        List<ArticleListResponse> content = query.selectDistinct(Projections.constructor(ArticleListResponse.class, article))
             .from(article)
             .leftJoin(article.member, member).fetchJoin()
             // 나중에 상태도 추가하기
             .where(builder, article.articleStatus.eq(ArticleStatus.ACTIVE))
+            .orderBy(article.id.desc())
             .limit(pageable.getPageSize()+1)
             .fetch();
 

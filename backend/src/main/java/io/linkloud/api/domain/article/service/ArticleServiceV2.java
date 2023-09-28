@@ -34,6 +34,5 @@ public interface ArticleServiceV2 {
     Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long loginMemberId, Long memberId, Long lastArticleId,
         Pageable pageable,ReadStatus readStatus);
 
-
-    Slice<ArticleResponseDto> searchArticleByKeywordOrTags(String keyword, List<String> tags,Pageable pageable);
+    Slice<ArticleListResponse> searchArticleByKeywordOrTags(Long loginMemberId,String keyword, List<String> tags,Pageable pageable);
 }

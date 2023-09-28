@@ -33,5 +33,5 @@ public interface ArticleRepositoryCustom {
         Pageable pageable, ReadStatus readStatus);
 
     // 게시글 검색어, tags 로 검색
-    Slice<ArticleResponseDto> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable);
+    Slice<ArticleListResponse> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable);
 }
