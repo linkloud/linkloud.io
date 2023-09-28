@@ -3,6 +3,7 @@ package io.linkloud.api.domain.article.api;
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.model.Article.SortBy;
@@ -37,17 +38,18 @@ public class ArticleControllerV2 {
 
     private final ArticleServiceV2 articleServiceV2;
 
-    //lastArticleId -> nextId
-    //lastId 없으면 1페이지 조회, 즉최신순부터 요청 개수만큼 조회
+
 
     // 게시글 목록 조회
+    // TODO : 링크 목록 조회시 내 게시글 여부 (o)
     @GetMapping
-    public ResponseEntity<SliceResponse<ArticleResponseDto>> getArticles(
+    public ResponseEntity<SliceResponse<ArticleListResponse>> getArticles(
         @RequestParam(required = false) Long nextId,
+        @LoginMemberId(required = false) Long loginMemberId,
         Pageable pageable,
         @RequestParam(required = false,defaultValue = "latest") SortBy sortBy) {
-        Slice<ArticleResponseDto> articlesSlice = articleServiceV2.findArticlesWithNoOffset(
-            nextId, pageable,sortBy);
+        Slice<ArticleListResponse> articlesSlice = articleServiceV2.findArticlesWithNoOffset(
+            nextId,loginMemberId, pageable,sortBy);
         return ResponseEntity.ok(new SliceResponse<>(articlesSlice));
     }
 
@@ -89,6 +91,7 @@ public class ArticleControllerV2 {
     }
 
     // 게시글 키워드로 검색 or 태그로 검색
+    // TODO : 링크 목록 조회시 내 게시글 여부 (x)
     @GetMapping("/search")
     public ResponseEntity<SliceResponse<ArticleResponseDto>> searchArticleByKeywordOrTags(
         @RequestParam(required = false) String keyword,
