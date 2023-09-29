@@ -42,6 +42,7 @@ public class ArticleControllerV2 {
 
     // 게시글 목록 조회
     // TODO : 링크 목록 조회시 내 게시글 여부 (o)
+    // TODO : 링크 목록 조회시 게시글 읽음 상태 (O)
     @GetMapping
     public ResponseEntity<SliceResponse<ArticleListResponse>> getArticles(
         @RequestParam(required = false) Long nextId,
@@ -55,7 +56,7 @@ public class ArticleControllerV2 {
 
     // 게시글 한 개 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getArticleById(@PathVariable("id") Long id) {
+    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable("id") Long id) {
         ArticleResponseDto getArticle = articleServiceV2.getArticleById(id);
         return ResponseEntity.ok(getArticle);
     }
@@ -91,7 +92,7 @@ public class ArticleControllerV2 {
     }
 
     // 게시글 키워드로 검색 or 태그로 검색
-    // TODO : 링크 목록 조회시 내 게시글 여부 (x)
+    // TODO : 링크 목록 조회시 내 게시글 여부 (o)
     @GetMapping("/search")
     public ResponseEntity<SliceResponse<ArticleListResponse>> searchArticleByKeywordOrTags(
         @RequestParam(required = false) String keyword,

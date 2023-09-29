@@ -33,14 +33,21 @@ public class ArticleResponseDtoV2 {
 
         private final Integer hearts;
 
-        private List<TagDto.ArticleTagsResponse> tags;
-
         private final String ogImage;
 
         private boolean isAuthor;
 
+        private ReadStatus readStatus;
+
+        private List<TagDto.ArticleTagsResponse> tags;
+
+
         public void setAuthor(boolean isAuthor) {
             this.isAuthor = isAuthor;
+        }
+
+        public void setReadStatus(ReadStatus readStatus) {
+            this.readStatus = readStatus;
         }
         @Override
         public Long getId() {
@@ -63,6 +70,7 @@ public class ArticleResponseDtoV2 {
                     new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
             }
             this.ogImage = article.getOgImage();
+            this.readStatus = article.getReadStatus();
         }
     }
 
