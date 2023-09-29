@@ -12,9 +12,14 @@ import io.linkloud.api.domain.member.repository.MemberArticleStatusRepository;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.CustomException;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
+import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,6 +62,35 @@ public class MemberArticleStatusService {
                 .readStatus(readStatus)
                 .build()
             );
+    }
+
+    /**
+     * 회원의 게시글 상태 목록을 page size 범위 내에서 가져온다.
+     * @param loginMemberId  로그인 된 회원 PK
+     * @param startArticleId 최신 게시글 ID - page size
+     * @param endArticleId   최신 게시글 ID
+     * @return               K : memberArticleStatus.getArticle.getId()
+     *                       V : memberArticleStatus.readStatus()
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, ReadStatus>  findMemberArticlesByStatus(Long loginMemberId,long startArticleId, long endArticleId) {
+
+        List<MemberArticleStatus> articleStatusByMemberId = memberArticleStatusRepository.findByMemberIdAndArticleIdBetween(
+            loginMemberId, startArticleId, endArticleId);
+
+
+        int articleHasStatusSize = articleStatusByMemberId.size();
+
+        log.info("{}번 회원의 게시글 상태 목록 총 {} 개 조회됨", loginMemberId, articleHasStatusSize);
+
+        Map<Long, ReadStatus> articeStatusMap = new ConcurrentHashMap<>();
+
+        for (MemberArticleStatus status : articleStatusByMemberId) {
+            articeStatusMap.put(status.getArticle().getId(), status.getReadStatus());
+        }
+
+
+        return articeStatusMap;
     }
 
 
