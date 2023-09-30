@@ -41,8 +41,6 @@ public class ArticleControllerV2 {
 
 
     // 게시글 목록 조회
-    // TODO : 링크 목록 조회시 내 게시글 여부 (o)
-    // TODO : 링크 목록 조회시 게시글 읽음 상태 (O)
     @GetMapping
     public ResponseEntity<SliceResponse<ArticleListResponse>> getArticles(
         @RequestParam(required = false) Long nextId,
@@ -84,7 +82,7 @@ public class ArticleControllerV2 {
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteArticle(
+    public ResponseEntity<Void> deleteArticle(
         @LoginMemberId Long loginMemberId,
         @PathVariable("id") Long articleId) {
         articleServiceV2.deleteArticle(loginMemberId, articleId);
@@ -92,7 +90,6 @@ public class ArticleControllerV2 {
     }
 
     // 게시글 키워드로 검색 or 태그로 검색
-    // TODO : 링크 목록 조회시 내 게시글 여부 (o)
     @GetMapping("/search")
     public ResponseEntity<SliceResponse<ArticleListResponse>> searchArticleByKeywordOrTags(
         @RequestParam(required = false) String keyword,

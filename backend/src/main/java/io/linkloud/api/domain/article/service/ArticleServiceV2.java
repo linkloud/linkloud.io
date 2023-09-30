@@ -25,7 +25,7 @@ public interface ArticleServiceV2 {
     void deleteArticle(Long loginMemberId, Long articleId);
 
     //
-    Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId,Long LoginMemberId ,Pageable pageable,
+    Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId,Long loginMemberId ,Pageable pageable,
         SortBy sortBy);
 
     Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId, Long memberId,

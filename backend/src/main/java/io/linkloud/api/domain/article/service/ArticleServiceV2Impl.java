@@ -29,7 +29,6 @@ import io.linkloud.api.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +49,6 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final HeartService heartService;
 
     // 게시글 한 개 조회
-    // TODO : return V2 Dto
     @Transactional
     @Override
     public ArticleResponseDto getArticleById(Long id) {
@@ -117,7 +115,6 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     @Override
     public Slice<ArticleListResponse> findArticlesWithNoOffset(Long nextId,Long loginMemberId, Pageable pageable,
         SortBy sortBy) {
-        loginMemberId = 1L;
         Slice<ArticleListResponse> articlesWithNoOffset = articleRepository.findArticlesWithNoOffset(
             nextId, pageable, sortBy);
 
@@ -159,7 +156,6 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         List<String> tags, Pageable pageable) {
 
         validateSearch(keyword, tags);
-        loginMemberId = 1L;
 
         Slice<ArticleListResponse> articlesByKeywordOrTags = articleRepository.findArticlesByKeywordOrTags(
             keyword, tags, pageable);
