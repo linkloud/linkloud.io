@@ -14,10 +14,15 @@ import io.linkloud.api.domain.heart.repository.HeartRepository;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.global.exception.CustomException;
+import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HeartService {
@@ -26,17 +31,7 @@ public class HeartService {
     private final MemberRepository memberRepository;
     private final HeartRepository heartRepository;
 
-    /** 아티클ID로 아티클 찾기 */
-    private Article fetchArticleById(Long id) {
-        return articleRepository.findById(id)
-            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
-    }
 
-    /** 멤버ID로 멤버 찾기 */
-    private Member fetchMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-    }
 
     /** 좋아요ID로 좋아요 찾기 */
     @Transactional
@@ -75,6 +70,37 @@ public class HeartService {
 
         heartRepository.delete(deletedHeart);
         article.articleHeartChange(article.getHearts() - 1);
+    }
+
+    /**
+     * 회원 ID 로 해당 회원이 좋아요를 누른 게시글의 ID 목록 반환
+     *
+     * @param memberId 조회하고자 하는 회원의 ID
+     * @return 해당 회원이 좋아요를 누른 게시글의 ID 목록. 만약 좋아요를 누른 게시글이 없다면 빈 리스트를 반환
+     *
+     */
+    @Transactional(readOnly = true)
+    public List<Long> findHeartedArticleIdsByMemberId(Long memberId) {
+        List<Heart> hearts = heartRepository.findByMemberId(memberId);
+        log.info("{}번 회원은 총 {} 개의 좋아요한 게시글이 있습니다.", memberId, hearts.size());
+
+        List<Long> likedArticleIds = new ArrayList<>();
+        for (Heart heart : hearts) {
+            likedArticleIds.add(heart.getId());
+        }
+        return likedArticleIds;
+    }
+
+    /** 아티클ID로 아티클 찾기 */
+    private Article fetchArticleById(Long id) {
+        return articleRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
+    }
+
+    /** 멤버ID로 멤버 찾기 */
+    private Member fetchMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
     }
 
 }

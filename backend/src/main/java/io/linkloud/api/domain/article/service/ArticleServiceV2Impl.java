@@ -8,6 +8,7 @@ import static io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode.
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleSaveRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleRequestDtoV2.ArticleUpdateRequestDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
@@ -16,8 +17,10 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
+import io.linkloud.api.domain.heart.service.HeartService;
 import io.linkloud.api.domain.member.model.Member;
 import io.linkloud.api.domain.member.repository.MemberRepository;
+import io.linkloud.api.domain.member.service.MemberArticleStatusService;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
@@ -25,6 +28,7 @@ import io.linkloud.api.domain.tag.service.TagService;
 import io.linkloud.api.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -41,10 +45,10 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final MemberRepository memberRepository;
     private final TagService tagService;
     private final MemberService memberService;
-
+    private final MemberArticleStatusService articleStatusService;
+    private final HeartService heartService;
 
     // 게시글 한 개 조회
-    // TODO : return V2 Dto
     @Transactional
     @Override
     public ArticleResponseDto getArticleById(Long id) {
@@ -72,6 +76,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         Long id = articleRepository.save(article).getId();
         return new ArticleSave(id);
     }
+
 
     @Override
     @Transactional
@@ -108,12 +113,27 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     // 게시글 목록 조회
     @Transactional(readOnly = true)
     @Override
-    public Slice<ArticleResponseDto> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,
+    public Slice<ArticleListResponse> findArticlesWithNoOffset(Long nextId,Long loginMemberId, Pageable pageable,
         SortBy sortBy) {
-        return articleRepository.findArticlesWithNoOffset(lastArticleId, pageable,sortBy);
+        Slice<ArticleListResponse> articlesWithNoOffset = articleRepository.findArticlesWithNoOffset(
+            nextId, pageable, sortBy);
+
+        if (loginMemberId != null) {
+            long endArticleId = nextId - 1;
+            long startArticleId = endArticleId - pageable.getPageSize() + 1;
+
+            flagArticlesForLoggedInMember(loginMemberId, startArticleId, endArticleId,
+                articlesWithNoOffset);
+        }
+
+
+        return articlesWithNoOffset;
     }
 
-    // 게시글 목록 최신순,인기순 정렬 조회
+
+
+
+    // 내 게시글 목록 최신순,인기순 정렬 조회
     @Transactional(readOnly = true)
     public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
         SortBy sortBy) {
@@ -130,12 +150,47 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     }
 
     // 게시글 검색
+    @Transactional(readOnly = true)
     @Override
-    public Slice<ArticleResponseDto> searchArticleByKeywordOrTags(String keyword,
+    public Slice<ArticleListResponse> searchArticleByKeywordOrTags(Long loginMemberId, String keyword,
         List<String> tags, Pageable pageable) {
+
         validateSearch(keyword, tags);
-        return articleRepository.findArticlesByKeywordOrTags(keyword, tags, pageable);
+
+        Slice<ArticleListResponse> articlesByKeywordOrTags = articleRepository.findArticlesByKeywordOrTags(
+            keyword, tags, pageable);
+
+        if (loginMemberId != null && !articlesByKeywordOrTags.isEmpty()) {
+            Long startArticleId = articlesByKeywordOrTags.getContent().get(0).getId();
+            Long endArticleId = articlesByKeywordOrTags.getContent().get(articlesByKeywordOrTags.getContent().size() - 1).getId();
+
+            flagArticlesForLoggedInMember(loginMemberId, startArticleId, endArticleId,
+                articlesByKeywordOrTags);
+
+        }
+
+        return articlesByKeywordOrTags;
     }
+
+    /**
+     *  로그인을 한 회원이 게시글 목록 조회 시
+     * 1. 로그인 한 회원이면 작성자 여부
+     * 2. 게시글 상태
+     * 3. 게시글 좋아요 여부를 조회한다.
+     *
+     * @param loginMemberId 로그인 회원 PK
+     * @param startArticleId 조회 할 게시글 시작 ID
+     * @param endArticleId 조회 할 게시글 끝 ID
+     * @param articles      로그인 회원의 게시글 목록
+     */
+    private void flagArticlesForLoggedInMember(Long loginMemberId,Long startArticleId,Long endArticleId,
+        Slice<ArticleListResponse> articles){
+
+        flagAuthorForArticles(articles, loginMemberId, startArticleId, endArticleId);
+        flagReadStatusForArticles(articles, loginMemberId, startArticleId, endArticleId);
+        flagLikedStatusForArticles(articles, loginMemberId);
+    }
+
 
     private void validateSearch(String keyword, List<String> tags) {
         if ((keyword == null || keyword.isEmpty()) && (tags == null || tags.isEmpty())) {
@@ -158,6 +213,8 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return articleTags;
     }
 
+
+
     // 태그들 저장
     private List<Tag> addTags(List<String> tagNames) {
         return tagService.addTags(tagNames);
@@ -179,5 +236,48 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         }
     }
 
+    // memberId 로 요청 size 만큼 해당 회원이 작성한 글 조회
+
+
+
+    // 게시글 작성자 설정
+    private void flagAuthorForArticles(Slice<ArticleListResponse> articles, Long loginMemberId,
+        Long startArticleId, Long endArticleId) {
+
+        List<Long> myArticleIds = findMyArticleIds(loginMemberId, startArticleId, endArticleId);
+
+        for (ArticleListResponse listResponse : articles) {
+            if (myArticleIds.contains(listResponse.getId())) {
+                listResponse.setAuthor(true);
+            }
+        }
+    }
+
+    private List<Long> findMyArticleIds(Long loginMemberId,Long startId,Long endId) {
+        return articleRepository.findByMemberIdAndIdBetween(loginMemberId,startId,endId)
+            .stream()
+            .map(Article::getId)
+            .toList();
+    }
+
+    // 게시글 상태 설정
+    private void flagReadStatusForArticles(Slice<ArticleListResponse> articles, Long loginMemberId, Long startArticleId, Long endArticleId) {
+        Map<Long, ReadStatus> memberArticlesByStatus = articleStatusService.findMemberArticlesByStatus(loginMemberId, startArticleId, endArticleId);
+        for (ArticleListResponse listResponse : articles) {
+            if (memberArticlesByStatus.containsKey(listResponse.getId())) {
+                listResponse.setReadStatus(memberArticlesByStatus.get(listResponse.getId()));
+            }
+        }
+    }
+
+    // 게시글 좋아요 여부
+    private void flagLikedStatusForArticles(Slice<ArticleListResponse> articles, Long loginMemberId) {
+        List<Long> heartedArticleIds = heartService.findHeartedArticleIdsByMemberId(loginMemberId);
+        for (ArticleListResponse listResponse : articles) {
+            if (heartedArticleIds.contains(listResponse.getId())) {
+                listResponse.setLiked(true);
+            }
+        }
+    }
 
 }
