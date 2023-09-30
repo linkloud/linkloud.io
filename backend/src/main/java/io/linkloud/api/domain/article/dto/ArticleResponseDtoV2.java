@@ -21,8 +21,6 @@ public class ArticleResponseDtoV2 {
 
         private final Long id;
 
-        private final Long memberId;
-
         private final String title;
 
         private final String url;
@@ -37,6 +35,8 @@ public class ArticleResponseDtoV2 {
 
         private boolean isAuthor;
 
+        private boolean liked;
+
         private ReadStatus readStatus;
 
         private List<TagDto.ArticleTagsResponse> tags;
@@ -49,6 +49,10 @@ public class ArticleResponseDtoV2 {
         public void setReadStatus(ReadStatus readStatus) {
             this.readStatus = readStatus;
         }
+
+        public void setLiked(boolean liked) {
+            this.liked = liked;
+        }
         @Override
         public Long getId() {
             return this.id;
@@ -58,19 +62,19 @@ public class ArticleResponseDtoV2 {
          */
         public ArticleListResponse(Article article) {
             this.id = article.getId();
-            this.memberId = article.getMember().getId();
             this.title = article.getTitle();
             this.url = article.getUrl();
             this.description = article.getDescription();
             this.views = article.getViews();
             this.hearts = article.getHearts();
+            this.ogImage = article.getOgImage();
+            this.readStatus = article.getReadStatus();
             this.tags = new ArrayList<>();
             if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
                 article.getArticleTags().forEach(at -> this.tags.add(
                     new TagDto.ArticleTagsResponse(at.getTag().getId(), at.getTag().getName())));
             }
-            this.ogImage = article.getOgImage();
-            this.readStatus = article.getReadStatus();
+
         }
     }
 
