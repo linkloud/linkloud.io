@@ -115,11 +115,20 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     @Override
     public Slice<ArticleListResponse> findArticlesWithNoOffset(Long nextId,Long loginMemberId, Pageable pageable,
         SortBy sortBy) {
+
+
         Slice<ArticleListResponse> articlesWithNoOffset = articleRepository.findArticlesWithNoOffset(
             nextId, pageable, sortBy);
 
+
         if (loginMemberId != null) {
-            long endArticleId = nextId - 1;
+            long endArticleId;
+            if (nextId == null) {
+                endArticleId = articlesWithNoOffset.getContent()
+                    .get(articlesWithNoOffset.getSize() - 1).getId();
+            }else {
+             endArticleId = nextId - 1;
+            }
             long startArticleId = endArticleId - pageable.getPageSize() + 1;
 
             flagArticlesForLoggedInMember(loginMemberId, startArticleId, endArticleId,
