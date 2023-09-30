@@ -24,4 +24,12 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
     @Query(value = "SELECT DISTINCT a FROM Article a LEFT JOIN FETCH a.member LEFT JOIN FETCH a.articleTags t LEFT JOIN FETCH t.tag WHERE a.id = :id AND a.articleStatus = 'ACTIVE' ORDER BY a.createdAt DESC")
     Optional<Article> findById(Long id);
+
+    /**
+     * 회원 ID 로 해당 회원이 작성한 게시글 ID 목록 조회
+     * But page 요청 size 만큼만 조회
+     * @param memberId 회원ID
+     * @return 회원이 작성한 게시글
+     */
+    List<Article> findByMemberIdAndIdBetween(Long memberId,Long startArticleId,Long endArticleId);
 }

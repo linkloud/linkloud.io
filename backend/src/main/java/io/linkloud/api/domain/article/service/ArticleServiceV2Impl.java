@@ -17,8 +17,8 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.repository.ArticleRepository;
+import io.linkloud.api.domain.heart.service.HeartService;
 import io.linkloud.api.domain.member.model.Member;
-import io.linkloud.api.domain.member.model.MemberArticleStatus;
 import io.linkloud.api.domain.member.repository.MemberRepository;
 import io.linkloud.api.domain.member.service.MemberArticleStatusService;
 import io.linkloud.api.domain.member.service.MemberService;
@@ -29,7 +29,6 @@ import io.linkloud.api.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +47,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final TagService tagService;
     private final MemberService memberService;
     private final MemberArticleStatusService articleStatusService;
+    private final HeartService heartService;
 
     // 게시글 한 개 조회
     // TODO : return V2 Dto
@@ -117,31 +117,16 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     @Override
     public Slice<ArticleListResponse> findArticlesWithNoOffset(Long nextId,Long loginMemberId, Pageable pageable,
         SortBy sortBy) {
-
+        loginMemberId = 1L;
         Slice<ArticleListResponse> articlesWithNoOffset = articleRepository.findArticlesWithNoOffset(
             nextId, pageable, sortBy);
 
-
-        // 로그인한 회원이라면
-        // 해당 회원이 작성한 게시글 여부
-        // 해당 회원이 설정한 게시글 상태 목록을 가져온다
         if (loginMemberId != null) {
-
-            // 해당 회원이 작성한 게시글 여부
-            flagMyArticle(loginMemberId, articlesWithNoOffset);
-
             long endArticleId = nextId - 1;
             long startArticleId = endArticleId - pageable.getPageSize() + 1;
 
-            // 해당 회원이 설정한 게시글 상태 목록
-            Map<Long, ReadStatus> memberArticlesByStatus = articleStatusService.findMemberArticlesByStatus(
-                loginMemberId, startArticleId, endArticleId);
-
-            for (ArticleListResponse listResponse : articlesWithNoOffset) {
-                if (memberArticlesByStatus.containsKey(listResponse.getId())) {
-                    listResponse.setReadStatus(memberArticlesByStatus.get(listResponse.getId()));
-                }
-            }
+            flagArticlesForLoggedInMember(loginMemberId, startArticleId, endArticleId,
+                articlesWithNoOffset);
         }
 
 
@@ -174,16 +159,42 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         List<String> tags, Pageable pageable) {
 
         validateSearch(keyword, tags);
+        loginMemberId = 1L;
 
         Slice<ArticleListResponse> articlesByKeywordOrTags = articleRepository.findArticlesByKeywordOrTags(
             keyword, tags, pageable);
 
+        if (loginMemberId != null && !articlesByKeywordOrTags.isEmpty()) {
+            Long startArticleId = articlesByKeywordOrTags.getContent().get(0).getId();
+            Long endArticleId = articlesByKeywordOrTags.getContent().get(articlesByKeywordOrTags.getContent().size() - 1).getId();
 
-        flagMyArticle(loginMemberId, articlesByKeywordOrTags);
+            flagArticlesForLoggedInMember(loginMemberId, startArticleId, endArticleId,
+                articlesByKeywordOrTags);
 
+        }
 
         return articlesByKeywordOrTags;
     }
+
+    /**
+     *  로그인을 한 회원이 게시글 목록 조회 시
+     * 1. 로그인 한 회원이면 작성자 여부
+     * 2. 게시글 상태
+     * 3. 게시글 좋아요 여부를 조회한다.
+     *
+     * @param loginMemberId 로그인 회원 PK
+     * @param startArticleId 조회 할 게시글 시작 ID
+     * @param endArticleId 조회 할 게시글 끝 ID
+     * @param articles      로그인 회원의 게시글 목록
+     */
+    private void flagArticlesForLoggedInMember(Long loginMemberId,Long startArticleId,Long endArticleId,
+        Slice<ArticleListResponse> articles){
+
+        flagAuthorForArticles(articles, loginMemberId, startArticleId, endArticleId);
+        flagReadStatusForArticles(articles, loginMemberId, startArticleId, endArticleId);
+        flagLikedStatusForArticles(articles, loginMemberId);
+    }
+
 
     private void validateSearch(String keyword, List<String> tags) {
         if ((keyword == null || keyword.isEmpty()) && (tags == null || tags.isEmpty())) {
@@ -229,22 +240,48 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         }
     }
 
-    // 내 게시글이 존재하면 author = true
-    private void flagMyArticle(@NonNull Long loginMemberId,
-        Slice<ArticleListResponse> articlesWithNoOffset) {
+    // memberId 로 요청 size 만큼 해당 회원이 작성한 글 조회
 
-        articlesWithNoOffset.getContent().stream()
-            .filter(articleDto -> articleDto.getMemberId().equals(loginMemberId))
-            .forEach(articleDto -> articleDto.setAuthor(true));
-        /** Stream 으로 변경
-         if (loginMemberId != null) {
-         for (ArticleListResponse articleDto : articlesWithNoOffset) {
-         if (articleDto.getMemberId().equals(loginMemberId)) {
-         articleDto.setAuthor(true);
-         }
-         }
-         }
-         **/
+
+
+    // 게시글 작성자 설정
+    private void flagAuthorForArticles(Slice<ArticleListResponse> articles, Long loginMemberId,
+        Long startArticleId, Long endArticleId) {
+
+        List<Long> myArticleIds = findMyArticleIds(loginMemberId, startArticleId, endArticleId);
+
+        for (ArticleListResponse listResponse : articles) {
+            if (myArticleIds.contains(listResponse.getId())) {
+                listResponse.setAuthor(true);
+            }
+        }
+    }
+
+    private List<Long> findMyArticleIds(Long loginMemberId,Long startId,Long endId) {
+        return articleRepository.findByMemberIdAndIdBetween(loginMemberId,startId,endId)
+            .stream()
+            .map(Article::getId)
+            .toList();
+    }
+
+    // 게시글 상태 설정
+    private void flagReadStatusForArticles(Slice<ArticleListResponse> articles, Long loginMemberId, Long startArticleId, Long endArticleId) {
+        Map<Long, ReadStatus> memberArticlesByStatus = articleStatusService.findMemberArticlesByStatus(loginMemberId, startArticleId, endArticleId);
+        for (ArticleListResponse listResponse : articles) {
+            if (memberArticlesByStatus.containsKey(listResponse.getId())) {
+                listResponse.setReadStatus(memberArticlesByStatus.get(listResponse.getId()));
+            }
+        }
+    }
+
+    // 게시글 좋아요 여부
+    private void flagLikedStatusForArticles(Slice<ArticleListResponse> articles, Long loginMemberId) {
+        List<Long> heartedArticleIds = heartService.findHeartedArticleIdsByMemberId(loginMemberId);
+        for (ArticleListResponse listResponse : articles) {
+            if (heartedArticleIds.contains(listResponse.getId())) {
+                listResponse.setLiked(true);
+            }
+        }
     }
 
 }
