@@ -3,7 +3,6 @@ package io.linkloud.api.domain.heart.api;
 import io.linkloud.api.domain.heart.dto.HeartRequestDto;
 import io.linkloud.api.domain.heart.dto.HeartResponseDto;
 import io.linkloud.api.domain.heart.service.HeartService;
-import io.linkloud.api.global.common.SingleDataResponse;
 import io.linkloud.api.global.security.resolver.LoginMemberId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("a")
+@RequestMapping("api/v1/likes")
 public class HeartController {
 
     private final HeartService heartService;
