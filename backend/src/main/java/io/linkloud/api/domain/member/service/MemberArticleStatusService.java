@@ -67,16 +67,13 @@ public class MemberArticleStatusService {
     /**
      * 회원의 게시글 상태 목록을 page size 범위 내에서 가져온다.
      * @param loginMemberId  로그인 된 회원 PK
-     * @param startArticleId 최신 게시글 ID - page size
-     * @param endArticleId   최신 게시글 ID
      * @return               K : memberArticleStatus.getArticle.getId()
      *                       V : memberArticleStatus.readStatus()
      */
     @Transactional(readOnly = true)
-    public Map<Long, ReadStatus>  findMemberArticlesByStatus(Long loginMemberId,long startArticleId, long endArticleId) {
+    public Map<Long, ReadStatus>  findMemberArticlesByStatus(Long loginMemberId) {
 
-        List<MemberArticleStatus> articleStatusByMemberId = memberArticleStatusRepository.findByMemberIdAndArticleIdBetween(
-            loginMemberId, startArticleId, endArticleId);
+        List<MemberArticleStatus> articleStatusByMemberId = memberArticleStatusRepository.findByMemberId(loginMemberId);
 
 
         int articleHasStatusSize = articleStatusByMemberId.size();
@@ -89,6 +86,9 @@ public class MemberArticleStatusService {
             articeStatusMap.put(status.getArticle().getId(), status.getReadStatus());
         }
 
+        log.info("{}번 회원 게시글 상태 조회 결과",loginMemberId);
+
+        articeStatusMap.forEach((key,value) -> log.info("{}번 게시글 : {}",key,value));
 
         return articeStatusMap;
     }
