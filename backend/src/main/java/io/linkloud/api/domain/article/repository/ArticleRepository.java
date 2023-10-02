@@ -27,9 +27,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
     /**
      * 회원 ID 로 해당 회원이 작성한 게시글 ID 목록 조회
-     * But page 요청 size 만큼만 조회
      * @param memberId 회원ID
      * @return 회원이 작성한 게시글
      */
-    List<Article> findByMemberIdAndIdBetween(Long memberId,Long startArticleId,Long endArticleId);
+    List<Article> findByMemberId(Long memberId);
 }

@@ -14,5 +14,4 @@ public interface MemberArticleStatusRepository extends JpaRepository<MemberArtic
     Optional<MemberArticleStatus> findByMemberAndArticle(Member member, Article article);
 
     List<MemberArticleStatus> findByMemberId(Long memberId);
-    List<MemberArticleStatus> findByMemberIdAndArticleIdBetween(Long memberId,long startArticleId,long endArticleId);
 }
