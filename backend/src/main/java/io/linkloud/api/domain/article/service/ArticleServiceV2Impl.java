@@ -133,10 +133,12 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     @Transactional(readOnly = true)
     @Override
     public Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long loginMemberId, Long memberId,
-        Long lastArticleId, Pageable pageable,ReadStatus readStatus ,SortBy sortBy) {
+        Long lastArticleId, Pageable pageable,String sortBy) {
+
         memberService.validateMember(memberId, loginMemberId);
-        return articleRepository.MemberArticlesByCondition(memberId, sortBy, readStatus,
-            lastArticleId, pageable);
+        ReadStatus readStatus = ReadStatus.fromString(sortBy);
+        SortBy titleOrLatest = SortBy.fromString(sortBy);
+        return articleRepository.MemberArticlesByCondition(memberId, titleOrLatest,readStatus, lastArticleId, pageable);
     }
 
 
