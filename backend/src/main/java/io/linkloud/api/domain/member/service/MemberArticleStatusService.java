@@ -94,6 +94,19 @@ public class MemberArticleStatusService {
     }
 
 
+    // 첫 게시글 생성시 해당 게시글의 상태를 UNREAD 로 설정한다
+    @Transactional
+    public void initArticleAsUnread(Member member,Article article) {
+        MemberArticleStatus initStatusArticle = memberArticleStatusRepository.save(MemberArticleStatus.builder()
+            .member(member)
+            .article(article)
+            .readStatus(ReadStatus.UNREAD)
+            .build());
+        log.info("첫 게시글 생성 후 상태 설정(m.id={},a.id={},status={})", member.getId(), article.getId(),
+            initStatusArticle.getReadStatus().name());
+    }
+
+
     private Article findArticleById(Long articleId) {
         return articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ARTICLE_NOT_FOUND));
     }
