@@ -16,19 +16,16 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
-import io.linkloud.api.domain.member.model.MemberArticleStatus;
 import io.linkloud.api.global.utils.QueryDslUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -145,81 +142,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
-    @Override
-    public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long memberId,Long lastArticleId, Pageable pageable,
-        SortBy sortBy) {
 
-        BooleanExpression whereClause = article.member.id.eq(memberId);
-        if (lastArticleId != null) {
-            whereClause = whereClause.and(article.id.lt(lastArticleId));
-        }
-
-        OrderSpecifier<?>[] orderSpecifiers = createOrderSpecifier(Objects.requireNonNullElse(sortBy, SortBy.LATEST));
-
-        List<Article> fetch = query
-            .selectFrom(article)
-            .leftJoin(article.articleTags, articleTag).fetchJoin()  // ArticleTag를 즉시 로딩
-            .where(whereClause)
-            .orderBy(orderSpecifiers)
-            .limit(pageable.getPageSize() + 1)
-            .fetch();
-
-        // TODO : 게시글 상태 Null 값 이므로 생성자 변경
-//        List<ArticleResponseDto> content = fetch.stream()
-//            .map(ArticleResponseDto::new)
-//            .collect(Collectors.toList());
-
-        List<MemberArticlesSortedResponse> content = fetch.stream()
-            .map(MemberArticlesSortedResponse::new)
-            .collect(Collectors.toList());
-
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
-
-    }
-
-
-    @Override
-    public Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId, Pageable pageable,
-        ReadStatus readStatus) {
-        BooleanExpression whereClause = memberArticleStatus.member.id.eq(memberId);
-        if (lastArticleId != null) {
-            whereClause = whereClause.and(memberArticleStatus.article.id.lt(lastArticleId));
-        }
-        if (readStatus != null) {
-            whereClause = whereClause.and(memberArticleStatus.readStatus.eq(readStatus));
-        }
-
-        // TODO : N+1문제 DTO 로 해야함
-        List<MemberArticleStatus> fetch = query
-            .selectFrom(memberArticleStatus)
-            .leftJoin(memberArticleStatus.article, article).fetchJoin()
-            .leftJoin(memberArticleStatus.member, member).fetchJoin()  // 추가
-            .leftJoin(article.articleTags, articleTag).fetchJoin() // ArticleTag 엔터티 fetchJoin 적용
-            .where(whereClause)
-            .orderBy(article.createdAt.desc())
-            .limit(pageable.getPageSize() + 1)
-            .fetch();
-
-
-        List<MemberArticlesByReadStatus> content = fetch.stream()
-            .map(status -> new MemberArticlesByReadStatus(status.getArticle(), status.getReadStatus()))
-            .collect(Collectors.toList());
-
-
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
-    }
 
     // 게시글 keyword || tags 검색
     @Override
@@ -251,6 +174,58 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
         return new SliceImpl<>(content, pageable, hasNext);
     }
+
+    @Override
+    public Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long memberId, SortBy sortBy,
+        ReadStatus readStatus, Long lastArticleId, Pageable pageable) {
+
+
+        // SELECT a.*, mas.read_status
+        // FROM article a
+        // LEFT JOIN member_article_status mas ON a.id = mas.article_id AND mas.member_id = 1
+        // WHERE a.member_id = 1 and a.status = 'ACTIVE'
+        // TODO : N+1
+        JPAQuery<MemberArticlesByCondition> jpaQuery  = query
+            .select(Projections.constructor(MemberArticlesByCondition.class, article, memberArticleStatus.readStatus))
+            .from(article)
+            .leftJoin(memberArticleStatus)
+            .on(article.id.eq(memberArticleStatus.article.id)
+                .and(memberArticleStatus.member.id.eq(memberId))).fetchJoin()
+            .where(article.member.id.eq(memberId).and(article.articleStatus.eq(ArticleStatus.ACTIVE)));
+
+
+
+        // readStatus 로 조회 시
+        // WHERE mas.read_status = ? (UNREAD,READING,READ)
+        if (readStatus != null) {
+            jpaQuery.where(memberArticleStatus.readStatus.eq(readStatus))
+                .orderBy(article.createdAt.desc());
+        }
+
+        // sortBy 로 정렬 시
+        if (sortBy != null) {
+            switch (sortBy) {
+                case LATEST -> jpaQuery.orderBy(article.createdAt.desc());
+                case TITLE -> jpaQuery.orderBy(article.title.asc());
+            }
+        }
+
+        else {
+            log.info("검색 조건이 없습니다 -> 날짜순으로 정렬합니다 ");
+            jpaQuery.orderBy(article.createdAt.desc());
+        }
+        List<MemberArticlesByCondition> content = jpaQuery
+            .limit(pageable.getPageSize() + 1)
+            .fetch();
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
 
     // tags 에 해당하는 tag 목록 검색
     private void createTagSubQuery(List<String> tags, BooleanBuilder builder) {

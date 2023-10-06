@@ -61,12 +61,10 @@ public class Article extends Auditable {
     public enum SortBy {
         LATEST("createdAt"),
         TITLE("title"),
-        HEARTS("hearts"),
-        READING("reading"),
-        READ("read");
+        HEARTS("hearts");
 
         @Getter
-        private String sortBy;
+        private final String sortBy;
     }
 
     /** 생성자 */

@@ -170,38 +170,37 @@ public class ArticleResponseDtoV2 {
             }
         }
 
-        // 내가 설정한 다른 사람의 게시글 상태별 목록 조회
-        @Getter
-        public static class MemberArticlesByReadStatus implements HasId {
 
-            private final Long id;
-            private final String title;
-            private final String url;
-            private final String description;
-            private final Integer views;
-            private final Integer hearts;
-            private final String readStatus;
-            private final List<TagDto.ArticleTagsResponse> tags;
 
-            @Override
-            public Long getId() {
-                return this.id;
-            }
+    }
+    @Getter
+    public static class MemberArticlesByCondition implements HasId{
+        private final Long id;
+        private final String title;
+        private final String url;
+        private final String description;
+        private final Integer views;
+        private final Integer hearts;
+        private final String readStatus;
+        private final List<TagDto.ArticleTagsResponse> tags;
+        @Override
+        public Long getId() {
+            return this.id;
+        }
 
-            public MemberArticlesByReadStatus(Article article, ReadStatus readStatus) {
-                this.id = article.getId();
-                this.title = article.getTitle();
-                this.url = article.getUrl();
-                this.description = article.getDescription();
-                this.views = article.getViews();
-                this.hearts = article.getHearts();
-                this.readStatus = readStatus.name();
-                this.tags = new ArrayList<>();
-                if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
-                    article.getArticleTags().forEach(at -> this.tags.add(
-                        new TagDto.ArticleTagsResponse(at.getTag().getId(),
-                            at.getTag().getName())));
-                }
+        public MemberArticlesByCondition(Article article, ReadStatus readStatus) {
+            this.id = article.getId();
+            this.title = article.getTitle();
+            this.url = article.getUrl();
+            this.description = article.getDescription();
+            this.views = article.getViews();
+            this.hearts = article.getHearts();
+            this.readStatus = (readStatus != null) ? readStatus.name() : ReadStatus.UNREAD.name();
+            this.tags = new ArrayList<>();
+            if (article.getArticleTags() != null && !article.getArticleTags().isEmpty()) {
+                article.getArticleTags().forEach(at -> this.tags.add(
+                    new TagDto.ArticleTagsResponse(at.getTag().getId(),
+                        at.getTag().getName())));
             }
         }
     }
