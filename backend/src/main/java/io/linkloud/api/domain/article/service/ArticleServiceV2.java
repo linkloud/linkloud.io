@@ -7,6 +7,7 @@ import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListRespon
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
@@ -30,6 +31,9 @@ public interface ArticleServiceV2 {
 
     Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId, Long memberId,
         Long lastArticleId, Pageable pageable, SortBy sortBy);
+
+    Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long loginMemberId, Long memberId,
+        Long lastArticleId, Pageable pageable, ReadStatus readStatus,SortBy sortBy);
 
     Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long loginMemberId, Long memberId, Long lastArticleId,
         Pageable pageable,ReadStatus readStatus);

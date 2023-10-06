@@ -12,6 +12,7 @@ import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListRespon
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleSave;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleUpdate;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
@@ -130,9 +131,23 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     }
 
 
+    // 내 게시글 목록 최신순,인기순 정렬 조회 OR 게시글 상태로 조회
+    @Transactional(readOnly = true)
+    @Override
+    public Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long loginMemberId, Long memberId,
+        Long lastArticleId, Pageable pageable,ReadStatus readStatus ,SortBy sortBy) {
+        memberService.validateMember(memberId, loginMemberId);
+        return articleRepository.MemberArticlesByCondition(memberId, sortBy, readStatus,
+            lastArticleId, pageable);
+    }
 
 
     // 내 게시글 목록 최신순,인기순 정렬 조회
+
+    /**
+     * 내 게시글 조회가 엔드포인트 한 곳에서 실행하도록 변경
+     */
+    @Deprecated
     @Transactional(readOnly = true)
     public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
         SortBy sortBy) {
@@ -140,7 +155,13 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         return articleRepository.findArticlesByMemberSorted(memberId, lastArticleId, pageable, sortBy);
     }
 
+
+
     // 게시글 목록 상태(읽음,읽는중)순 정렬
+    /**
+     * 내 게시글 조회가 엔드포인트 한 곳에서 실행하도록 변경
+     */
+    @Deprecated
     @Transactional(readOnly = true)
     public Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long loginMemberId,Long memberId,Long lastArticleId,Pageable pageable,
         ReadStatus readStatus) {
