@@ -2,6 +2,7 @@ package io.linkloud.api.domain.member.api;
 
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticleStatusResponse;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
@@ -32,31 +33,24 @@ public class MemberControllerV2 {
     private final ArticleServiceV2 articleServiceV2;
     private final MemberArticleStatusService memberArticleStatusService;
 
+
+    // 1. 게시글 상태조회를 파라매터로 받는다
+    // 2. 인기순,최신순,게시글 상태순 조건순으로 정렬
     // 내가 작성한 게시글 목록 인기순,최신순 조회
+    // TODO : 둘중 한개는 무조건 필수
     @GetMapping("/{memberId}/articles")
-    public ResponseEntity<SliceResponse<MemberArticlesSortedResponse>> getArticles(
+    public ResponseEntity<SliceResponse<MemberArticlesByCondition>> getArticlesByCondition(
         @RequestParam(required = false) Long nextId,
         Pageable pageable,
-        @RequestParam SortBy sortBy,
-        @LoginMemberId Long loginMemberId,
+        @RequestParam(required = false) SortBy sortBy,
+        @RequestParam(required = false) ReadStatus readStatus,
+        @LoginMemberId(required = false) Long loginMemberId,
         @PathVariable Long memberId) {
-        Slice<MemberArticlesSortedResponse> myArticles = articleServiceV2.findArticlesByMemberSorted(
-            loginMemberId, memberId, nextId, pageable, sortBy);
-        return ResponseEntity.ok(new SliceResponse<>(myArticles));
+        Slice<MemberArticlesByCondition> memberArticlesByCondition = articleServiceV2.MemberArticlesByCondition(loginMemberId, memberId,
+            nextId, pageable, readStatus, sortBy);
+        return ResponseEntity.ok(new SliceResponse<>(memberArticlesByCondition));
     }
 
-    // 내가 변경한 다른 사람의 게시글 상태로 조회
-    @GetMapping("/{memberId}/read-status")
-    public ResponseEntity<SliceResponse<MemberArticlesByReadStatus>> getMemberArticlesByStatus(
-        @RequestParam(required = false) Long nextId,
-        Pageable pageable,
-        @LoginMemberId Long loginMemberId,
-        @PathVariable Long memberId,
-        @RequestParam ReadStatus readStatus) {
-        Slice<MemberArticlesByReadStatus> myArticles = articleServiceV2.findArticlesByReadStatus(loginMemberId,
-            memberId, nextId, pageable, readStatus);
-        return ResponseEntity.ok(new SliceResponse<>(myArticles));
-    }
 
     // 게시글 상태 변경
     @PatchMapping("/{memberId}/articles/{articleId}/status")
