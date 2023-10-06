@@ -72,8 +72,9 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         // 연관 관계 추가
         article.addArticleTag(articleTags);
 
-        Long id = articleRepository.save(article).getId();
-        return new ArticleSave(id);
+        Long articleId = articleRepository.save(article).getId();
+        articleStatusService.initArticleAsUnread(member,article);
+        return new ArticleSave(articleId);
     }
 
 
