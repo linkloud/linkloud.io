@@ -16,20 +16,16 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByCondition;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ArticleStatus;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.member.model.Member;
-import io.linkloud.api.domain.member.model.MemberArticleStatus;
 import io.linkloud.api.global.utils.QueryDslUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -146,75 +142,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
-    @Override
-    public Slice<MemberArticlesSortedResponse> findArticlesByMemberSorted(Long memberId,Long lastArticleId, Pageable pageable,
-        SortBy sortBy) {
 
-        BooleanExpression whereClause = article.member.id.eq(memberId);
-        if (lastArticleId != null) {
-            whereClause = whereClause.and(article.id.lt(lastArticleId));
-        }
-
-        OrderSpecifier<?>[] orderSpecifiers = createOrderSpecifier(Objects.requireNonNullElse(sortBy, SortBy.LATEST));
-
-        List<Article> fetch = query
-            .selectFrom(article)
-            .leftJoin(article.articleTags, articleTag).fetchJoin()  // ArticleTag를 즉시 로딩
-            .where(whereClause)
-            .orderBy(orderSpecifiers)
-            .limit(pageable.getPageSize() + 1)
-            .fetch();
-
-        List<MemberArticlesSortedResponse> content = fetch.stream()
-            .map(MemberArticlesSortedResponse::new)
-            .collect(Collectors.toList());
-
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
-    }
-
-
-    @Override
-    public Slice<MemberArticlesByReadStatus> findArticlesByReadStatus(Long memberId, Long lastArticleId, Pageable pageable,
-        ReadStatus readStatus) {
-        BooleanExpression whereClause = memberArticleStatus.member.id.eq(memberId);
-        if (lastArticleId != null) {
-            whereClause = whereClause.and(memberArticleStatus.article.id.lt(lastArticleId));
-        }
-        if (readStatus != null) {
-            whereClause = whereClause.and(memberArticleStatus.readStatus.eq(readStatus));
-        }
-
-        // TODO : N+1문제 DTO 로 해야함
-        List<MemberArticleStatus> fetch = query
-            .selectFrom(memberArticleStatus)
-            .leftJoin(memberArticleStatus.article, article).fetchJoin()
-            .leftJoin(memberArticleStatus.member, member).fetchJoin()  // 추가
-            .leftJoin(article.articleTags, articleTag).fetchJoin() // ArticleTag 엔터티 fetchJoin 적용
-            .where(whereClause)
-            .orderBy(article.createdAt.desc())
-            .limit(pageable.getPageSize() + 1)
-            .fetch();
-
-
-        List<MemberArticlesByReadStatus> content = fetch.stream()
-            .map(status -> new MemberArticlesByReadStatus(status.getArticle(), status.getReadStatus()))
-            .collect(Collectors.toList());
-
-
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
-    }
 
     // 게시글 keyword || tags 검색
     @Override

@@ -1,9 +1,7 @@
 package io.linkloud.api.domain.member.api;
 
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticleStatusResponse;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByCondition;
-import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.model.Article.SortBy;
 import io.linkloud.api.domain.article.model.ReadStatus;
 import io.linkloud.api.domain.article.service.ArticleServiceV2;
