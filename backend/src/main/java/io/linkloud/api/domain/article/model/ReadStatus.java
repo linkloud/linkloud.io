@@ -1,7 +1,6 @@
 package io.linkloud.api.domain.article.model;
 
-import io.linkloud.api.global.exception.CustomException;
-import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
+
 import lombok.Getter;
 
 
