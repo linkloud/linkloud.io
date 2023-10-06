@@ -3,6 +3,7 @@ package io.linkloud.api.domain.article.repository;
 import io.linkloud.api.domain.article.dto.ArticleResponseDto;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.ArticleListResponse;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse;
+import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByCondition;
 import io.linkloud.api.domain.article.dto.ArticleResponseDtoV2.MemberArticlesSortedResponse.MemberArticlesByReadStatus;
 import io.linkloud.api.domain.article.dto.MyArticlesResponseDto;
 import io.linkloud.api.domain.article.model.Article.SortBy;
@@ -33,5 +34,11 @@ public interface ArticleRepositoryCustom {
         Pageable pageable, ReadStatus readStatus);
 
     // 게시글 검색어, tags 로 검색
-    Slice<ArticleListResponse> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable);
+    Slice<ArticleListResponse> findArticlesByKeywordOrTags(String keyword, List<String> tags,
+        Pageable pageable);
+
+    // MemberId 로 게시글 조건 정렬
+    Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long memberId,SortBy sortBy,ReadStatus readStatus, Long lastArticleId,
+        Pageable pageable);
+
 }
