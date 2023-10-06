@@ -1,10 +1,10 @@
 package io.linkloud.api.domain.article.model;
 
-import lombok.AllArgsConstructor;
+import io.linkloud.api.global.exception.CustomException;
+import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import lombok.Getter;
 
 
-@AllArgsConstructor
 @Getter
 public enum ReadStatus {
     UNREAD("unread"),
@@ -12,6 +12,15 @@ public enum ReadStatus {
     READ("read");
 
     private String status;
-
-
+    ReadStatus(String status) {
+        this.status = status;
+    }
+    public static ReadStatus fromString(String value) {
+        for (ReadStatus status : ReadStatus.values()) {
+            if (status.status.equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        return null;
+    }
 }
