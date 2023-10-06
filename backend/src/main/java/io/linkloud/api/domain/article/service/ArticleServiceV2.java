@@ -29,7 +29,7 @@ public interface ArticleServiceV2 {
 
 
     Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long loginMemberId, Long memberId,
-        Long lastArticleId, Pageable pageable, ReadStatus readStatus,SortBy sortBy);
+        Long lastArticleId, Pageable pageable, String sortBy);
 
 
     Slice<ArticleListResponse> searchArticleByKeywordOrTags(Long loginMemberId,String keyword, List<String> tags,Pageable pageable);

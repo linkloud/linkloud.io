@@ -65,6 +65,15 @@ public class Article extends Auditable {
 
         @Getter
         private final String sortBy;
+
+        public static SortBy fromString(String value) {
+            for (SortBy sortBy : SortBy.values()) {
+                if (sortBy.sortBy.equalsIgnoreCase(value)) {
+                    return sortBy;
+                }
+            }
+            return null;
+        }
     }
 
     /** 생성자 */

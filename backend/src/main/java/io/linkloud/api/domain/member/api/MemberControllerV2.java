@@ -40,12 +40,11 @@ public class MemberControllerV2 {
     public ResponseEntity<SliceResponse<MemberArticlesByCondition>> getArticlesByCondition(
         @RequestParam(required = false) Long nextId,
         Pageable pageable,
-        @RequestParam(required = false) SortBy sortBy,
-        @RequestParam(required = false) ReadStatus readStatus,
         @LoginMemberId(required = false) Long loginMemberId,
+        @RequestParam String sortBy,
         @PathVariable Long memberId) {
         Slice<MemberArticlesByCondition> memberArticlesByCondition = articleServiceV2.MemberArticlesByCondition(loginMemberId, memberId,
-            nextId, pageable, readStatus, sortBy);
+            nextId, pageable, sortBy);
         return ResponseEntity.ok(new SliceResponse<>(memberArticlesByCondition));
     }
 
