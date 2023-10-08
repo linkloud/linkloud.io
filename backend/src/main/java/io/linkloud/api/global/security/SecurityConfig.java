@@ -29,8 +29,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-            .cors().configurationSource(corsConfigurationSource())
-            .and()
             .csrf().disable()
             .formLogin().disable()
             .httpBasic().disable()
@@ -55,19 +53,5 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // todo : 일단 전부 허용 나중에 변경
                 )
                 .build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://linkloud.io");
-        configuration.addAllowedOrigin("http://localhost:5173");
-
-        configuration.addAllowedMethod("*"); // 모든 메소드 허용.
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }
