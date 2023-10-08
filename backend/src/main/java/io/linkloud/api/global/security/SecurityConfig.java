@@ -56,18 +56,4 @@ public class SecurityConfig {
                 )
                 .build();
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://linkloud.io");
-        configuration.addAllowedOrigin("http://localhost:5173");
-
-        configuration.addAllowedMethod("*"); // 모든 메소드 허용.
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }
