@@ -199,7 +199,9 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             .from(article)
             .leftJoin(memberArticleStatus).on(article.id.eq(memberArticleStatus.article.id))
             .where(memberArticleStatus.member.id.eq(memberId)
-                .and(article.articleStatus.eq(ArticleStatus.ACTIVE)));
+
+                .and(article.articleStatus.eq(ArticleStatus.ACTIVE)
+                .and(memberArticleStatus.member.id.eq(memberId))));
 
 
         // readStatus 로 조회 시
