@@ -178,32 +178,43 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     @Override
     public Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long memberId, SortBy sortBy,
         ReadStatus readStatus, Long lastArticleId, Pageable pageable) {
-
+        log.info("repository={}",readStatus);
 
         // SELECT a.*, mas.read_status
         // FROM article a
         // LEFT JOIN member_article_status mas ON a.id = mas.article_id AND mas.member_id = 1
         // WHERE a.member_id = 1 and a.status = 'ACTIVE'
         // TODO : N+1
-        JPAQuery<MemberArticlesByCondition> jpaQuery  = query
-            .select(Projections.constructor(MemberArticlesByCondition.class, article, memberArticleStatus.readStatus))
-            .from(article)
-            .leftJoin(memberArticleStatus)
-            .on(article.id.eq(memberArticleStatus.article.id)
-                .and(memberArticleStatus.member.id.eq(memberId))).fetchJoin()
-            .where(article.member.id.eq(memberId).and(article.articleStatus.eq(ArticleStatus.ACTIVE)));
+//        JPAQuery<MemberArticlesByCondition> jpaQuery  = query
+//            .select(Projections.constructor(MemberArticlesByCondition.class, article, memberArticleStatus.readStatus))
+//            .from(article)
+//            .leftJoin(memberArticleStatus)
+//            .on(article.id.eq(memberArticleStatus.article.id)
+//                .and(memberArticleStatus.member.id.eq(memberId))).fetchJoin()
+//            .where(article.member.id.eq(memberId).and(article.articleStatus.eq(ArticleStatus.ACTIVE)));
 
+        JPAQuery<MemberArticlesByCondition> jpaQuery = query
+            .select(Projections.constructor(MemberArticlesByCondition.class, article,
+                memberArticleStatus.readStatus))
+            .from(article)
+            .leftJoin(memberArticleStatus).on(article.id.eq(memberArticleStatus.article.id))
+            .where(memberArticleStatus.member.id.eq(memberId)
+
+                .and(article.articleStatus.eq(ArticleStatus.ACTIVE)
+                .and(memberArticleStatus.member.id.eq(memberId))));
 
 
         // readStatus 로 조회 시
         // WHERE mas.read_status = ? (UNREAD,READING,READ)
         if (readStatus != null) {
+            log.info("readStatus 로 조회합니다");
             jpaQuery.where(memberArticleStatus.readStatus.eq(readStatus))
                 .orderBy(article.createdAt.desc());
         }
 
         // sortBy 로 정렬 시
         if (sortBy != null) {
+            log.info("sortBy 로 조회합니다");
             switch (sortBy) {
                 case LATEST -> jpaQuery.orderBy(article.createdAt.desc());
                 case TITLE -> jpaQuery.orderBy(article.title.asc());

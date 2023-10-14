@@ -16,6 +16,8 @@ public class ArticleResponseDto implements HasId {
 
     private Long id;
 
+    private Long authorId;
+
     private String title;
 
     private String url;
@@ -39,6 +41,7 @@ public class ArticleResponseDto implements HasId {
      */
     public ArticleResponseDto(Article article) {
         this.id = article.getId();
+        this.authorId = article.getMember().getId();
         this.title = article.getTitle();
         this.url = article.getUrl();
         this.description = article.getDescription();
