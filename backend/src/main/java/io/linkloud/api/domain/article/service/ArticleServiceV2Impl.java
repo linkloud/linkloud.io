@@ -139,7 +139,22 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
         memberService.validateMember(memberId, loginMemberId);
         ReadStatus readStatus = ReadStatus.fromString(sortBy);
         SortBy titleOrLatest = SortBy.fromString(sortBy);
-        return articleRepository.MemberArticlesByCondition(memberId, titleOrLatest,readStatus, lastArticleId, pageable);
+
+        List<Long> myArticleIds = findMyArticleIds(loginMemberId);
+
+        Slice<MemberArticlesByCondition> memberArticlesByConditions = articleRepository.MemberArticlesByCondition(
+            memberId, titleOrLatest, readStatus, lastArticleId, pageable);
+        log.info("memberId={} created articles size={}",loginMemberId,myArticleIds.size());
+        // 내 북마크(최신순,상태순) 게시글들중에
+        // 내가 작성한 게시글 즉 dto.getId() == myArticle.getId() 이면
+        // 내가 작성한 글이므로 isAuthor == true
+        for (MemberArticlesByCondition dto : memberArticlesByConditions) {
+            if (myArticleIds.contains(dto.getId())) {
+                dto.setAuthor();
+            }
+        }
+
+        return memberArticlesByConditions;
     }
 
 
