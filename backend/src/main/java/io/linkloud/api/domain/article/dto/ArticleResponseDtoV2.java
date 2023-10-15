@@ -176,6 +176,7 @@ public class ArticleResponseDtoV2 {
     @Getter
     public static class MemberArticlesByCondition implements HasId{
         private final Long id;
+        private boolean isAuthor;
         private final String title;
         private final String url;
         private final String description;
@@ -183,6 +184,10 @@ public class ArticleResponseDtoV2 {
         private final Integer hearts;
         private final String readStatus;
         private final List<TagDto.ArticleTagsResponse> tags;
+
+        public void setAuthor() {
+            this.isAuthor = true;
+        }
         @Override
         public Long getId() {
             return this.id;
