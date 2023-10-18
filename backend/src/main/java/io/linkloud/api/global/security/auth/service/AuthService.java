@@ -6,6 +6,7 @@ import io.linkloud.api.domain.member.dto.AuthResponseDto;
 import io.linkloud.api.domain.member.dto.CreateRefreshTokenRequestDto;
 import io.linkloud.api.domain.member.dto.MemberSignUpResponseDto;
 import io.linkloud.api.domain.member.model.Member;
+import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.domain.member.service.MemberService;
 import io.linkloud.api.domain.member.service.RefreshTokenService;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
@@ -14,8 +15,10 @@ import io.linkloud.api.global.security.auth.client.OAuthClient;
 import io.linkloud.api.global.security.auth.client.dto.OAuthAttributes;
 import io.linkloud.api.global.security.auth.jwt.JwtProvider;
 import io.linkloud.api.global.security.auth.jwt.JwtTokenType;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,8 +33,6 @@ public class AuthService {
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
-
-
 
 
     /**
@@ -74,17 +75,13 @@ public class AuthService {
     }
 
     public AuthResponseDto refreshTokenAndAccessToken(String refreshToken,HttpServletResponse response) {
-
-
+        log.info("authService.refreshTokenAndAccessToken");
         Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, JwtTokenType.REFRESH_TOKEN, Claims::getId));
-
         try {
             refreshTokenService.validateRefreshToken(memberId, refreshToken);
         } catch (CustomException e) {
             log.error("리프레시 토큰 에러={}",e.getMessage());
             refreshTokenService.removeRefreshToken(memberId);
-            Cookie removedCookie = removeRefreshCookie();
-            response.addCookie(removedCookie);
             throw new CustomException(e.getExceptionCode());
         }
 
@@ -112,13 +109,6 @@ public class AuthService {
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        return cookie;
-    }
-
-    private Cookie removeRefreshCookie() {
-        log.info("쿠키를 제거합니다");
-        Cookie cookie = new Cookie("refreshToken", null);
-        cookie.setMaxAge(0);
         return cookie;
     }
 }

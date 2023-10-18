@@ -13,6 +13,7 @@ import io.linkloud.api.global.security.auth.jwt.dto.SecurityMember;
 import io.linkloud.api.global.security.auth.jwt.utils.HeaderUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -56,9 +57,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
        if (requestURI.equals(REFRESH_TOKEN_URI)) {
-            log.info("리프레시토큰요청");
-            filterChain.doFilter(request, response);
-            return;
+           log.info("리프레시토큰요청");
+           Cookie[] cookies = request.getCookies();
+           if (cookies != null) {
+               for (Cookie cookie : cookies) {
+                   if (cookie.getName().equals("refreshToken")) {
+                       String refreshToken = cookie.getValue();
+                       try {
+                           log.info("filter.refreshToken.validateToken() ");
+                           jwtProvider.validateToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
+                       } catch (CustomException e) {
+                           log.error("refreshToken 이 유효하지 않습니다. 쿠키를 제거합니다");
+                           cookie.setValue("");
+                           cookie.setPath("/");
+                           cookie.setMaxAge(0);
+                           response.addCookie(cookie);
+                           ErrorResponseUtil.sendErrorResponse(response, e);
+                           return;
+                       }
+                   }
+               }
+           }
+           log.info("정상적인 refreshToken 입니다");
+           filterChain.doFilter(request, response);
+           return;
         }
 
         // 1. Header 검증 후 Jwt Token 추출

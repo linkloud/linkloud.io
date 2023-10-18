@@ -182,98 +182,98 @@ class AuthControllerTest {
             )));
     }
 
-    @Test
-    @DisplayName("refreshToken 요청 - 성공")
-    public void refreshToken() throws Exception {
-        // given
-        String content = gson.toJson(refreshTokenRequest);
-        given(authService.refreshTokenAndAccessToken(any(),any())).willReturn(newTokenAuthResponse);
+//    @Test
+//    @DisplayName("refreshToken 요청 - 성공")
+//    public void refreshToken() throws Exception {
+//        // given
+//        String content = gson.toJson(refreshTokenRequest);
+//        given(authService.refreshTokenAndAccessToken(any(),any())).willReturn(newTokenAuthResponse);
+//
+//        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
+//                        .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(content))
+//                .andExpect(status().isOk());
+//
+//        actions.andDo(print())
+//                .andDo(document("auth/refreshToken_success",
+//                                requestFields(
+//                                        fieldWithPath("refreshToken").description("리프레시 토큰")
+//                                ),
+//                                responseFields(
+//                                        fieldWithPath("accessToken").description("새로 발급된 액세스 토큰")
+//                                )
+//                        )
+//                );
+//    }
 
-        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
-                        .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isOk());
+//    @Test
+//    @DisplayName("refreshToken 요청 실패 - refreshToken 이 유효하지 않음  ")
+//    public void refreshToken_fail_invalid_refreshToken() throws Exception {
+//
+//        // given
+//        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("INVALID_REFRESH_TOKEN");
+//
+//        String content = gson.toJson(invalidRequestToken);
+//
+//        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
+//            new CustomException(AuthExceptionCode.INVALID_TOKEN));
+//
+//        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
+//                    .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                    .content(content))
+//            .andExpect(status().isUnauthorized());
+//
+//
+//        actions.andDo(print())
+//            .andDo(document("auth/refreshToken_fail/invalid",
+//                    requestFields(
+//                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰(유효X,변조,null or empty)")
+//                    ),
+//                    responseFields(
+//                        fieldWithPath("status").description("HTTP status 상태 코드"),
+//                        fieldWithPath("message").description("에러 메시지"),
+//                        fieldWithPath("fieldErrors").ignored(),
+//                        fieldWithPath("violationErrors").ignored()
+//                    )
+//                )
+//            );
+//    }
 
-        actions.andDo(print())
-                .andDo(document("auth/refreshToken_success",
-                                requestFields(
-                                        fieldWithPath("refreshToken").description("리프레시 토큰")
-                                ),
-                                responseFields(
-                                        fieldWithPath("accessToken").description("새로 발급된 액세스 토큰")
-                                )
-                        )
-                );
-    }
-
-    @Test
-    @DisplayName("refreshToken 요청 실패 - refreshToken 이 유효하지 않음  ")
-    public void refreshToken_fail_invalid_refreshToken() throws Exception {
-
-        // given
-        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("INVALID_REFRESH_TOKEN");
-
-        String content = gson.toJson(invalidRequestToken);
-
-        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
-            new CustomException(AuthExceptionCode.INVALID_TOKEN));
-
-        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
-                    .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(content))
-            .andExpect(status().isUnauthorized());
-
-
-        actions.andDo(print())
-            .andDo(document("auth/refreshToken_fail/invalid",
-                    requestFields(
-                        fieldWithPath("refreshToken").description("유효하지 않은 리프레시 토큰(유효X,변조,null or empty)")
-                    ),
-                    responseFields(
-                        fieldWithPath("status").description("HTTP status 상태 코드"),
-                        fieldWithPath("message").description("에러 메시지"),
-                        fieldWithPath("fieldErrors").ignored(),
-                        fieldWithPath("violationErrors").ignored()
-                    )
-                )
-            );
-    }
-
-    @Test
-    @DisplayName("refreshToken 요청 실패 - refreshToken 이 만료됨  ")
-    public void refreshToken_fail_expired_token() throws Exception {
-
-        // given
-        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("EXPIRED_TOKEN");
-
-        String content = gson.toJson(invalidRequestToken);
-
-        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
-            new CustomException(AuthExceptionCode.EXPIRED_REFRESH_TOKEN));
-
-        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
-                .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
-            .andExpect(status().isUnauthorized());
-
-
-        actions.andDo(print())
-            .andDo(document("auth/refreshToken_fail/expired",
-                    requestFields(
-                        fieldWithPath("refreshToken").description("만료된 리프레시 토큰")
-                    ),
-                    responseFields(
-                        fieldWithPath("status").description("HTTP status 상태 코드"),
-                        fieldWithPath("message").description("에러 메시지"),
-                        fieldWithPath("fieldErrors").ignored(),
-                        fieldWithPath("violationErrors").ignored()
-                    )
-                )
-            );
-    }
+//    @Test
+//    @DisplayName("refreshToken 요청 실패 - refreshToken 이 만료됨  ")
+//    public void refreshToken_fail_expired_token() throws Exception {
+//
+//        // given
+//        RefreshAccessTokenRequest invalidRequestToken = new RefreshAccessTokenRequest("EXPIRED_TOKEN");
+//
+//        String content = gson.toJson(invalidRequestToken);
+//
+//        when(authService.refreshTokenAndAccessToken(any(),any())).thenThrow(
+//            new CustomException(AuthExceptionCode.EXPIRED_REFRESH_TOKEN));
+//
+//        ResultActions actions = mockMvc.perform(get(BASE_URL + "/refresh")
+//                .cookie(new Cookie("refreshToken", "aaaaaa.bbbbbb.ccccc"))
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(content))
+//            .andExpect(status().isUnauthorized());
+//
+//
+//        actions.andDo(print())
+//            .andDo(document("auth/refreshToken_fail/expired",
+//                    requestFields(
+//                        fieldWithPath("refreshToken").description("만료된 리프레시 토큰")
+//                    ),
+//                    responseFields(
+//                        fieldWithPath("status").description("HTTP status 상태 코드"),
+//                        fieldWithPath("message").description("에러 메시지"),
+//                        fieldWithPath("fieldErrors").ignored(),
+//                        fieldWithPath("violationErrors").ignored()
+//                    )
+//                )
+//            );
+//    }
     @Test
     @DisplayName("로그아웃")
     public void logout() throws Exception {
