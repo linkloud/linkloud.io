@@ -75,18 +75,13 @@ public class AuthService {
     }
 
     public AuthResponseDto refreshTokenAndAccessToken(String refreshToken,HttpServletResponse response) {
-
-
+        log.info("authService.refreshTokenAndAccessToken");
         Long memberId = Long.valueOf(jwtProvider.getClaims(refreshToken, JwtTokenType.REFRESH_TOKEN, Claims::getId));
-
         try {
             refreshTokenService.validateRefreshToken(memberId, refreshToken);
-            jwtProvider.validateToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
         } catch (CustomException e) {
             log.error("리프레시 토큰 에러={}",e.getMessage());
             refreshTokenService.removeRefreshToken(memberId);
-            Cookie removedCookie = removeRefreshCookie();
-            response.addCookie(removedCookie);
             throw new CustomException(e.getExceptionCode());
         }
 
@@ -114,13 +109,6 @@ public class AuthService {
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        return cookie;
-    }
-
-    private Cookie removeRefreshCookie() {
-        log.info("쿠키를 제거합니다");
-        Cookie cookie = new Cookie("refreshToken", null);
-        cookie.setMaxAge(0);
         return cookie;
     }
 }
