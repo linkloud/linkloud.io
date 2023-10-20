@@ -78,7 +78,7 @@ public class MemberArticleStatusService {
 
         int articleHasStatusSize = articleStatusByMemberId.size();
 
-        log.info("{}번 회원의 게시글 상태 목록 총 {} 개 조회됨", loginMemberId, articleHasStatusSize);
+        log.info("memberId={}, memberArticleStatus Count={}", loginMemberId, articleHasStatusSize);
 
         Map<Long, ReadStatus> articeStatusMap = new ConcurrentHashMap<>();
 
@@ -86,9 +86,8 @@ public class MemberArticleStatusService {
             articeStatusMap.put(status.getArticle().getId(), status.getReadStatus());
         }
 
-        log.info("{}번 회원 게시글 상태 조회 결과",loginMemberId);
 
-        articeStatusMap.forEach((key,value) -> log.info("{}번 게시글 : {}",key,value));
+        articeStatusMap.forEach((key,value) -> log.info("articleId={} : {}",key,value));
 
         return articeStatusMap;
     }
@@ -102,7 +101,7 @@ public class MemberArticleStatusService {
             .article(article)
             .readStatus(ReadStatus.UNREAD)
             .build());
-        log.info("첫 게시글 생성 후 상태 설정(m.id={},a.id={},status={})", member.getId(), article.getId(),
+        log.info("set the status of the article (m.id={},a.id={},status={})", member.getId(), article.getId(),
             initStatusArticle.getReadStatus().name());
     }
 

@@ -41,7 +41,7 @@ public class OpenGraphService {
                 .build();
 
         } catch (Exception e) {
-            log.error("잘못된 openGraph URL: {}",targetUrl);
+            log.error("Bad openGraph URL: {}",targetUrl);
             throw new CustomException(LogicExceptionCode.BAD_REQUEST);
         }
     }

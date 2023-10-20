@@ -78,10 +78,7 @@ public class MemberController {
         @PathVariable Long memberId,
         @LoginMemberId Long extractedMemberId,
         @Positive @RequestParam int page,
-        @Positive @Min(5) @Max(20) @RequestParam int size
-    ) {
-
-        log.info("size={}", size);
+        @Positive @Min(5) @Max(20) @RequestParam int size) {
         Page<MemberTagsDto> responses = memberService.fetchMemberTags(memberId, extractedMemberId,
             page, size);
         return ResponseEntity.ok(new MultiDataResponse<>(responses));

@@ -27,7 +27,7 @@ public class RefreshTokenService {
             dto.getRefreshToken(),
             dto.getRefreshTokenExpiration());
         refreshTokenRepository.save(refreshToken);
-        log.info("refreshToken 토큰 저장완료");
+        log.info("memberId={},successfully refreshToken saved",dto.getMemberId());
     }
 
     /**
@@ -44,7 +44,7 @@ public class RefreshTokenService {
     public void removeRefreshToken(Long memberId) {
         RefreshToken foundRefreshToken = findRefreshTokenByMemberId(memberId);
         refreshTokenRepository.deleteById(foundRefreshToken.getMemberId());
-        log.info("리프레시 토큰 삭제");
+        log.info("memberId={},delete refreshToken",memberId);
     }
 
     /**
@@ -55,7 +55,7 @@ public class RefreshTokenService {
     private RefreshToken findRefreshTokenByMemberId(Long memberId) {
         return refreshTokenRepository.findById(memberId)
             .orElseThrow(() -> {
-                log.error("Member[{}]의 리프레시토큰이 DB에 존재하지 않습니다.", memberId);
+                log.error("memberId={},No refreshToken found in DB", memberId);
                 return new CustomException(AuthExceptionCode.EXPIRED_REFRESH_TOKEN);
             });
     }

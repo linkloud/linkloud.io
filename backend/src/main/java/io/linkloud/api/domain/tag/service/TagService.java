@@ -53,7 +53,7 @@ public class TagService {
                 .build();
 
         Tag adddTag = tagRepository.save(tag);
-        log.info("Tag 생성 완료. {}", adddTag.getName());
+        log.info("successfully saved Tags = {}", adddTag.getName());
         return adddTag;
     }
 
