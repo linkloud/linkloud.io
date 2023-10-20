@@ -5,7 +5,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.linkloud.api.domain.member.dto.AuthV2Dto.AccessTokenRequest;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -145,6 +144,12 @@ public class JwtProvider {
     public long getRefreshTokenExpiration() {
         return jwtProperties.getRefreshTokenExpiration();
     }
-
-
 }
+
+
+
+
+
+
+
+
