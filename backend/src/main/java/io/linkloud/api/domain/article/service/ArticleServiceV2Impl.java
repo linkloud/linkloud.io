@@ -142,7 +142,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
         List<Long> myArticleIds = findMyArticleIds(loginMemberId);
 
-        Slice<MemberArticlesByCondition> memberArticlesByConditions = articleRepository.MemberArticlesByCondition(
+        Slice<MemberArticlesByCondition> memberArticlesByConditions = articleRepository.memberArticlesByCondition(
             memberId, titleOrLatest, readStatus, lastArticleId, pageable);
         log.info("memberId={} created articles size={}",loginMemberId,myArticleIds.size());
         // 내 북마크(최신순,상태순) 게시글들중에
@@ -245,10 +245,10 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private void flagAuthorForArticles(Slice<ArticleListResponse> articles, Long loginMemberId) {
 
         List<Long> myArticleIds = findMyArticleIds(loginMemberId);
-        log.info("{}번 회원이 작성한 총 게시글 수 : {}", loginMemberId, myArticleIds.size());
+        log.info("memberID={}, article count={}", loginMemberId, myArticleIds.size());
         for (ArticleListResponse listResponse : articles) {
             if (myArticleIds.contains(listResponse.getId())) {
-                log.info("{}번 회원 {}번 게시글 작성자 설정 완료",loginMemberId,listResponse.getId());
+                log.info("memberID={},articleId={} setAuthor",loginMemberId,listResponse.getId());
                 listResponse.setAuthor(true);
             }
         }

@@ -28,8 +28,7 @@ public class AuthController {
     public ResponseEntity<AuthResponseDto> authenticate(
         @RequestBody AuthRequestDto dto, HttpServletResponse response) {
         AuthResponseDto responseDto = authService.authenticate(dto,response);
-        log.info("첫 토큰 생성");
-        log.info("AccessToken={}",responseDto.getAccessToken());
+        log.info("successfully created the first accessToken");
         return ResponseEntity.ok(responseDto);
     }
 
@@ -38,8 +37,7 @@ public class AuthController {
         @CookieValue("refreshToken") String refreshToken,
         HttpServletResponse response) {
         AuthResponseDto responseDto = authService.refreshTokenAndAccessToken(refreshToken,response);
-        log.info("토큰 재생성");
-        log.info("AccessToken={} ", responseDto.getAccessToken());
+        log.info("successfully remade the accessToken by refreshToken");
         return ResponseEntity.ok(responseDto);
     }
 }

@@ -28,7 +28,7 @@ public interface ArticleRepositoryCustom {
         Pageable pageable);
 
     // MemberId 로 게시글 조건 정렬
-    Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long memberId,SortBy sortBy,ReadStatus readStatus, Long lastArticleId,
+    Slice<MemberArticlesByCondition> memberArticlesByCondition(Long memberId,SortBy sortBy,ReadStatus readStatus, Long lastArticleId,
         Pageable pageable);
 
 }

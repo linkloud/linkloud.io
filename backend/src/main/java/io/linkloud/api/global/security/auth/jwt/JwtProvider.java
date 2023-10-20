@@ -5,7 +5,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.linkloud.api.domain.member.dto.AuthV2Dto.AccessTokenRequest;
 import io.linkloud.api.domain.member.model.SocialType;
 import io.linkloud.api.global.exception.ExceptionCode.AuthExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -117,12 +116,12 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
         } catch (ExpiredJwtException e) {
-            log.error("이 토큰은({}) 만료된 토큰입니다={}", tokenType.name(), e.getMessage());
+            log.error("This token is ({}) expired token={}", tokenType.name(), e.getMessage());
             throw new CustomException(tokenType == JwtTokenType.ACCESS_TOKEN ?
                 AuthExceptionCode.EXPIRED_ACCESS_TOKEN : // JwtTokenType 이 액세스토큰 일경우(참)
                 AuthExceptionCode.EXPIRED_REFRESH_TOKEN); // JwtTokenType 이 액세스토큰이 아닐경우(거짓)
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("유효하지 않은 ({})토큰입니다={}",tokenType,e.getMessage());
+            log.error("the token is({}) invalid={}",tokenType,e.getMessage());
             throw new CustomException(AuthExceptionCode.INVALID_TOKEN);
         }
         return true;
@@ -145,6 +144,12 @@ public class JwtProvider {
     public long getRefreshTokenExpiration() {
         return jwtProperties.getRefreshTokenExpiration();
     }
-
-
 }
+
+
+
+
+
+
+
+

@@ -21,4 +21,17 @@ public class HeaderUtil {
         }
         return null;
     }
+
+    // nginx -> springboot 요청 과정은 local(nginx) to local(spring) 이기 때문에
+    // 클라이언트 IP 가 로컬로 찍힘
+    public static String getClientProxyIP(HttpServletRequest req) {
+        String clientIP = req.getHeader("X-Forwarded-For");
+        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+            clientIP = req.getHeader("X-Real-IP");
+        }
+        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+            clientIP = req.getRemoteAddr();
+        }
+        return clientIP;
+    }
 }

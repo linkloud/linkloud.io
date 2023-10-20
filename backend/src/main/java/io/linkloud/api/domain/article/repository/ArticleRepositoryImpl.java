@@ -48,7 +48,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         Pageable pageable) {
         // 정렬 기준 변환
 //        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
-
+        log.info("ArticleRepositoryImpl.findArticleListBySearch");
+        log.info("keyword={}, tags={}",keyword,tags);
         BooleanBuilder builder = new BooleanBuilder();
 
         // posts.title 조건 생성
@@ -115,15 +116,17 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     }
 
     @Override
-    public Slice<ArticleListResponse> findArticlesWithNoOffset(Long lastArticleId, Pageable pageable,SortBy sortBy) {
+    public Slice<ArticleListResponse> findArticlesWithNoOffset(Long nextId, Pageable pageable,SortBy sortBy) {
         OrderSpecifier<?>[] orderSpecifier = createOrderSpecifier(sortBy);
 
+        log.info("===findArticlesWithNoOffset START===");
+        log.info("nextId={}, sortBy={}", nextId, sortBy);
         // fetchJoin 을 사용하여 한번에 쿼리문 날림
         List<Article> fetch = query.selectFrom(article)
             .leftJoin(article.member, member).fetchJoin()
             .leftJoin(article.articleTags, articleTag).fetchJoin()
             .leftJoin(articleTag.tag, tag).fetchJoin()
-            .where(getWhereLastArticleIdLowerThan(lastArticleId))
+            .where(getWhereLastArticleIdLowerThan(nextId))
             .where(article.articleStatus.eq(ArticleStatus.ACTIVE))
             .orderBy(orderSpecifier)
             .limit(pageable.getPageSize() + 1)
@@ -139,6 +142,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             content.remove(pageable.getPageSize());
             hasNext = true;
         }
+        log.info("===findArticlesWithNoOffset END===");
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
@@ -148,6 +152,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     @Override
     public Slice<ArticleListResponse> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable) {
 
+        log.info("===findArticlesByKeywordOrTags START===");
+        log.info("keyword={}, tags={}", keyword,tags);
         BooleanBuilder builder = new BooleanBuilder();
 
         // posts.title 조건 생성
@@ -172,13 +178,16 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             content.remove(pageable.getPageSize());
             hasNext = true;
         }
+        log.info("===findArticlesByKeywordOrTags END===");
+
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
     @Override
-    public Slice<MemberArticlesByCondition> MemberArticlesByCondition(Long memberId, SortBy sortBy,
-        ReadStatus readStatus, Long lastArticleId, Pageable pageable) {
-        log.info("repository={}",readStatus);
+    public Slice<MemberArticlesByCondition> memberArticlesByCondition(Long memberId, SortBy sortBy,
+        ReadStatus readStatus, Long nextId, Pageable pageable) {
+        log.info("===MemberArticlesByCondition START===");
+        log.info("memberId={}, sortBy={}, readStatus={}, nextId={}", memberId, sortBy.name(),readStatus.name(),nextId);
 
         // SELECT a.*, mas.read_status
         // FROM article a
@@ -207,14 +216,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         // readStatus 로 조회 시
         // WHERE mas.read_status = ? (UNREAD,READING,READ)
         if (readStatus != null) {
-            log.info("readStatus 로 조회합니다");
+            log.info("select By readStatus");
             jpaQuery.where(memberArticleStatus.readStatus.eq(readStatus))
                 .orderBy(article.createdAt.desc());
         }
 
         // sortBy 로 정렬 시
         if (sortBy != null) {
-            log.info("sortBy 로 조회합니다");
+            log.info("select By sortBy");
             switch (sortBy) {
                 case LATEST -> jpaQuery.orderBy(article.createdAt.desc());
                 case TITLE -> jpaQuery.orderBy(article.title.asc());
@@ -222,7 +231,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
 
         else {
-            log.info("검색 조건이 없습니다 -> 날짜순으로 정렬합니다 ");
+            log.info("select By createdAt.desc");
             jpaQuery.orderBy(article.createdAt.desc());
         }
         List<MemberArticlesByCondition> content = jpaQuery
@@ -234,6 +243,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             content.remove(pageable.getPageSize());
             hasNext = true;
         }
+        log.info("===MemberArticlesByCondition END===");
+
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
