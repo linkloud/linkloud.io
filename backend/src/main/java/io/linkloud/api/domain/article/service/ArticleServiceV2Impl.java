@@ -142,7 +142,7 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
         List<Long> myArticleIds = findMyArticleIds(loginMemberId);
 
-        Slice<MemberArticlesByCondition> memberArticlesByConditions = articleRepository.MemberArticlesByCondition(
+        Slice<MemberArticlesByCondition> memberArticlesByConditions = articleRepository.memberArticlesByCondition(
             memberId, titleOrLatest, readStatus, lastArticleId, pageable);
         log.info("memberId={} created articles size={}",loginMemberId,myArticleIds.size());
         // 내 북마크(최신순,상태순) 게시글들중에
