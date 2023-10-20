@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String clientProxyIP = HeaderUtil.getClientProxyIP(request); // 요청 IP
 
         // 모든 요청에 대한 정보 로깅
-        log.info("Incoming request: method={}, URI={}, IP={}", requestMethod, requestURI,clientProxyIP);
+        log.info("Client request: method={}, URI={}, IP={}", requestMethod, requestURI,clientProxyIP);
 
         // 로그인 한 유저가 리프레시 토큰으로 요청할 때
        if (requestURI.equals(REFRESH_TOKEN_URI)) {
@@ -70,7 +70,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                    if (cookie.getName().equals("refreshToken")) {
                        String refreshToken = cookie.getValue();
                        try {
-                           log.info("filter.refreshToken.validateToken() ");
                            jwtProvider.validateToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
                        } catch (CustomException e) {
                            log.error("refreshToken is invalid. remove Client's Cookie");
