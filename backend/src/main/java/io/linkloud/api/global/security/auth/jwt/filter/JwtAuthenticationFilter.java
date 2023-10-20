@@ -53,11 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletRequest request,
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String requestURI = request.getRequestURI();
 
+        String requestURI = request.getRequestURI(); // 요청 URL (api/v1....)
+        String requestMethod = request.getMethod(); // 요청된 method (GET,POST,etc....)
+        String clientProxyIP = HeaderUtil.getClientProxyIP(request); // 요청 IP
 
+        // 모든 요청에 대한 정보 로깅
+        log.info("Incoming request: method={}, URI={}, IP={}", requestMethod, requestURI,clientProxyIP);
+
+        // 로그인 한 유저가 리프레시 토큰으로 요청할 때
        if (requestURI.equals(REFRESH_TOKEN_URI)) {
-           log.info("리프레시토큰요청");
+           log.info("Request By RefreshTokenURI");
            Cookie[] cookies = request.getCookies();
            if (cookies != null) {
                for (Cookie cookie : cookies) {
@@ -67,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                            log.info("filter.refreshToken.validateToken() ");
                            jwtProvider.validateToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
                        } catch (CustomException e) {
-                           log.error("refreshToken 이 유효하지 않습니다. 쿠키를 제거합니다");
+                           log.error("refreshToken is invalid. remove Client's Cookie");
                            cookie.setValue("");
                            cookie.setPath("/");
                            cookie.setMaxAge(0);
@@ -78,20 +84,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                    }
                }
            }
-           log.info("정상적인 refreshToken 입니다");
+           log.info("Refresh Token Request is Success");
            filterChain.doFilter(request, response);
            return;
         }
 
         // 1. Header 검증 후 Jwt Token 추출
-        log.info("JWT 인증 필터 실행 = {}", HeaderUtil.getAccessToken(request));
+        log.info("JWT AccessTokenFilter exec = {}", HeaderUtil.getAccessToken(request));
         String accessToken = HeaderUtil.getAccessToken(request);
 
 
         try {
             // 2. 토큰이 유효한지 검증
             if (accessToken != null && jwtProvider.validateToken(accessToken,JwtTokenType.ACCESS_TOKEN)) {
-                log.info("토근이 유효합니다.");
+                log.info("Token is valid.");
 
                 // 3. 사용자 정보 추출
                 String memberId = jwtProvider.getClaims(accessToken, JwtTokenType.ACCESS_TOKEN, Claims::getId);
@@ -103,7 +109,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication = setUserDetails(member);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                log.info("Security Context 에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+                log.info("Saved authentication info for '{}' in Security Context, uri: {}", authentication.getName(), requestURI);
 
 
             }
@@ -113,9 +119,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ErrorResponseUtil.sendErrorResponse(response, e);
             return;
         }
-        log.info("JWT 인증 필터 종료");
+        log.info("JWT filter exit...");
         filterChain.doFilter(request, response);
     }
+
     private Authentication setUserDetails(Member member) {
         UserDetails userDetails = new SecurityMember(
             member.getId(),
