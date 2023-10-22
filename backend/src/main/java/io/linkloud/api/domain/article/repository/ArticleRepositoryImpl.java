@@ -49,7 +49,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         // 정렬 기준 변환
 //        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
         log.info("ArticleRepositoryImpl.findArticleListBySearch");
-        log.info("keyword={}, tags={}",keyword,tags);
         BooleanBuilder builder = new BooleanBuilder();
 
         // posts.title 조건 생성
@@ -120,7 +119,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         OrderSpecifier<?>[] orderSpecifier = createOrderSpecifier(sortBy);
 
         log.info("===findArticlesWithNoOffset START===");
-        log.info("nextId={}, sortBy={}", nextId, sortBy);
         // fetchJoin 을 사용하여 한번에 쿼리문 날림
         List<Article> fetch = query.selectFrom(article)
             .leftJoin(article.member, member).fetchJoin()
@@ -153,7 +151,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     public Slice<ArticleListResponse> findArticlesByKeywordOrTags(String keyword, List<String> tags, Pageable pageable) {
 
         log.info("===findArticlesByKeywordOrTags START===");
-        log.info("keyword={}, tags={}", keyword,tags);
         BooleanBuilder builder = new BooleanBuilder();
 
         // posts.title 조건 생성
@@ -187,7 +184,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     public Slice<MemberArticlesByCondition> memberArticlesByCondition(Long memberId, SortBy sortBy,
         ReadStatus readStatus, Long nextId, Pageable pageable) {
         log.info("===MemberArticlesByCondition START===");
-        log.info("memberId={}, sortBy={}, readStatus={}, nextId={}", memberId, sortBy.name(),readStatus.name(),nextId);
 
         // SELECT a.*, mas.read_status
         // FROM article a
