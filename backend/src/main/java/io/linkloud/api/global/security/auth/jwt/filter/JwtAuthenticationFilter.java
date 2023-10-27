@@ -17,6 +17,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final MemberRepository memberRepository;
     private static final String REFRESH_TOKEN_URI = "/api/v1/auth/refresh";
 
+    // 스레드 안전
+    // 매번 요청마다 객체 생성하는데 싱글톤으로 유지
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected void doFilterInternal(
@@ -58,8 +63,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestMethod = request.getMethod(); // 요청된 method (GET,POST,etc....)
         String clientProxyIP = HeaderUtil.getClientProxyIP(request); // 요청 IP
 
+        LocalDateTime currentTime = LocalDateTime.now();
+        String formattedTime = currentTime.format(DATE_TIME_FORMATTER);
+
         // 모든 요청에 대한 정보 로깅
-        log.info("Client request: method={}, URI={}, IP={}", requestMethod, requestURI,clientProxyIP);
+        log.info("Request Time={}", formattedTime);
+        log.info("Client method={}, URI={}", requestMethod, requestURI);
+        log.info("Client IP={}", clientProxyIP);
 
         // 로그인 한 유저가 리프레시 토큰으로 요청할 때
        if (requestURI.equals(REFRESH_TOKEN_URI)) {
