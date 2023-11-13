@@ -37,6 +37,10 @@ public class ArticleTag {
         this.tag = tag;
     }
 
+    // Article 객체와의 연관 관계를 제거하는 메소드
+    public void setArticle(Article article) {
+        this.article = article;
+    }
     // 연관 관계 매핑
     public void addArticle(Article article) {
         this.article = article;

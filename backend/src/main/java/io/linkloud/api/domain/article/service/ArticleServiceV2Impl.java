@@ -48,12 +48,11 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
     private final HeartService heartService;
 
     // 게시글 한 개 조회
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ArticleResponseDto getArticleById(Long id) {
         Article getArticle = findArticleById(id);
         getArticle.increaseViewCount();  // 조회수 증가
-
         return new ArticleResponseDto(getArticle);
     }
 
@@ -85,19 +84,22 @@ public class ArticleServiceV2Impl implements ArticleServiceV2{
 
         Member member = findMemberById(loginMemberId);
         Article article = findArticleById(articleId);
-
-
-        // 요청한 회원ID, 수정하려는 게시글의 회원ID 비교
         validateMemberArticleMatch(member, article);
 
         article.articleUpdate(updateDto);
-
         if (updateDto.getTags() != null && !updateDto.getTags().isEmpty()) {
-            tagService.tagFilterAndSave(updateDto, article);
+            // 1. 원래 저장 되어있던 태그들을 지우고
+            List<ArticleTag> oldArticleTags = new ArrayList<>(article.getArticleTags());
+            for (ArticleTag articleTag : oldArticleTags) {
+                article.removeArticleTag(articleTag);
+            }
+
+            // 2. 요청온 태그로 갈아 끼운다.
+            List<ArticleTag> articleTags = addArticleTagList(updateDto.getTags());
+            article.addArticleTag(articleTags);
         }
         return new ArticleUpdate(article);
     }
-
 
     // 게시글 삭제
     @Transactional
