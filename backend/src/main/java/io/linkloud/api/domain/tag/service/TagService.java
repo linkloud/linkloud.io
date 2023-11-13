@@ -5,6 +5,7 @@ import io.linkloud.api.domain.article.model.Article;
 import io.linkloud.api.domain.tag.dto.TagDto;
 import io.linkloud.api.domain.tag.model.ArticleTag;
 import io.linkloud.api.domain.tag.model.Tag;
+import io.linkloud.api.domain.tag.repository.ArticleTagRepository;
 import io.linkloud.api.domain.tag.repository.TagRepository;
 import io.linkloud.api.global.exception.ExceptionCode.LogicExceptionCode;
 import io.linkloud.api.global.exception.CustomException;
@@ -78,17 +79,24 @@ public class TagService {
     /**
      * 중복 태그 제거,존재하지 않는 태그 필터,새로운 태그 DB 저장
      * 1. 중복으로 요청한 태그가 있다면 중복 태그를 제거한다.
-     * 2. 수정하려는 게시글이 이미 가지고 있는 태그 Name 들을 가져온다
-     * 3. 요청한 태그가 수정하려는 게시글이 이미 가지고 있는 태그 Name 들과 비교해 다른것들만 필터링
+     * 2. 수정하려는 게시글이 이미 가지고 있는 태그 리스트들을 가져온다
+     * 3. 요청한 태그와 원래 태그를 비교하여 중복되지 않은 태그만 걸러냄
      * 4. 필터링된 태그들을 DB 에 저장
+     *
+     * @deprecated 이미 저장되어 있는 태그 삭제가 안되는 버그
      */
+
+    @Deprecated
     public void tagFilterAndSave(ArticleUpdateRequestDto updateDto, Article article) {
+
         // 중복으로 요청온 태그 제거
         // ex)) tag1,tag1,tag1,tag2 = tag1,tag2
         List<String> uniqueTags = validateDuplicatedTagRequest(updateDto);
 
         // 게시글에 이미 연결된 태그 리스트
         List<String> existingTags = getArticleTagLists(article);
+        log.info("이미 저장되어있는 태그 리스트={}", existingTags);
+
 
         // 존재하지 않는 태그 필터
         List<String> filteredTags = notExistsTagsFilter(uniqueTags, existingTags);
