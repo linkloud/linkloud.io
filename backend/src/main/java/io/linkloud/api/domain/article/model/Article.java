@@ -104,6 +104,13 @@ public class Article extends Auditable {
         this.ogImage = updateDto.getOgImage();
     }
 
+    /** ArticleTag 참조 해제 */
+    public void removeArticleTag(ArticleTag articleTag) {
+        this.articleTags.remove(articleTag);
+        articleTag.setArticle(null); // ArticleTag 객체에서도 Article 참조를 제거
+    }
+
+
     /** 조회수 변동 */
     public void articleViewIncrease(Integer views) {
         this.views = views;
